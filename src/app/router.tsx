@@ -1,0 +1,79 @@
+import { createBrowserRouter, Navigate } from 'react-router';
+import { CatalogPage } from '../features/catalog/pages/CatalogPage';
+import { ProductDetailPage } from '../features/catalog/pages/ProductDetailPage';
+import { AdminProductsPage } from '../features/admin/pages/AdminProductsPage';
+import { AdminProductEditPage } from '../features/admin/pages/AdminProductEditPage';
+import { AdminCategoriesPage } from '../features/admin/pages/AdminCategoriesPage';
+import { AdminUsersPage } from '../features/admin/pages/AdminUsersPage';
+import { AdminUserDetailPage } from '../features/admin/pages/AdminUserDetailPage';
+import { ProtectedRoute } from '../shared/components/ProtectedRoute';
+import { AdminRoute } from '../shared/components/AdminRoute';
+import { LoginPage } from '../features/auth/pages/LoginPage';
+import { ProfilePage } from '../features/auth/pages/ProfilePage';
+
+// Admin home — redirect to product list (primary admin landing)
+const AdminHomePage = () => <Navigate to="/admin/products" replace />;
+
+export const router = createBrowserRouter([
+  {
+    // Home redirects to the product catalog (primary customer experience)
+    path: '/',
+    element: <Navigate to="/products" replace />,
+  },
+  {
+    path: '/products',
+    element: <CatalogPage />,
+  },
+  {
+    path: '/products/:slug',
+    element: <ProductDetailPage />,
+  },
+  {
+    path: '/login',
+    element: <LoginPage />,
+  },
+  // Protected routes — require authentication
+  {
+    element: <ProtectedRoute />,
+    children: [
+      {
+        path: '/profile',
+        element: <ProfilePage />,
+      },
+    ],
+  },
+  // Admin routes — require admin role
+  {
+    element: <AdminRoute />,
+    children: [
+      {
+        path: '/admin',
+        element: <AdminHomePage />,
+      },
+      {
+        path: '/admin/products',
+        element: <AdminProductsPage />,
+      },
+      {
+        path: '/admin/products/create',
+        element: <AdminProductEditPage />,
+      },
+      {
+        path: '/admin/products/:id/edit',
+        element: <AdminProductEditPage />,
+      },
+      {
+        path: '/admin/categories',
+        element: <AdminCategoriesPage />,
+      },
+      {
+        path: '/admin/users',
+        element: <AdminUsersPage />,
+      },
+      {
+        path: '/admin/users/:id',
+        element: <AdminUserDetailPage />,
+      },
+    ],
+  },
+]);
