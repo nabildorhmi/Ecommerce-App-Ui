@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router';
-import { useTranslation } from 'react-i18next';
+import { useQuery } from '@tanstack/react-query';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -15,6 +15,7 @@ import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import Drawer from '@mui/material/Drawer';
 import Tooltip from '@mui/material/Tooltip';
+import Badge from '@mui/material/Badge';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import LogoutIcon from '@mui/icons-material/Logout';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
@@ -28,18 +29,17 @@ import CloseIcon from '@mui/icons-material/Close';
 import DarkModeRoundedIcon from '@mui/icons-material/DarkModeRounded';
 import LightModeRoundedIcon from '@mui/icons-material/LightModeRounded';
 import { useAuthStore } from '../../features/auth/store';
-import { LanguageSwitcher } from './LanguageSwitcher';
 import { CartBadge } from '../../features/cart/components/CartBadge';
 import { CartDrawer } from '../../features/cart/components/CartDrawer';
 import { useCategories } from '../../features/catalog/api/categories';
 import { useThemeStore } from '../../app/themeStore';
+import { apiClient } from '../api/client';
 import miraiLogo from '../../assets/miraiTech-Logo.png';
 
 /**
  * MiraiTech Navbar — sticky, transparent/dark blur, dynamic categories.
  */
 export function Navbar() {
-  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const user = useAuthStore((s) => s.user);
@@ -48,6 +48,19 @@ export function Navbar() {
 
   const { data: categoriesData } = useCategories();
   const categories = categoriesData?.data ?? [];
+
+  // Admin pending orders count
+  const { data: pendingData } = useQuery({
+    queryKey: ['admin', 'orders', 'pending-count'],
+    queryFn: async () => {
+      const res = await apiClient.get('/admin/orders', { params: { 'filter[status]': 'pending', per_page: 1 } });
+      return res.data.meta?.total ?? 0;
+    },
+    enabled: user?.role === 'admin',
+    refetchInterval: 30_000,
+    staleTime: 15_000,
+  });
+  const pendingCount = pendingData ?? 0;
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -96,7 +109,7 @@ export function Navbar() {
               component={Link}
               to="/products"
               sx={{
-                color: isActive('/products') && !location.search.includes('category_id') ? '#00C2FF' : '#9CA3AF',
+                color: isActive('/products') && !location.search.includes('category_id') ? '#00C2FF' : 'text.secondary',
                 fontWeight: 600,
                 fontSize: '0.75rem',
                 letterSpacing: '0.08em',
@@ -104,10 +117,10 @@ export function Navbar() {
                 py: 0.75,
                 borderRadius: '4px',
                 minWidth: 'auto',
-                '&:hover': { color: '#F5F7FA', backgroundColor: 'rgba(255,255,255,0.04)' },
+                '&:hover': { color: 'text.primary', backgroundColor: 'rgba(255,255,255,0.04)' },
               }}
             >
-              {t('nav.allScooters', 'ALL SCOOTERS')}
+              ALL SCOOTERS
             </Button>
 
             {categories.length > 0 && (
@@ -116,7 +129,7 @@ export function Navbar() {
                   endIcon={<KeyboardArrowDownIcon sx={{ fontSize: '0.9rem !important' }} />}
                   onClick={(e) => setCatMenuAnchor(e.currentTarget)}
                   sx={{
-                    color: '#9CA3AF',
+                    color: 'text.secondary',
                     fontWeight: 600,
                     fontSize: '0.75rem',
                     letterSpacing: '0.08em',
@@ -124,10 +137,10 @@ export function Navbar() {
                     py: 0.75,
                     borderRadius: '4px',
                     minWidth: 'auto',
-                    '&:hover': { color: '#F5F7FA', backgroundColor: 'rgba(255,255,255,0.04)' },
+                    '&:hover': { color: 'text.primary', backgroundColor: 'rgba(255,255,255,0.04)' },
                   }}
                 >
-                  {t('nav.categories', 'CATEGORIES')}
+                  CATEGORIES
                 </Button>
                 <Menu
                   anchorEl={catMenuAnchor}
@@ -138,8 +151,9 @@ export function Navbar() {
                     sx: {
                       mt: 1,
                       minWidth: 220,
-                      backgroundColor: '#111116',
-                      border: '1px solid #1E1E28',
+                      backgroundColor: 'background.paper',
+                      border: '1px solid',
+                      borderColor: 'divider',
                       boxShadow: '0 16px 40px rgba(0,0,0,0.6)',
                     },
                   }}
@@ -153,7 +167,7 @@ export function Navbar() {
                       sx={{
                         fontSize: '0.85rem',
                         fontWeight: 500,
-                        color: '#F5F7FA',
+                        color: 'text.primary',
                         py: 1,
                         borderLeft: '2px solid transparent',
                         '&:hover': {
@@ -178,15 +192,13 @@ export function Navbar() {
               <IconButton
                 onClick={toggleMode}
                 size="small"
-                sx={{ color: '#9CA3AF', '&:hover': { color: '#F5F7FA', backgroundColor: 'rgba(255,255,255,0.06)' } }}
+                sx={{ color: 'text.secondary', '&:hover': { color: 'text.primary', backgroundColor: 'rgba(255,255,255,0.06)' } }}
               >
                 {mode === 'dark'
                   ? <LightModeRoundedIcon fontSize="small" />
                   : <DarkModeRoundedIcon fontSize="small" />}
               </IconButton>
             </Tooltip>
-
-            <LanguageSwitcher />
 
             <CartBadge onToggle={() => setDrawerOpen(true)} />
 
@@ -196,11 +208,13 @@ export function Navbar() {
                   <>
                     <IconButton
                       onClick={(e) => setAdminMenuAnchor(e.currentTarget)}
-                      aria-label={t('nav.admin')}
+                      aria-label="Administration"
                       size="small"
-                      sx={{ color: '#9CA3AF', '&:hover': { color: '#00C2FF' } }}
+                      sx={{ color: 'text.secondary', '&:hover': { color: '#00C2FF' } }}
                     >
-                      <AdminPanelSettingsIcon sx={{ fontSize: '1.1rem' }} />
+                      <Badge variant="dot" color="error" invisible={pendingCount === 0}>
+                        <AdminPanelSettingsIcon sx={{ fontSize: '1.1rem' }} />
+                      </Badge>
                     </IconButton>
                     <Menu
                       anchorEl={adminMenuAnchor}
@@ -211,17 +225,18 @@ export function Navbar() {
                         sx: {
                           mt: 1,
                           minWidth: 200,
-                          backgroundColor: '#111116',
-                          border: '1px solid #1E1E28',
+                          backgroundColor: 'background.paper',
+                          border: '1px solid',
+                          borderColor: 'divider',
                           boxShadow: '0 16px 40px rgba(0,0,0,0.6)',
                         },
                       }}
                     >
                       {[
-                        { to: '/admin/products', icon: <AssignmentIcon fontSize="small" />, label: t('admin.products.title') },
-                        { to: '/admin/categories', icon: <AssignmentIcon fontSize="small" />, label: t('admin.categories.title', 'Categories') },
-                        { to: '/admin/orders', icon: <ReceiptLongIcon fontSize="small" />, label: t('orders.ordersNav') },
-                        { to: '/admin/delivery-zones', icon: <LocalShippingIcon fontSize="small" />, label: t('deliveryZones.title') },
+                        { to: '/admin/products', icon: <AssignmentIcon fontSize="small" />, label: 'Produits', badge: null },
+                        { to: '/admin/categories', icon: <AssignmentIcon fontSize="small" />, label: 'Catégories', badge: null },
+                        { to: '/admin/orders', icon: <Badge badgeContent={pendingCount} color="error" max={99}><ReceiptLongIcon fontSize="small" /></Badge>, label: 'Commandes', badge: null },
+                        { to: '/admin/delivery-zones', icon: <LocalShippingIcon fontSize="small" />, label: 'Zones de livraison', badge: null },
                       ].map(({ to, icon, label }) => (
                         <MenuItem
                           key={to}
@@ -232,6 +247,7 @@ export function Navbar() {
                             fontSize: '0.85rem',
                             py: 1,
                             borderLeft: '2px solid transparent',
+                            color: 'text.primary',
                             '&:hover': { backgroundColor: 'rgba(0,194,255,0.08)', color: '#00C2FF', borderLeftColor: '#00C2FF' },
                           }}
                         >
@@ -246,7 +262,7 @@ export function Navbar() {
                 <IconButton
                   onClick={(e) => setUserMenuAnchor(e.currentTarget)}
                   size="small"
-                  sx={{ color: '#9CA3AF', '&:hover': { color: '#00C2FF' } }}
+                  sx={{ color: 'text.secondary', '&:hover': { color: '#00C2FF' } }}
                 >
                   <AccountCircleIcon sx={{ fontSize: '1.1rem' }} />
                 </IconButton>
@@ -259,29 +275,30 @@ export function Navbar() {
                     sx: {
                       mt: 1,
                       minWidth: 190,
-                      backgroundColor: '#111116',
-                      border: '1px solid #1E1E28',
+                      backgroundColor: 'background.paper',
+                      border: '1px solid',
+                      borderColor: 'divider',
                       boxShadow: '0 16px 40px rgba(0,0,0,0.6)',
                     },
                   }}
                 >
                   <MenuItem component={Link} to="/profile" onClick={closeUserMenu}
-                    sx={{ fontSize: '0.85rem', py: 1, borderLeft: '2px solid transparent', '&:hover': { color: '#00C2FF', backgroundColor: 'rgba(0,194,255,0.08)', borderLeftColor: '#00C2FF' } }}>
+                    sx={{ fontSize: '0.85rem', py: 1, borderLeft: '2px solid transparent', color: 'text.primary', '&:hover': { color: '#00C2FF', backgroundColor: 'rgba(0,194,255,0.08)', borderLeftColor: '#00C2FF' } }}>
                     <ListItemIcon sx={{ color: '#00C2FF', minWidth: 32 }}><PersonOutlineIcon fontSize="small" /></ListItemIcon>
-                    <ListItemText primaryTypographyProps={{ fontSize: '0.85rem' }}>{t('nav.account')}</ListItemText>
+                    <ListItemText primaryTypographyProps={{ fontSize: '0.85rem' }}>Mon compte</ListItemText>
                   </MenuItem>
                   <MenuItem component={Link} to="/orders" onClick={closeUserMenu}
-                    sx={{ fontSize: '0.85rem', py: 1, borderLeft: '2px solid transparent', '&:hover': { color: '#00C2FF', backgroundColor: 'rgba(0,194,255,0.08)', borderLeftColor: '#00C2FF' } }}>
+                    sx={{ fontSize: '0.85rem', py: 1, borderLeft: '2px solid transparent', color: 'text.primary', '&:hover': { color: '#00C2FF', backgroundColor: 'rgba(0,194,255,0.08)', borderLeftColor: '#00C2FF' } }}>
                     <ListItemIcon sx={{ color: '#00C2FF', minWidth: 32 }}><ReceiptLongIcon fontSize="small" /></ListItemIcon>
-                    <ListItemText primaryTypographyProps={{ fontSize: '0.85rem' }}>{t('orders.myOrders')}</ListItemText>
+                    <ListItemText primaryTypographyProps={{ fontSize: '0.85rem' }}>Mes commandes</ListItemText>
                   </MenuItem>
-                  <Divider sx={{ borderColor: '#1E1E28', my: 0.5 }} />
+                  <Divider sx={{ borderColor: 'divider', my: 0.5 }} />
                   <MenuItem
                     onClick={() => { closeUserMenu(); handleLogout(); }}
                     sx={{ fontSize: '0.85rem', py: 1, color: '#E63946', '&:hover': { backgroundColor: 'rgba(230,57,70,0.08)' } }}
                   >
                     <ListItemIcon sx={{ color: '#E63946', minWidth: 32 }}><LogoutIcon fontSize="small" /></ListItemIcon>
-                    <ListItemText primaryTypographyProps={{ fontSize: '0.85rem', color: '#E63946' }}>{t('nav.logout')}</ListItemText>
+                    <ListItemText primaryTypographyProps={{ fontSize: '0.85rem', color: '#E63946' }}>Déconnexion</ListItemText>
                   </MenuItem>
                 </Menu>
               </>
@@ -293,13 +310,13 @@ export function Navbar() {
                 size="small"
                 sx={{ ml: 0.5, fontSize: '0.72rem', letterSpacing: '0.08em', py: 0.5, px: 1.5 }}
               >
-                {t('nav.login')}
+                Connexion
               </Button>
             )}
 
             {/* Mobile hamburger */}
             <IconButton
-              sx={{ display: { md: 'none' }, color: '#9CA3AF', ml: 0.25 }}
+              sx={{ display: { md: 'none' }, color: 'text.secondary', ml: 0.25 }}
               onClick={() => setMobileOpen(true)}
               size="small"
             >
@@ -317,8 +334,9 @@ export function Navbar() {
         PaperProps={{
           sx: {
             width: 280,
-            backgroundColor: '#111116',
-            borderLeft: '1px solid #1E1E28',
+            backgroundColor: 'background.paper',
+            borderLeft: '1px solid',
+            borderColor: 'divider',
           },
         }}
       >
@@ -326,22 +344,22 @@ export function Navbar() {
           <Typography sx={{ fontWeight: 800, letterSpacing: '0.12em', color: '#00C2FF', fontSize: '0.9rem' }}>
             MENU
           </Typography>
-          <IconButton size="small" onClick={() => setMobileOpen(false)} sx={{ color: '#9CA3AF' }}>
+          <IconButton size="small" onClick={() => setMobileOpen(false)} sx={{ color: 'text.secondary' }}>
             <CloseIcon fontSize="small" />
           </IconButton>
         </Box>
-        <Divider sx={{ borderColor: '#1E1E28' }} />
+        <Divider sx={{ borderColor: 'divider' }} />
         <Stack sx={{ p: 2, gap: 0.5 }}>
           <Button
             component={Link} to="/products"
             onClick={() => setMobileOpen(false)}
             fullWidth
-            sx={{ justifyContent: 'flex-start', color: '#F5F7FA', fontSize: '0.85rem', fontWeight: 700, letterSpacing: '0.06em' }}
+            sx={{ justifyContent: 'flex-start', color: 'text.primary', fontSize: '0.85rem', fontWeight: 700, letterSpacing: '0.06em' }}
           >
             ALL SCOOTERS
           </Button>
-          <Divider sx={{ borderColor: '#1E1E28', my: 0.5 }} />
-          <Typography sx={{ fontSize: '0.68rem', color: '#9CA3AF', letterSpacing: '0.1em', fontWeight: 700, px: 1, pb: 0.5, textTransform: 'uppercase' }}>
+          <Divider sx={{ borderColor: 'divider', my: 0.5 }} />
+          <Typography sx={{ fontSize: '0.68rem', color: 'text.secondary', letterSpacing: '0.1em', fontWeight: 700, px: 1, pb: 0.5, textTransform: 'uppercase' }}>
             Categories
           </Typography>
           {categories.map((cat) => (
@@ -351,7 +369,7 @@ export function Navbar() {
               to={`/products?filter[category_id]=${cat.id}`}
               onClick={() => setMobileOpen(false)}
               fullWidth
-              sx={{ justifyContent: 'flex-start', color: '#9CA3AF', fontSize: '0.82rem', fontWeight: 500, pl: 2 }}
+              sx={{ justifyContent: 'flex-start', color: 'text.secondary', fontSize: '0.82rem', fontWeight: 500, pl: 2 }}
             >
               {cat.name}
             </Button>
