@@ -9,12 +9,15 @@ import { AdminUserDetailPage } from '../features/admin/pages/AdminUserDetailPage
 import { ProtectedRoute } from '../shared/components/ProtectedRoute';
 import { AdminRoute } from '../shared/components/AdminRoute';
 import { LoginPage } from '../features/auth/pages/LoginPage';
+import { ForgotPasswordPage } from '../features/auth/pages/ForgotPasswordPage';
+import { ResetPasswordPage } from '../features/auth/pages/ResetPasswordPage';
 import { ProfilePage } from '../features/auth/pages/ProfilePage';
 import { CheckoutPage } from '../features/checkout/pages/CheckoutPage';
 import { OrderConfirmationPage } from '../features/checkout/pages/OrderConfirmationPage';
 import { MyOrdersPage } from '../features/orders/pages/MyOrdersPage';
 import { AdminOrdersPage } from '../features/orders/pages/AdminOrdersPage';
 import { AdminOrderDetailPage } from '../features/orders/pages/AdminOrderDetailPage';
+import { AdminPagesPage } from '../features/admin/pages/AdminPagesPage';
 import { RootLayout } from '../shared/components/RootLayout';
 import { HomePage } from '../features/home/pages/HomePage';
 import { AboutPage } from '../features/info/pages/AboutPage';
@@ -46,6 +49,14 @@ export const router = createBrowserRouter([
       {
         path: '/login',
         element: <LoginPage />,
+      },
+      {
+        path: '/forgot-password',
+        element: <ForgotPasswordPage />,
+      },
+      {
+        path: '/reset-password',
+        element: <ResetPasswordPage />,
       },
       {
         path: '/checkout',
@@ -124,6 +135,10 @@ export const router = createBrowserRouter([
           {
             path: '/admin/orders/:id',
             element: <AdminOrderDetailPage />,
+          },
+          {
+            path: '/admin/pages',
+            element: <AdminPagesPage />,
           },
         ],
       },
