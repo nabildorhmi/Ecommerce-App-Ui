@@ -45,9 +45,9 @@ export function CatalogPage() {
       <Box
         sx={{
           borderBottom: '1px solid',
-          borderBottomColor: 'divider',
+          borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'divider',
+          background: (theme) => theme.palette.mode === 'dark' ? 'linear-gradient(to right, rgba(0,194,255,0.05), transparent)' : 'background.paper',
           py: 4,
-          backgroundColor: 'background.paper',
         }}
       >
         <Container maxWidth="xl">
@@ -97,11 +97,12 @@ export function CatalogPage() {
                   sx={{
                     fontSize: '0.82rem',
                     color: 'text.primary',
-                    '& .MuiOutlinedInput-notchedOutline': { borderColor: 'divider' },
-                    '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#00C2FF' },
+                    '& .MuiOutlinedInput-notchedOutline': { borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'divider' },
+                    '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(0,194,255,0.5)' },
                     '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: '#00C2FF' },
                     '& .MuiSvgIcon-root': { color: 'text.secondary' },
-                    backgroundColor: 'background.paper',
+                    backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.02)' : 'background.paper',
+                    transition: 'all 0.3s ease',
                   }}
                 >
                   <MenuItem value="-created_at" sx={{ fontSize: '0.82rem' }}>Plus récent</MenuItem>

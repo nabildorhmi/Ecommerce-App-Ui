@@ -29,7 +29,7 @@ export function CartItem({ item }: CartItemProps) {
         gap: 2,
         py: 1.5,
         borderBottom: '1px solid',
-        borderColor: 'divider',
+        borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.04)' : 'divider',
       }}
     >
       {/* Thumbnail */}

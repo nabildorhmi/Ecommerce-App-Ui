@@ -19,12 +19,14 @@ export function Footer() {
       component="footer"
       sx={{
         backgroundColor: '#0B0B0E',
-        borderTop: '1px solid #1E1E28',
         mt: 'auto',
-        pt: 6,
+        pt: 0,
         pb: 3,
+        position: 'relative',
       }}
     >
+      {/* Gradient top border */}
+      <Box sx={{ height: 2, background: 'linear-gradient(90deg, transparent 5%, #00C2FF 30%, #0099CC 70%, transparent 95%)', mb: 6 }} />
       <Container maxWidth="xl">
         <Grid container spacing={4} sx={{ mb: 5 }}>
           {/* Brand Column */}
@@ -84,8 +86,8 @@ export function Footer() {
                   fontSize: '0.82rem',
                   color: '#9CA3AF',
                   textDecoration: 'none',
-                  transition: 'color 0.2s',
-                  '&:hover': { color: '#F5F7FA' },
+                  transition: 'all 0.3s ease',
+                  '&:hover': { color: '#00C2FF', transform: 'translateX(4px)' },
                 }}
               >
                 Tous les produits
@@ -99,8 +101,8 @@ export function Footer() {
                     fontSize: '0.82rem',
                     color: '#9CA3AF',
                     textDecoration: 'none',
-                    transition: 'color 0.2s',
-                    '&:hover': { color: '#F5F7FA' },
+                    transition: 'all 0.3s ease',
+                    '&:hover': { color: '#00C2FF', transform: 'translateX(4px)' },
                   }}
                 >
                   {cat.name}
@@ -131,8 +133,8 @@ export function Footer() {
                   fontSize: '0.82rem',
                   color: '#9CA3AF',
                   textDecoration: 'none',
-                  transition: 'color 0.2s',
-                  '&:hover': { color: '#F5F7FA' },
+                  transition: 'all 0.3s ease',
+                  '&:hover': { color: '#00C2FF', transform: 'translateX(4px)' },
                 }}
               >
                 A propos
@@ -144,8 +146,8 @@ export function Footer() {
                   fontSize: '0.82rem',
                   color: '#9CA3AF',
                   textDecoration: 'none',
-                  transition: 'color 0.2s',
-                  '&:hover': { color: '#F5F7FA' },
+                  transition: 'all 0.3s ease',
+                  '&:hover': { color: '#00C2FF', transform: 'translateX(4px)' },
                 }}
               >
                 Contact
@@ -157,8 +159,8 @@ export function Footer() {
                   fontSize: '0.82rem',
                   color: '#9CA3AF',
                   textDecoration: 'none',
-                  transition: 'color 0.2s',
-                  '&:hover': { color: '#F5F7FA' },
+                  transition: 'all 0.3s ease',
+                  '&:hover': { color: '#00C2FF', transform: 'translateX(4px)' },
                 }}
               >
                 Conditions generales de vente
@@ -170,8 +172,8 @@ export function Footer() {
                   fontSize: '0.82rem',
                   color: '#9CA3AF',
                   textDecoration: 'none',
-                  transition: 'color 0.2s',
-                  '&:hover': { color: '#F5F7FA' },
+                  transition: 'all 0.3s ease',
+                  '&:hover': { color: '#00C2FF', transform: 'translateX(4px)' },
                 }}
               >
                 Mentions legales

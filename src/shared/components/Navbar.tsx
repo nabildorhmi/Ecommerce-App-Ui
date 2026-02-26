@@ -200,10 +200,12 @@ export function Navbar() {
                     sx: {
                       mt: 1,
                       minWidth: 220,
-                      backgroundColor: 'background.paper',
+                      backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(22, 22, 28, 0.6)' : 'background.paper',
+                      backdropFilter: (theme) => theme.palette.mode === 'dark' ? 'blur(16px)' : 'none',
                       border: '1px solid',
-                      borderColor: 'divider',
+                      borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'divider',
                       boxShadow: '0 16px 40px rgba(0,0,0,0.6)',
+                      borderRadius: 2,
                     },
                   }}
                 >
@@ -278,10 +280,12 @@ export function Navbar() {
                     sx={{
                       mt: 0.5,
                       border: '1px solid',
-                      borderColor: 'divider',
-                      backgroundColor: 'background.paper',
+                      borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'divider',
+                      backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(22, 22, 28, 0.8)' : 'background.paper',
+                      backdropFilter: (theme) => theme.palette.mode === 'dark' ? 'blur(20px)' : 'none',
                       overflow: 'hidden',
                       minWidth: 240,
+                      borderRadius: 2,
                     }}
                   >
                     <List dense disablePadding>
@@ -355,10 +359,12 @@ export function Navbar() {
                         sx: {
                           mt: 1,
                           minWidth: 200,
-                          backgroundColor: 'background.paper',
+                          backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(22, 22, 28, 0.8)' : 'background.paper',
+                          backdropFilter: (theme) => theme.palette.mode === 'dark' ? 'blur(20px)' : 'none',
                           border: '1px solid',
-                          borderColor: 'divider',
+                          borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'divider',
                           boxShadow: '0 16px 40px rgba(0,0,0,0.6)',
+                          borderRadius: 2,
                         },
                       }}
                     >
@@ -416,10 +422,12 @@ export function Navbar() {
                     sx: {
                       mt: 1,
                       minWidth: 190,
-                      backgroundColor: 'background.paper',
+                      backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(22, 22, 28, 0.8)' : 'background.paper',
+                      backdropFilter: (theme) => theme.palette.mode === 'dark' ? 'blur(20px)' : 'none',
                       border: '1px solid',
-                      borderColor: 'divider',
+                      borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'divider',
                       boxShadow: '0 16px 40px rgba(0,0,0,0.6)',
+                      borderRadius: 2,
                     },
                   }}
                 >
@@ -475,9 +483,10 @@ export function Navbar() {
         PaperProps={{
           sx: {
             width: 280,
-            backgroundColor: 'background.paper',
+            backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(11, 11, 14, 0.65)' : 'background.paper',
+            backdropFilter: (theme) => theme.palette.mode === 'dark' ? 'blur(24px)' : 'none',
             borderLeft: '1px solid',
-            borderColor: 'divider',
+            borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'divider',
           },
         }}
       >

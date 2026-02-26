@@ -33,7 +33,17 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
       anchor="right"
       open={open}
       onClose={onClose}
-      PaperProps={{ sx: { width: { xs: '100%', sm: 420 }, display: 'flex', flexDirection: 'column' } }}
+      PaperProps={{
+        sx: {
+          width: { xs: '100%', sm: 420 },
+          display: 'flex',
+          flexDirection: 'column',
+          backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(11, 11, 14, 0.75)' : 'background.paper',
+          backdropFilter: (theme) => theme.palette.mode === 'dark' ? 'blur(24px)' : 'none',
+          borderLeft: '1px solid',
+          borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'divider',
+        }
+      }}
     >
       {/* Header */}
       <Box
@@ -44,7 +54,8 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
           px: 2,
           py: 1.5,
           borderBottom: '1px solid',
-          borderColor: 'divider',
+          borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'divider',
+          backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(0,0,0,0.2)' : 'transparent',
         }}
       >
         <Typography variant="h6" fontWeight={700}>
@@ -77,7 +88,13 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
       </Box>
 
       {/* Footer */}
-      <Box sx={{ borderTop: '1px solid', borderColor: 'divider', px: 2, py: 2 }}>
+      <Box sx={{
+        borderTop: '1px solid',
+        borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'divider',
+        backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(0,0,0,0.2)' : 'transparent',
+        px: 2,
+        py: 2
+      }}>
         <Stack spacing={1.5}>
           <Stack direction="row" justifyContent="space-between" alignItems="center">
             <Typography variant="body1" fontWeight={600}>

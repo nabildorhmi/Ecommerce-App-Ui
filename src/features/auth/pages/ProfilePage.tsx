@@ -132,7 +132,17 @@ export function ProfilePage() {
 
   return (
     <Container maxWidth="sm" sx={{ py: 6 }}>
-      <Paper elevation={2} sx={{ p: 4 }}>
+      <Paper
+        elevation={0}
+        sx={{
+          p: 4,
+          backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(22, 22, 28, 0.6)' : 'background.paper',
+          backdropFilter: (theme) => theme.palette.mode === 'dark' ? 'blur(16px)' : 'none',
+          border: '1px solid',
+          borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'divider',
+          borderRadius: '16px',
+        }}
+      >
         <Typography variant="h5" fontWeight="bold" mb={3}>
           {"Mon profil"}
         </Typography>
@@ -231,7 +241,18 @@ export function ProfilePage() {
       </Paper>
 
       {/* Change Password Section */}
-      <Paper elevation={2} sx={{ p: 4, mt: 3 }}>
+      <Paper
+        elevation={0}
+        sx={{
+          p: 4,
+          mt: 3,
+          backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(22, 22, 28, 0.6)' : 'background.paper',
+          backdropFilter: (theme) => theme.palette.mode === 'dark' ? 'blur(16px)' : 'none',
+          border: '1px solid',
+          borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'divider',
+          borderRadius: '16px',
+        }}
+      >
         <Typography variant="h5" fontWeight="bold" mb={3}>
           {"Changer le mot de passe"}
         </Typography>

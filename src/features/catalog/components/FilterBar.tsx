@@ -83,13 +83,15 @@ export function FilterBar() {
   return (
     <Box
       sx={{
-        backgroundColor: 'background.paper',
+        backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(22, 22, 28, 0.6)' : 'background.paper',
+        backdropFilter: (theme) => theme.palette.mode === 'dark' ? 'blur(16px)' : 'none',
         border: '1px solid',
-        borderColor: 'divider',
-        borderRadius: '8px',
+        borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'divider',
+        borderRadius: '12px',
         p: 2.5,
         position: { md: 'sticky' },
         top: { md: 80 },
+        boxShadow: (theme) => theme.palette.mode === 'dark' ? '0 8px 32px rgba(0,0,0,0.2)' : 'none',
       }}
     >
       {/* Header */}

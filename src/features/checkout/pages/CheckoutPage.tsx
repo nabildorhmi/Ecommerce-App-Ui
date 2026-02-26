@@ -181,7 +181,17 @@ export function CheckoutPage() {
       <Stack spacing={3}>
         {/* Guest section */}
         {!user && (
-          <Paper variant="outlined" sx={{ p: 3 }}>
+          <Paper
+            elevation={0}
+            sx={{
+              p: 3,
+              backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(22, 22, 28, 0.6)' : 'background.paper',
+              backdropFilter: (theme) => theme.palette.mode === 'dark' ? 'blur(16px)' : 'none',
+              border: '1px solid',
+              borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'divider',
+              borderRadius: '16px',
+            }}
+          >
             <Typography variant="h6" gutterBottom fontWeight={600}>
               Entrez vos informations
             </Typography>
@@ -194,7 +204,17 @@ export function CheckoutPage() {
 
         {/* Delivery info card */}
         {user && (
-          <Paper variant="outlined" sx={{ p: 2.5 }}>
+          <Paper
+            elevation={0}
+            sx={{
+              p: 2.5,
+              backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(22, 22, 28, 0.6)' : 'background.paper',
+              backdropFilter: (theme) => theme.palette.mode === 'dark' ? 'blur(16px)' : 'none',
+              border: '1px solid',
+              borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'divider',
+              borderRadius: '16px',
+            }}
+          >
             <Stack direction="row" justifyContent="space-between" alignItems="center" mb={editingDelivery ? 2 : 1.5}>
               <Typography variant="subtitle1" fontWeight={700}>
                 Informations de livraison
@@ -324,7 +344,17 @@ export function CheckoutPage() {
             <Alert severity="info">Paiement à la livraison</Alert>
 
             {/* Order items */}
-            <Paper variant="outlined" sx={{ p: 2 }}>
+            <Paper
+              elevation={0}
+              sx={{
+                p: 2,
+                backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(22, 22, 28, 0.6)' : 'background.paper',
+                backdropFilter: (theme) => theme.palette.mode === 'dark' ? 'blur(16px)' : 'none',
+                border: '1px solid',
+                borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'divider',
+                borderRadius: '16px',
+              }}
+            >
               <Typography variant="h6" fontWeight={600} gutterBottom>
                 Récapitulatif de commande
               </Typography>
@@ -351,7 +381,17 @@ export function CheckoutPage() {
             </Paper>
 
             {/* Pricing */}
-            <Paper variant="outlined" sx={{ p: 2 }}>
+            <Paper
+              elevation={0}
+              sx={{
+                p: 2,
+                backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(22, 22, 28, 0.6)' : 'background.paper',
+                backdropFilter: (theme) => theme.palette.mode === 'dark' ? 'blur(16px)' : 'none',
+                border: '1px solid',
+                borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'divider',
+                borderRadius: '16px',
+              }}
+            >
               <Stack spacing={1}>
                 <Stack direction="row" justifyContent="space-between">
                   <Typography variant="body2">Sous-total</Typography>

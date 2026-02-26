@@ -76,7 +76,18 @@ export function LoginPage() {
 
   return (
     <Container maxWidth="sm" sx={{ py: 8 }}>
-      <Paper elevation={3} sx={{ p: 4 }}>
+      <Paper
+        elevation={0}
+        sx={{
+          p: 4,
+          backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(22, 22, 28, 0.6)' : 'background.paper',
+          backdropFilter: (theme) => theme.palette.mode === 'dark' ? 'blur(16px)' : 'none',
+          border: '1px solid',
+          borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'divider',
+          borderRadius: '16px',
+          boxShadow: (theme) => theme.palette.mode === 'dark' ? '0 16px 48px rgba(0,0,0,0.4)' : 'none',
+        }}
+      >
         <Typography variant="h5" fontWeight="bold" textAlign="center" mb={3}>
           {tab === 0 ? "Connexion" : "Inscription"}
         </Typography>
@@ -89,7 +100,11 @@ export function LoginPage() {
             setRegisterError(null);
           }}
           centered
-          sx={{ mb: 3 }}
+          sx={{
+            mb: 4,
+            '& .MuiTabs-indicator': { backgroundColor: '#00C2FF', height: 3 },
+            '& .MuiTab-root': { fontWeight: 600, color: 'text.secondary', textTransform: 'none', fontSize: '1rem', '&.Mui-selected': { color: '#00C2FF' } }
+          }}
         >
           <Tab label={"Connexion"} />
           <Tab label={"Inscription"} />

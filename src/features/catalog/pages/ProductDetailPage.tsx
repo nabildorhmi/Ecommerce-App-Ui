@@ -138,12 +138,12 @@ export function ProductDetailPage() {
     const variantToAdd = selectedVariant ?? (
       !hasVariants && product.default_variant
         ? {
-            id: product.default_variant.id,
-            sku: product.default_variant.sku,
-            price: product.default_variant.price,
-            stock: product.default_variant.stock,
-            attribute_values: [],
-          } as ProductVariantDisplay
+          id: product.default_variant.id,
+          sku: product.default_variant.sku,
+          price: product.default_variant.price,
+          stock: product.default_variant.stock,
+          attribute_values: [],
+        } as ProductVariantDisplay
         : null
     );
     addItem(product, product.name, variantToAdd);
@@ -227,11 +227,13 @@ export function ProductDetailPage() {
           <Grid size={{ xs: 12, md: 5 }}>
             <Box
               sx={{
-                backgroundColor: 'background.paper',
+                backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(22, 22, 28, 0.6)' : 'background.paper',
+                backdropFilter: (theme) => theme.palette.mode === 'dark' ? 'blur(16px)' : 'none',
                 border: '1px solid',
-                borderColor: 'divider',
-                borderRadius: '12px',
+                borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'divider',
+                borderRadius: '16px',
                 p: { xs: 2.5, md: 3.5 },
+                boxShadow: (theme) => theme.palette.mode === 'dark' ? '0 16px 40px rgba(0,0,0,0.4)' : 'none',
               }}
             >
               <Stack spacing={2.5}>
@@ -365,8 +367,8 @@ export function ProductDetailPage() {
                     {variantNotSelected
                       ? "Sélectionner une variante"
                       : isAtMaxStock && displayInStock
-                      ? "Stock maximum atteint"
-                      : "Ajouter au panier"}
+                        ? "Stock maximum atteint"
+                        : "Ajouter au panier"}
                   </Button>
                 </Stack>
               </Stack>
