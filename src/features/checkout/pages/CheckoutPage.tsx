@@ -23,6 +23,7 @@ import Paper from '@mui/material/Paper';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
+import { PageDecor } from '../../../shared/components/PageDecor';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import PhoneOutlinedIcon from '@mui/icons-material/PhoneOutlined';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
@@ -173,7 +174,9 @@ export function CheckoutPage() {
   if (items.length === 0) return null;
 
   return (
-    <Container maxWidth="md" sx={{ py: 4 }}>
+    <Box sx={{ position: 'relative', overflow: 'hidden', minHeight: '100vh' }}>
+      <PageDecor variant="checkout" />
+      <Container maxWidth="md" sx={{ py: 4, position: 'relative', zIndex: 1 }}>
       <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1.5, mb: 3 }}>
         <Typography variant="h4" fontWeight={800} color="var(--mirai-white)">
           Commande
@@ -458,5 +461,6 @@ export function CheckoutPage() {
         </Box>
       </Stack>
     </Container>
+    </Box>
   );
 }

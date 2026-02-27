@@ -20,6 +20,7 @@ import { AdminOrdersPage } from '../features/orders/pages/AdminOrdersPage';
 import { AdminOrderDetailPage } from '../features/orders/pages/AdminOrderDetailPage';
 import { AdminPagesPage } from '../features/admin/pages/AdminPagesPage';
 import { AdminVariationTypesPage } from '../features/admin/pages/AdminVariationTypesPage';
+import { AdminHeroBannersPage } from '../features/admin/pages/AdminHeroBannersPage';
 import { RootLayout } from '../shared/components/RootLayout';
 import { HomePage } from '../features/home/pages/HomePage';
 import { AboutPage } from '../features/info/pages/AboutPage';
@@ -142,6 +143,10 @@ export const router = createBrowserRouter([
           {
             path: '/admin/variation-types',
             element: <AdminVariationTypesPage />,
+          },
+          {
+            path: '/admin/hero-banners',
+            element: <AdminHeroBannersPage />,
           },
         ],
       },

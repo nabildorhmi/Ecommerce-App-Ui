@@ -28,6 +28,7 @@ export interface AdminOrderFilters {
   'filter[date_from]'?: string;
   'filter[date_to]'?: string;
   page?: number;
+  per_page?: number;
   sort?: string;
 }
 

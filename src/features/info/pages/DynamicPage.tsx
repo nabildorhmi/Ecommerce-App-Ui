@@ -16,6 +16,7 @@ import Paper from '@mui/material/Paper';
 import Tooltip from '@mui/material/Tooltip';
 import Divider from '@mui/material/Divider';
 import EditIcon from '@mui/icons-material/Edit';
+import { PageDecor } from '../../../shared/components/PageDecor';
 import FormatBoldIcon from '@mui/icons-material/FormatBold';
 import FormatItalicIcon from '@mui/icons-material/FormatItalic';
 import TitleIcon from '@mui/icons-material/Title';
@@ -135,7 +136,9 @@ export function DynamicPage({ slug }: DynamicPageProps) {
   };
 
   return (
-    <Container maxWidth="md">
+    <Box sx={{ position: 'relative', overflow: 'hidden' }}>
+      <PageDecor variant="info" />
+      <Container maxWidth="md" sx={{ position: 'relative', zIndex: 1 }}>
       <Box sx={{ py: 6, minHeight: '100vh' }}>
         <Box display="flex" alignItems="center" justifyContent="space-between" mb={4}>
           <Typography variant="h3" fontWeight="bold" color="text.primary">
@@ -230,5 +233,6 @@ export function DynamicPage({ slug }: DynamicPageProps) {
         </Alert>
       </Snackbar>
     </Container>
+    </Box>
   );
 }

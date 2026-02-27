@@ -16,6 +16,7 @@ export function useProducts(filters: CatalogFilters) {
   if (filters['filter[search]']) params['filter[search]'] = filters['filter[search]']!;
   if (filters.sort) params.sort = filters.sort;
   if (filters.page && filters.page > 1) params.page = filters.page;
+  if (filters.per_page && filters.per_page !== 12) params.per_page = filters.per_page;
 
   return useQuery<PaginatedResponse<Product>>({
     queryKey: ['products', filters],

@@ -38,11 +38,13 @@ export function AdminOrdersPage() {
   const dateFrom = searchParams.get('date_from') ?? '';
   const dateTo = searchParams.get('date_to') ?? '';
   const page = Number(searchParams.get('page') ?? '1');
+  const perPage = Number(searchParams.get('per_page') ?? '20');
   const sort = searchParams.get('sort') ?? '-created_at';
 
   // Build filters for query
   const filters: AdminOrderFilters = {
     page,
+    per_page: perPage,
     sort,
   };
   if (status) filters['filter[status]'] = status;
@@ -234,12 +236,20 @@ export function AdminOrdersPage() {
           component="div"
           count={meta.total}
           page={page - 1}
-          rowsPerPage={meta.per_page}
-          rowsPerPageOptions={[]}
+          rowsPerPage={perPage}
+          rowsPerPageOptions={[10, 20, 50]}
           onPageChange={(_e, newPage) => {
             setSearchParams((prev) => {
               const next = new URLSearchParams(prev);
               next.set('page', String(newPage + 1));
+              return next;
+            });
+          }}
+          onRowsPerPageChange={(e) => {
+            setSearchParams((prev) => {
+              const next = new URLSearchParams(prev);
+              next.set('per_page', e.target.value);
+              next.set('page', '1');
               return next;
             });
           }}

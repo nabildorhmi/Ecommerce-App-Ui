@@ -75,4 +75,5 @@ export interface CatalogFilters {
   'filter[is_featured]'?: string;
   sort?: string;
   page?: number;
+  per_page?: number;
 }

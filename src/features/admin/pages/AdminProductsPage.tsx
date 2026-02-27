@@ -19,6 +19,11 @@ import DialogActions from '@mui/material/DialogActions';
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 import Alert from '@mui/material/Alert';
+import Pagination from '@mui/material/Pagination';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
@@ -74,13 +79,16 @@ function DeleteDialog({
 }
 
 export function AdminProductsPage() {
-  const { data, isLoading, error } = useAdminProducts();
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(20);
+  const { data, isLoading, error } = useAdminProducts({ page, per_page: perPage });
   const updateMutation = useUpdateProduct();
   const deleteMutation = useDeleteProduct();
 
   const [deleteTarget, setDeleteTarget] = useState<AdminProduct | null>(null);
 
   const products: AdminProduct[] = (data?.data as AdminProduct[]) ?? [];
+  const totalPages = data?.meta?.last_page ?? 1;
 
   const handleToggleActive = async (product: AdminProduct) => {
     await updateMutation.mutateAsync({
@@ -259,6 +267,35 @@ export function AdminProductsPage() {
         onConfirm={(id) => void handleDelete(id)}
         isDeleting={deleteMutation.isPending}
       />
+
+      <Box display="flex" justifyContent="space-between" alignItems="center" mt={3} flexWrap="wrap" gap={2}>
+        <Box display="flex" alignItems="center" gap={1}>
+          <FormControl size="small" sx={{ minWidth: 130 }}>
+            <InputLabel sx={{ fontSize: '0.8rem' }}>Lignes / page</InputLabel>
+            <Select
+              label="Lignes / page"
+              value={perPage}
+              onChange={(e) => { setPerPage(Number(e.target.value)); setPage(1); }}
+              sx={{ fontSize: '0.82rem' }}
+            >
+              <MenuItem value={10}>10 / page</MenuItem>
+              <MenuItem value={20}>20 / page</MenuItem>
+              <MenuItem value={50}>50 / page</MenuItem>
+            </Select>
+          </FormControl>
+          <Typography variant="body2" color="text.secondary">
+            {data?.meta?.total ?? 0} au total
+          </Typography>
+        </Box>
+        {totalPages > 1 && (
+          <Pagination
+            count={totalPages}
+            page={page}
+            onChange={(_e, p) => setPage(p)}
+            color="primary"
+          />
+        )}
+      </Box>
     </Box>
   );
 }

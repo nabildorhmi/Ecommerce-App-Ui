@@ -39,6 +39,7 @@ import LightModeRoundedIcon from '@mui/icons-material/LightModeRounded';
 import PeopleIcon from '@mui/icons-material/People';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import TuneIcon from '@mui/icons-material/Tune';
+import ViewCarouselIcon from '@mui/icons-material/ViewCarousel';
 import { useAuthStore } from '../../features/auth/store';
 import { CartBadge } from '../../features/cart/components/CartBadge';
 import { CartDrawer } from '../../features/cart/components/CartDrawer';
@@ -385,6 +386,7 @@ export function Navbar() {
                           { to: '/admin/variation-types', icon: <TuneIcon fontSize="small" />, label: 'Types de variations' },
                           { to: '/admin/orders', icon: <Badge badgeContent={pendingCount} color="error" max={99}><ReceiptLongIcon fontSize="small" /></Badge>, label: 'Commandes' },
                           { to: '/admin/pages', icon: <DescriptionIcon fontSize="small" />, label: 'Pages' },
+                          { to: '/admin/hero-banners', icon: <ViewCarouselIcon fontSize="small" />, label: 'Hero Banners' },
                         ];
 
                         // Add Utilisateurs menu item only for global_admin

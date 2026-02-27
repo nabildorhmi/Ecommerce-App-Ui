@@ -12,6 +12,7 @@ import { RegisterForm } from '../components/RegisterForm';
 import { loginApi, registerApi } from '../api/auth';
 import { useAuthStore } from '../store';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
+import { PageDecor } from '../../../shared/components/PageDecor';
 
 const bgVariants: Variants = {
   animate: {
@@ -102,6 +103,8 @@ export function LoginPage() {
       {/* Decorative floating blurs */}
       <Box sx={{ position: 'absolute', top: '10%', left: '20%', width: 300, height: 300, background: 'rgba(0,194,255,0.05)', filter: 'blur(80px)', borderRadius: '50%' }} />
       <Box sx={{ position: 'absolute', bottom: '10%', right: '20%', width: 400, height: 400, background: 'rgba(230,57,70,0.03)', filter: 'blur(100px)', borderRadius: '50%' }} />
+
+      <PageDecor variant="auth" />
 
       <Container maxWidth="sm" sx={{ position: 'relative', zIndex: 1 }}>
         <motion.div initial={{ opacity: 0, y: 30, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}>

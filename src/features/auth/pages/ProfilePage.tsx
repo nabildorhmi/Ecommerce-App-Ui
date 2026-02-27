@@ -18,6 +18,7 @@ import Snackbar from '@mui/material/Snackbar';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import { updateProfileApi, changePasswordApi } from '../api/auth';
+import { PageDecor } from '../../../shared/components/PageDecor';
 import { useAuthStore } from '../store';
 import { MOROCCAN_CITIES } from '../../../shared/constants/moroccanCities';
 
@@ -131,7 +132,9 @@ export function ProfilePage() {
   };
 
   return (
-    <Container maxWidth="sm" sx={{ py: 6 }}>
+    <Box sx={{ position: 'relative', overflow: 'hidden', minHeight: '100vh' }}>
+      <PageDecor variant="auth" />
+      <Container maxWidth="sm" sx={{ py: 6, position: 'relative', zIndex: 1 }}>
       <Paper
         elevation={0}
         className="mirai-glass"
@@ -372,5 +375,6 @@ export function ProfilePage() {
         </Alert>
       </Snackbar>
     </Container>
+    </Box>
   );
 }

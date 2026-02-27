@@ -25,6 +25,7 @@ import { TrustSignals } from '../components/TrustSignals';
 import { CategoryBreadcrumb } from '../components/CategoryBreadcrumb';
 import { useCartStore } from '../../cart/store';
 import type { ProductVariantDisplay } from '../types';
+import { PageDecor } from '../../../shared/components/PageDecor';
 
 function ProductDetailSkeleton() {
   return (
@@ -151,8 +152,11 @@ export function ProductDetailPage() {
   };
 
   return (
-    <Box sx={{ bgcolor: 'background.default', minHeight: '100vh' }}>
-      <Container maxWidth="lg" sx={{ py: { xs: 3, md: 5 } }}>
+    <Box sx={{ bgcolor: 'background.default', minHeight: '100vh', position: 'relative', overflow: 'hidden' }}>
+      {/* Futuristic side decorations */}
+      <PageDecor variant="productDetail" />
+
+      <Container maxWidth="lg" sx={{ py: { xs: 3, md: 5 }, position: 'relative', zIndex: 1 }}>
         {/* Breadcrumb */}
         <Box sx={{ mb: 3 }}>
           <CategoryBreadcrumb category={product.category} />

@@ -4,7 +4,6 @@ import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import Grid from '@mui/material/Grid';
 import Skeleton from '@mui/material/Skeleton';
 import IconButton from '@mui/material/IconButton';
 import Chip from '@mui/material/Chip';
@@ -16,8 +15,8 @@ import { useFeaturedProducts } from '../../catalog/api/products';
 import { useCategories } from '../../catalog/api/categories';
 import { formatCurrency } from '../../../shared/utils/formatCurrency';
 import type { Product } from '../../catalog/types';
-import { motion } from 'framer-motion';
-import { Hero3DScene } from '../components/Hero3DScene';
+import { HeroCarousel } from '../components/HeroCarousel';
+import { HeroSideDecor } from '../components/HeroSideDecor';
 
 /* ════════════════════════════════════════════════════════════════════
    HERO BANNER — Immersive full-screen with animated orbs & stats
@@ -30,92 +29,17 @@ function HeroBanner() {
       component="section"
       sx={{
         position: 'relative',
-        background: 'linear-gradient(135deg, #0B0B0E 0%, #0d1a24 40%, #0a1520 70%, #0B0B0E 100%)',
-        backgroundSize: '200% 200%',
-        animation: 'gradient-shift 15s ease infinite',
-        borderBottom: '1px solid var(--mirai-border)',
+        bgcolor: 'background.default',
+        py: { xs: 3, md: 4 },
         overflow: 'hidden',
-        py: { xs: 6, md: 0 },
-        minHeight: { md: '45vh' },
-        display: 'flex',
-        alignItems: 'center',
+        maxHeight: '45vh'
       }}
     >
-      <Hero3DScene />
-
-      {/* Japanese kanji watermark — cyberpunk accent */}
-      <Typography sx={{ position: 'absolute', right: { xs: 16, md: 60 }, top: '50%', transform: 'translateY(-50%)', writingMode: 'vertical-rl', fontFamily: '"Noto Serif JP", serif', fontSize: { xs: '2.5rem', md: '4rem' }, color: 'rgba(0,194,255,0.04)', letterSpacing: '0.3em', userSelect: 'none', pointerEvents: 'none', zIndex: 1 }}>
-        未来技術電動
-      </Typography>
-
-      {/* Noise texture overlay */}
-      <Box sx={{ position: 'absolute', inset: 0, opacity: 0.03, zIndex: 1, pointerEvents: 'none', background: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noise)\'/%3E%3C/svg%3E")' }} />
+      {/* Futuristic / Japanese side decorations */}
+      <HeroSideDecor />
 
       <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 2 }}>
-        <Grid container alignItems="center" spacing={{ xs: 4, md: 6 }}>
-          <Grid size={{ xs: 12, md: 7 }}>
-            <Box sx={{ py: { xs: 0, md: 4 } }}>
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.2 }}>
-                <Typography sx={{ fontSize: '0.68rem', letterSpacing: '0.3em', color: 'var(--mirai-cyan)', fontWeight: 600, mb: 2.5, textTransform: 'uppercase', opacity: 0.9, display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <Box sx={{ width: 24, height: 1, bgcolor: 'var(--mirai-cyan)' }} />
-                  ミライテック — MOBILITÉ ÉLECTRIQUE
-                </Typography>
-              </motion.div>
-
-              <motion.div initial={{ opacity: 0, filter: 'blur(10px)' }} animate={{ opacity: 1, filter: 'blur(0px)' }} transition={{ duration: 1, delay: 0.4 }}>
-                <Typography
-                  component="h1"
-                  sx={{
-                    fontSize: { xs: '2.2rem', md: '3.2rem', lg: '4.2rem' },
-                    fontWeight: 900,
-                    lineHeight: 0.95,
-                    letterSpacing: '-0.03em',
-                    color: 'var(--mirai-white)',
-                    mb: 2.5,
-                  }}
-                >
-                  L&apos;AVENIR DE LA{' '}
-                  <Box component="span" className="mirai-gradient-text" sx={{ filter: 'drop-shadow(0 0 20px rgba(0,194,255,0.3))' }}>
-                    MOBILITÉ
-                  </Box>
-                  <br />URBAINE
-                </Typography>
-              </motion.div>
-
-              <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.6 }}>
-                <Typography sx={{ color: 'var(--mirai-gray)', fontSize: { xs: '1rem', md: '1.2rem' }, mb: 4, lineHeight: 1.8, maxWidth: 520 }}>
-                  Scooters électriques premium conçus pour la performance, l&apos;autonomie et le style. Découvrez la nouvelle génération de mobilité urbaine.
-                </Typography>
-              </motion.div>
-
-              <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6, delay: 0.8, type: 'spring' }}>
-                <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mb: 6 }}>
-                  <Button
-                    component={Link}
-                    to="/products"
-                    variant="contained"
-                    size="large"
-                    className="mirai-glow"
-                    sx={{
-                      px: 5, py: 1.75, fontSize: '0.88rem', letterSpacing: '0.08em', borderRadius: '12px',
-                      background: 'linear-gradient(45deg, #00C2FF, #0099CC)',
-                      transition: 'all 0.3s ease',
-                      '&:hover': {
-                        transform: 'translateY(-2px)',
-                        boxShadow: '0 12px 24px rgba(0,194,255,0.4)',
-                      }
-                    }}
-                  >
-                    Acheter maintenant
-                  </Button>
-                  <Button component={Link} to="/products" variant="outlined" size="large" sx={{ px: 5, py: 1.75, fontSize: '0.88rem', letterSpacing: '0.08em', borderRadius: '12px', borderColor: 'var(--mirai-border)', color: 'var(--mirai-white)', '&:hover': { borderColor: 'var(--mirai-cyan)', background: 'var(--mirai-cyan-glow)' } }}>
-                    Voir les modèles
-                  </Button>
-                </Box>
-              </motion.div>
-            </Box>
-          </Grid>
-        </Grid>
+        <HeroCarousel />
       </Container>
     </Box>
   );

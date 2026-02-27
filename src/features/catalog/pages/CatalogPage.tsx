@@ -6,11 +6,13 @@ import Grid from '@mui/material/Grid';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
 import Skeleton from '@mui/material/Skeleton';
 import { useProducts } from '../api/products';
 import { useCatalogFilters } from '../hooks/useCatalogFilters';
 import { FilterBar } from '../components/FilterBar';
 import { ProductCard } from '../components/ProductCard';
+import { PageDecor } from '../../../shared/components/PageDecor';
 
 function ProductGridSkeleton() {
   return (
@@ -40,7 +42,10 @@ export function CatalogPage() {
   const total = data?.meta?.total ?? 0;
 
   return (
-    <Box sx={{ bgcolor: 'background.default', minHeight: '100vh' }}>
+    <Box sx={{ bgcolor: 'background.default', minHeight: '100vh', position: 'relative', overflow: 'hidden' }}>
+      {/* Futuristic side decorations */}
+      <PageDecor variant="catalog" />
+
       {/* Page header */}
       <Box
         sx={{
@@ -60,7 +65,7 @@ export function CatalogPage() {
           },
         }}
       >
-        <Container maxWidth="xl">
+        <Container maxWidth="xl" sx={{ position: 'relative' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
             <Typography
               sx={{
@@ -99,8 +104,8 @@ export function CatalogPage() {
 
           {/* Product Grid */}
           <Grid size={{ xs: 12, md: 9, lg: 9.5 }}>
-            {/* Sort bar */}
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 3, gap: 2, alignItems: 'center' }}>
+            {/* Sort + Per-page bar */}
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 3, gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
               <Typography sx={{ fontSize: '0.78rem', color: 'text.secondary', letterSpacing: '0.06em' }}>
                 Trier par
               </Typography>
@@ -123,6 +128,33 @@ export function CatalogPage() {
                   <MenuItem value="created_at" sx={{ fontSize: '0.82rem' }}>Plus ancien</MenuItem>
                   <MenuItem value="price" sx={{ fontSize: '0.82rem' }}>Prix : Croissant</MenuItem>
                   <MenuItem value="-price" sx={{ fontSize: '0.82rem' }}>Prix : Décroissant</MenuItem>
+                </Select>
+              </FormControl>
+
+              {/* Per-page selector */}
+              <FormControl size="small" sx={{ minWidth: 110 }}>
+                <InputLabel sx={{ fontSize: '0.8rem' }}>Par page</InputLabel>
+                <Select
+                  label="Par page"
+                  value={String(filters.per_page ?? 12)}
+                  onChange={(e) => {
+                    setFilter('per_page', e.target.value);
+                    setFilter('page', '1');
+                  }}
+                  sx={{
+                    fontSize: '0.82rem',
+                    color: 'text.primary',
+                    '& .MuiOutlinedInput-notchedOutline': { borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'divider' },
+                    '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(0,194,255,0.5)' },
+                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: '#00C2FF' },
+                    '& .MuiSvgIcon-root': { color: 'text.secondary' },
+                    backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.02)' : 'background.paper',
+                    transition: 'all 0.3s ease',
+                  }}
+                >
+                  <MenuItem value="12" sx={{ fontSize: '0.82rem' }}>12 / page</MenuItem>
+                  <MenuItem value="24" sx={{ fontSize: '0.82rem' }}>24 / page</MenuItem>
+                  <MenuItem value="48" sx={{ fontSize: '0.82rem' }}>48 / page</MenuItem>
                 </Select>
               </FormControl>
             </Box>

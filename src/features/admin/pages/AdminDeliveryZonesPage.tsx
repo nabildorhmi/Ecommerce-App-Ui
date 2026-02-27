@@ -24,6 +24,11 @@ import Switch from '@mui/material/Switch';
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 import Alert from '@mui/material/Alert';
+import Pagination from '@mui/material/Pagination';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -254,6 +259,11 @@ export function AdminDeliveryZonesPage() {
 
   const zones: AdminDeliveryZone[] = (data?.data as AdminDeliveryZone[]) ?? [];
 
+  const [zonePage, setZonePage] = useState(1);
+  const [zonePerPage, setZonePerPage] = useState(10);
+  const zoneTotalPages = Math.ceil(zones.length / zonePerPage);
+  const paginatedZones = zones.slice((zonePage - 1) * zonePerPage, zonePage * zonePerPage);
+
   const openCreate = () => {
     setEditTarget(null);
     setFormOpen(true);
@@ -325,7 +335,7 @@ export function AdminDeliveryZonesPage() {
                 </TableCell>
               </TableRow>
             ) : (
-              zones.map((zone) => (
+              paginatedZones.map((zone) => (
                 <TableRow key={zone.id} hover>
                   <TableCell>{zone.city}</TableCell>
                   <TableCell>{zone.city_ar ?? '—'}</TableCell>
@@ -364,6 +374,37 @@ export function AdminDeliveryZonesPage() {
           </TableBody>
         </Table>
       </TableContainer>
+
+      {/* Pagination */}
+      <Box display="flex" justifyContent="space-between" alignItems="center" mt={2} flexWrap="wrap" gap={2}>
+        <Box display="flex" alignItems="center" gap={1}>
+          <FormControl size="small" sx={{ minWidth: 130 }}>
+            <InputLabel sx={{ fontSize: '0.8rem' }}>Lignes / page</InputLabel>
+            <Select
+              label="Lignes / page"
+              value={zonePerPage}
+              onChange={(e) => { setZonePerPage(Number(e.target.value)); setZonePage(1); }}
+              sx={{ fontSize: '0.82rem' }}
+            >
+              <MenuItem value={5}>5 / page</MenuItem>
+              <MenuItem value={10}>10 / page</MenuItem>
+              <MenuItem value={25}>25 / page</MenuItem>
+            </Select>
+          </FormControl>
+          <Typography variant="body2" color="text.secondary">
+            {zones.length} au total
+          </Typography>
+        </Box>
+        {zoneTotalPages > 1 && (
+          <Pagination
+            count={zoneTotalPages}
+            page={zonePage}
+            onChange={(_e, p) => setZonePage(p)}
+            color="primary"
+            size="small"
+          />
+        )}
+      </Box>
 
       {/* Create / Edit Dialog */}
       <FormDialog
