@@ -174,22 +174,35 @@ export function CheckoutPage() {
 
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
-      <Typography variant="h4" fontWeight={700} gutterBottom>
-        Commande
-      </Typography>
+      <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1.5, mb: 3 }}>
+        <Typography variant="h4" fontWeight={800} color="var(--mirai-white)">
+          Commande
+        </Typography>
+        <Typography sx={{ fontFamily: '"Noto Serif JP", serif', fontSize: '0.7rem', color: 'rgba(0,194,255,0.2)', letterSpacing: '0.1em' }}>
+          注文
+        </Typography>
+      </Box>
 
       <Stack spacing={3}>
         {/* Guest section */}
         {!user && (
           <Paper
             elevation={0}
+            className="mirai-glass"
             sx={{
               p: 3,
-              backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(22, 22, 28, 0.6)' : 'background.paper',
-              backdropFilter: (theme) => theme.palette.mode === 'dark' ? 'blur(16px)' : 'none',
-              border: '1px solid',
-              borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'divider',
-              borderRadius: '16px',
+              borderRadius: '20px',
+              position: 'relative',
+              overflow: 'hidden',
+              '&::before': {
+                content: '""',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                height: 2,
+                background: 'linear-gradient(90deg, #00C2FF, #0099CC, transparent)',
+              },
             }}
           >
             <Typography variant="h6" gutterBottom fontWeight={600}>
@@ -206,13 +219,10 @@ export function CheckoutPage() {
         {user && (
           <Paper
             elevation={0}
+            className="mirai-glass"
             sx={{
               p: 2.5,
-              backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(22, 22, 28, 0.6)' : 'background.paper',
-              backdropFilter: (theme) => theme.palette.mode === 'dark' ? 'blur(16px)' : 'none',
-              border: '1px solid',
-              borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'divider',
-              borderRadius: '16px',
+              borderRadius: '20px',
             }}
           >
             <Stack direction="row" justifyContent="space-between" alignItems="center" mb={editingDelivery ? 2 : 1.5}>
@@ -346,13 +356,10 @@ export function CheckoutPage() {
             {/* Order items */}
             <Paper
               elevation={0}
+              className="mirai-glass"
               sx={{
                 p: 2,
-                backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(22, 22, 28, 0.6)' : 'background.paper',
-                backdropFilter: (theme) => theme.palette.mode === 'dark' ? 'blur(16px)' : 'none',
-                border: '1px solid',
-                borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'divider',
-                borderRadius: '16px',
+                borderRadius: '20px',
               }}
             >
               <Typography variant="h6" fontWeight={600} gutterBottom>
@@ -383,13 +390,10 @@ export function CheckoutPage() {
             {/* Pricing */}
             <Paper
               elevation={0}
+              className="mirai-glass"
               sx={{
                 p: 2,
-                backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(22, 22, 28, 0.6)' : 'background.paper',
-                backdropFilter: (theme) => theme.palette.mode === 'dark' ? 'blur(16px)' : 'none',
-                border: '1px solid',
-                borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'divider',
-                borderRadius: '16px',
+                borderRadius: '20px',
               }}
             >
               <Stack spacing={1}>
@@ -433,6 +437,14 @@ export function CheckoutPage() {
               fullWidth
               disabled={isPending || !user || editingDelivery}
               startIcon={isPending ? <CircularProgress size={16} color="inherit" /> : undefined}
+              sx={{
+                py: 1.75,
+                borderRadius: '12px',
+                fontWeight: 700,
+                background: 'linear-gradient(45deg, #00C2FF, #0099CC)',
+                '&:hover': { transform: 'translateY(-2px)' },
+                transition: 'transform 0.2s',
+              }}
             >
               {isPending ? 'Envoi en cours...' : 'Confirmer la commande'}
             </Button>

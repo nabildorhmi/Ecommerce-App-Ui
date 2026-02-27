@@ -3,9 +3,8 @@ import type { PaletteMode } from '@mui/material';
 
 // ─── MiraiTech Design Tokens ───────────────────────────────────────────────
 const MIRAI_BLACK = '#0B0B0E';
-const MIRAI_SURFACE_D = '#111116';
-const MIRAI_CARD_D = '#16161C';
-const MIRAI_BORDER_D = '#1E1E28';
+const MIRAI_SURFACE = '#111116';
+const MIRAI_BORDER = '#1E1E28';
 
 // Light palette tokens
 const LIGHT_BG = '#F8FAFB';
@@ -31,7 +30,7 @@ export function createMiraiTheme(mode: PaletteMode = 'dark', direction: 'ltr' | 
       mode,
       background: {
         default: isDark ? MIRAI_BLACK : LIGHT_BG,
-        paper: isDark ? MIRAI_SURFACE_D : LIGHT_PAPER,
+        paper: isDark ? MIRAI_SURFACE : LIGHT_PAPER,
       },
       primary: {
         main: MIRAI_CYAN,
@@ -47,7 +46,7 @@ export function createMiraiTheme(mode: PaletteMode = 'dark', direction: 'ltr' | 
         primary: isDark ? MIRAI_WHITE : LIGHT_TEXT,
         secondary: isDark ? MIRAI_GRAY : LIGHT_SUBTEXT,
       },
-      divider: isDark ? MIRAI_BORDER_D : LIGHT_BORDER,
+      divider: isDark ? MIRAI_BORDER : LIGHT_BORDER,
       error: {
         main: MIRAI_RED,
       },
@@ -97,12 +96,12 @@ export function createMiraiTheme(mode: PaletteMode = 'dark', direction: 'ltr' | 
             backgroundColor: isDark ? MIRAI_BLACK : LIGHT_BG,
             color: isDark ? MIRAI_WHITE : LIGHT_TEXT,
             scrollbarColor: isDark
-              ? `${MIRAI_BORDER_D} ${MIRAI_BLACK}`
+              ? `${MIRAI_BORDER} ${MIRAI_BLACK}`
               : `${LIGHT_BORDER} ${LIGHT_BG}`,
             '&::-webkit-scrollbar': { width: 6 },
             '&::-webkit-scrollbar-track': { background: isDark ? MIRAI_BLACK : LIGHT_BG },
             '&::-webkit-scrollbar-thumb': {
-              background: isDark ? MIRAI_BORDER_D : LIGHT_BORDER,
+              background: isDark ? MIRAI_BORDER : LIGHT_BORDER,
               borderRadius: 3,
               '&:hover': { background: MIRAI_CYAN_DK },
             },
@@ -116,7 +115,7 @@ export function createMiraiTheme(mode: PaletteMode = 'dark', direction: 'ltr' | 
             backgroundColor: 'rgba(11,11,14,0.92)',
             backdropFilter: 'blur(16px)',
             border: 'none',
-            borderBottom: `1px solid ${MIRAI_BORDER_D}`,
+            borderBottom: `1px solid ${MIRAI_BORDER}`,
             boxShadow: 'none',
             color: MIRAI_WHITE,
           },
@@ -182,168 +181,145 @@ export function createMiraiTheme(mode: PaletteMode = 'dark', direction: 'ltr' | 
           },
         },
       },
-    },
-    MuiTableContainer: {
-      styleOverrides: {
-        root: {
-          backgroundColor: isDark ? MIRAI_SURFACE_D : LIGHT_PAPER,
-          border: `1px solid ${isDark ? MIRAI_BORDER_D : LIGHT_BORDER}`,
-        },
-      },
-    },
-    MuiTableHead: {
-      styleOverrides: {
-        root: {
-          '& .MuiTableCell-head': {
-            backgroundColor: 'rgba(0,194,255,0.06)',
-            color: MIRAI_CYAN,
-            fontWeight: 700,
-            letterSpacing: '0.08em',
-            textTransform: 'uppercase',
-            fontSize: '0.7rem',
-            borderBottom: `1px solid ${isDark ? MIRAI_BORDER_D : LIGHT_BORDER}`,
+      MuiTableCell: {
+        styleOverrides: {
+          root: {
+            borderBottom: `1px solid ${isDark ? MIRAI_BORDER : LIGHT_BORDER}`,
           },
         },
       },
-    },
-    MuiTableCell: {
-      styleOverrides: {
-        root: {
-          borderBottom: `1px solid ${isDark ? MIRAI_BORDER_D : LIGHT_BORDER}`,
-        },
-      },
-    },
-    MuiTableRow: {
-      styleOverrides: {
-        root: {
-          '&:hover': {
-            backgroundColor: 'rgba(0,194,255,0.03)',
+      MuiTableRow: {
+        styleOverrides: {
+          root: {
+            '&:hover': {
+              backgroundColor: 'rgba(0,194,255,0.03)',
+            },
           },
         },
       },
-    },
-    MuiChip: {
-      styleOverrides: {
-        root: {
-          borderRadius: 4,
-          fontWeight: 600,
-          letterSpacing: '0.04em',
+      MuiChip: {
+        styleOverrides: {
+          root: {
+            borderRadius: 4,
+            fontWeight: 600,
+            letterSpacing: '0.04em',
+          },
         },
       },
-    },
-    MuiTextField: {
-      styleOverrides: {
-        root: {
-          '& .MuiOutlinedInput-root': {
-            backgroundColor: isDark ? 'rgba(255,255,255,0.02)' : 'transparent',
-            transition: 'all 0.3s ease',
-            '& fieldset': {
-              borderColor: isDark ? 'rgba(255,255,255,0.1)' : LIGHT_BORDER,
+      MuiTextField: {
+        styleOverrides: {
+          root: {
+            '& .MuiOutlinedInput-root': {
+              backgroundColor: isDark ? 'rgba(255,255,255,0.02)' : 'transparent',
               transition: 'all 0.3s ease',
-            },
-            '&:hover fieldset': {
-              borderColor: 'rgba(0,194,255,0.5)',
-            },
-            '&:hover': {
-              backgroundColor: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.01)',
-            },
-            '&.Mui-focused fieldset': {
-              borderColor: MIRAI_CYAN,
-              boxShadow: `0 0 12px rgba(0,194,255,0.2)`,
-              borderWidth: '1px',
-            },
-            '&.Mui-focused': {
-              backgroundColor: isDark ? 'rgba(0,194,255,0.03)' : 'transparent',
-            },
-          },
-        },
-      },
-    },
-    MuiSelect: {
-      styleOverrides: {
-        outlined: {
-          '& .MuiOutlinedInput-notchedOutline': {
-            borderColor: isDark ? MIRAI_BORDER_D : LIGHT_BORDER,
-          },
-        },
-      },
-    },
-    MuiDivider: {
-      styleOverrides: {
-        root: {
-          borderColor: isDark ? MIRAI_BORDER_D : LIGHT_BORDER,
-        },
-      },
-    },
-    MuiDialog: {
-      styleOverrides: {
-        paper: {
-          backgroundColor: isDark ? MIRAI_SURFACE_D : LIGHT_PAPER,
-          border: `1px solid ${isDark ? MIRAI_BORDER_D : LIGHT_BORDER}`,
-        },
-      },
-    },
-    MuiAlert: {
-      styleOverrides: {
-        standardInfo: {
-          backgroundColor: 'rgba(0,194,255,0.08)',
-          border: `1px solid rgba(0,194,255,0.2)`,
-          color: isDark ? '#00C2FF' : '#0077A8',
-        },
-        standardError: {
-          backgroundColor: `rgba(230,57,70,0.1)`,
-          border: `1px solid rgba(230,57,70,0.3)`,
-          color: isDark ? '#E63946' : '#C62828',
-        },
-        standardSuccess: {
-          backgroundColor: `rgba(0,230,118,0.08)`,
-          border: `1px solid rgba(0,230,118,0.2)`,
-          color: isDark ? '#00E676' : '#1B5E20',
-        },
-      },
-    },
-    MuiPagination: {
-      styleOverrides: {
-        root: {
-          '& .MuiPaginationItem-root': {
-            color: isDark ? MIRAI_GRAY : LIGHT_SUBTEXT,
-            '&.Mui-selected': {
-              backgroundColor: MIRAI_CYAN,
-              color: MIRAI_BLACK,
-            },
-            '&:hover': {
-              backgroundColor: 'rgba(0,194,255,0.1)',
+              '& fieldset': {
+                borderColor: isDark ? 'rgba(255,255,255,0.1)' : LIGHT_BORDER,
+                transition: 'all 0.3s ease',
+              },
+              '&:hover fieldset': {
+                borderColor: 'rgba(0,194,255,0.5)',
+              },
+              '&:hover': {
+                backgroundColor: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.01)',
+              },
+              '&.Mui-focused fieldset': {
+                borderColor: MIRAI_CYAN,
+                boxShadow: `0 0 12px rgba(0,194,255,0.2)`,
+                borderWidth: '1px',
+              },
+              '&.Mui-focused': {
+                backgroundColor: isDark ? 'rgba(0,194,255,0.03)' : 'transparent',
+              },
             },
           },
         },
       },
-    },
-    MuiSwitch: {
-      styleOverrides: {
-        switchBase: {
-          '&.Mui-checked': {
-            color: MIRAI_CYAN,
-            '& + .MuiSwitch-track': {
-              backgroundColor: MIRAI_CYAN,
+      MuiSelect: {
+        styleOverrides: {
+          outlined: {
+            '& .MuiOutlinedInput-notchedOutline': {
+              borderColor: isDark ? MIRAI_BORDER : LIGHT_BORDER,
             },
           },
         },
       },
-    },
-    MuiLinearProgress: {
-      styleOverrides: {
-        root: {
-          backgroundColor: isDark ? MIRAI_BORDER_D : LIGHT_BORDER,
-        },
-        bar: {
-          backgroundColor: MIRAI_CYAN,
+      MuiDivider: {
+        styleOverrides: {
+          root: {
+            borderColor: isDark ? MIRAI_BORDER : LIGHT_BORDER,
+          },
         },
       },
-    },
-    MuiIconButton: {
-      styleOverrides: {
-        root: {
-          borderRadius: 6,
+      MuiDialog: {
+        styleOverrides: {
+          paper: {
+            backgroundColor: isDark ? MIRAI_SURFACE : LIGHT_PAPER,
+            border: `1px solid ${isDark ? MIRAI_BORDER : LIGHT_BORDER}`,
+          },
+        },
+      },
+      MuiAlert: {
+        styleOverrides: {
+          standardInfo: {
+            backgroundColor: 'rgba(0,194,255,0.08)',
+            border: `1px solid rgba(0,194,255,0.2)`,
+            color: isDark ? '#00C2FF' : '#0077A8',
+          },
+          standardError: {
+            backgroundColor: `rgba(230,57,70,0.1)`,
+            border: `1px solid rgba(230,57,70,0.3)`,
+            color: isDark ? '#E63946' : '#C62828',
+          },
+          standardSuccess: {
+            backgroundColor: `rgba(0,230,118,0.08)`,
+            border: `1px solid rgba(0,230,118,0.2)`,
+            color: isDark ? '#00E676' : '#1B5E20',
+          },
+        },
+      },
+      MuiPagination: {
+        styleOverrides: {
+          root: {
+            '& .MuiPaginationItem-root': {
+              color: isDark ? MIRAI_GRAY : LIGHT_SUBTEXT,
+              '&.Mui-selected': {
+                backgroundColor: MIRAI_CYAN,
+                color: MIRAI_BLACK,
+              },
+              '&:hover': {
+                backgroundColor: 'rgba(0,194,255,0.1)',
+              },
+            },
+          },
+        },
+      },
+      MuiSwitch: {
+        styleOverrides: {
+          switchBase: {
+            '&.Mui-checked': {
+              color: MIRAI_CYAN,
+              '& + .MuiSwitch-track': {
+                backgroundColor: MIRAI_CYAN,
+              },
+            },
+          },
+        },
+      },
+      MuiLinearProgress: {
+        styleOverrides: {
+          root: {
+            backgroundColor: isDark ? MIRAI_BORDER : LIGHT_BORDER,
+          },
+          bar: {
+            backgroundColor: MIRAI_CYAN,
+          },
+        },
+      },
+      MuiIconButton: {
+        styleOverrides: {
+          root: {
+            borderRadius: 6,
+          },
         },
       },
     },

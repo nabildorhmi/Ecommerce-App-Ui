@@ -12,23 +12,18 @@ import Stack from '@mui/material/Stack';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import ElectricScooterIcon from '@mui/icons-material/ElectricScooter';
-import PeopleIcon from '@mui/icons-material/People';
-import LocalShippingIcon from '@mui/icons-material/LocalShipping';
-import VerifiedIcon from '@mui/icons-material/Verified';
 import { useFeaturedProducts } from '../../catalog/api/products';
 import { useCategories } from '../../catalog/api/categories';
 import { formatCurrency } from '../../../shared/utils/formatCurrency';
 import type { Product } from '../../catalog/types';
+import { motion } from 'framer-motion';
+import { Hero3DScene } from '../components/Hero3DScene';
 
 /* ════════════════════════════════════════════════════════════════════
    HERO BANNER — Immersive full-screen with animated orbs & stats
    ════════════════════════════════════════════════════════════════════ */
 function HeroBanner() {
-  const stats = [
-    { icon: <PeopleIcon sx={{ fontSize: 18 }} />, value: '500+', label: 'Clients satisfaits' },
-    { icon: <LocalShippingIcon sx={{ fontSize: 18 }} />, value: '48h', label: 'Livraison rapide' },
-    { icon: <VerifiedIcon sx={{ fontSize: 18 }} />, value: '2 ans', label: 'Garantie produits' },
-  ];
+
 
   return (
     <Box
@@ -38,112 +33,86 @@ function HeroBanner() {
         background: 'linear-gradient(135deg, #0B0B0E 0%, #0d1a24 40%, #0a1520 70%, #0B0B0E 100%)',
         backgroundSize: '200% 200%',
         animation: 'gradient-shift 15s ease infinite',
-        borderBottom: '1px solid #1E1E28',
+        borderBottom: '1px solid var(--mirai-border)',
         overflow: 'hidden',
-        py: { xs: 8, md: 0 },
-        minHeight: { md: 520 },
+        py: { xs: 6, md: 0 },
+        minHeight: { md: '45vh' },
         display: 'flex',
         alignItems: 'center',
       }}
     >
-      {/* Floating orbs */}
-      <Box sx={{ position: 'absolute', top: '5%', right: '20%', width: 400, height: 400, borderRadius: '50%', background: 'radial-gradient(circle, rgba(0,194,255,0.08) 0%, transparent 60%)', pointerEvents: 'none', animation: 'float 8s ease-in-out infinite' }} />
-      <Box sx={{ position: 'absolute', bottom: '10%', left: '8%', width: 300, height: 300, borderRadius: '50%', background: 'radial-gradient(circle, rgba(0,153,204,0.06) 0%, transparent 65%)', pointerEvents: 'none', animation: 'float 10s ease-in-out infinite 2s' }} />
-      <Box sx={{ position: 'absolute', top: '40%', right: '5%', width: 180, height: 180, borderRadius: '50%', background: 'radial-gradient(circle, rgba(0,194,255,0.05) 0%, transparent 70%)', pointerEvents: 'none', animation: 'float 12s ease-in-out infinite 4s' }} />
+      <Hero3DScene />
 
-      {/* Top accent line */}
-      <Box sx={{ position: 'absolute', top: 0, left: 0, right: 0, height: 3, background: 'linear-gradient(90deg, transparent, #00C2FF 30%, #0099CC 70%, transparent)', opacity: 0.8 }} />
+      {/* Japanese kanji watermark — cyberpunk accent */}
+      <Typography sx={{ position: 'absolute', right: { xs: 16, md: 60 }, top: '50%', transform: 'translateY(-50%)', writingMode: 'vertical-rl', fontFamily: '"Noto Serif JP", serif', fontSize: { xs: '2.5rem', md: '4rem' }, color: 'rgba(0,194,255,0.04)', letterSpacing: '0.3em', userSelect: 'none', pointerEvents: 'none', zIndex: 1 }}>
+        未来技術電動
+      </Typography>
 
       {/* Noise texture overlay */}
-      <Box sx={{ position: 'absolute', inset: 0, opacity: 0.03, background: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noise)\'/%3E%3C/svg%3E")', pointerEvents: 'none' }} />
+      <Box sx={{ position: 'absolute', inset: 0, opacity: 0.03, zIndex: 1, pointerEvents: 'none', background: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noise)\'/%3E%3C/svg%3E")' }} />
 
-      <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 1 }}>
+      <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 2 }}>
         <Grid container alignItems="center" spacing={{ xs: 4, md: 6 }}>
-          <Grid size={{ xs: 12, md: 6 }}>
-            <Box sx={{ py: { xs: 0, md: 6 }, animation: 'fade-in-up 0.8s ease-out' }}>
-              <Typography sx={{ fontSize: '0.68rem', letterSpacing: '0.3em', color: '#00C2FF', fontWeight: 600, mb: 2.5, textTransform: 'uppercase', opacity: 0.9, display: 'flex', alignItems: 'center', gap: 1 }}>
-                <Box sx={{ width: 24, height: 1, bgcolor: '#00C2FF' }} />
-                ミライテック — MOBILITÉ ÉLECTRIQUE
-              </Typography>
-              <Typography
-                component="h1"
-                sx={{
-                  fontSize: { xs: '2.6rem', md: '3.8rem', lg: '4.5rem' },
-                  fontWeight: 900,
-                  lineHeight: 0.95,
-                  letterSpacing: '-0.03em',
-                  color: '#F5F7FA',
-                  mb: 2.5,
-                }}
-              >
-                L&apos;AVENIR DE LA{' '}
-                <Box component="span" sx={{
-                  background: 'linear-gradient(135deg, #00C2FF, #0099CC)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  filter: 'drop-shadow(0 0 20px rgba(0,194,255,0.3))',
-                }}>
-                  MOBILITÉ
-                </Box>
-                <br />URBAINE
-              </Typography>
-              <Typography sx={{ color: '#9CA3AF', fontSize: { xs: '1rem', md: '1.1rem' }, mb: 4, lineHeight: 1.8, maxWidth: 480 }}>
-                Scooters électriques premium conçus pour la performance, l&apos;autonomie et le style. Découvrez la nouvelle génération de mobilité urbaine.
-              </Typography>
-              <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mb: 5 }}>
-                <Button
-                  component={Link}
-                  to="/products"
-                  variant="contained"
-                  size="large"
+          <Grid size={{ xs: 12, md: 7 }}>
+            <Box sx={{ py: { xs: 0, md: 4 } }}>
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.2 }}>
+                <Typography sx={{ fontSize: '0.68rem', letterSpacing: '0.3em', color: 'var(--mirai-cyan)', fontWeight: 600, mb: 2.5, textTransform: 'uppercase', opacity: 0.9, display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <Box sx={{ width: 24, height: 1, bgcolor: 'var(--mirai-cyan)' }} />
+                  ミライテック — MOBILITÉ ÉLECTRIQUE
+                </Typography>
+              </motion.div>
+
+              <motion.div initial={{ opacity: 0, filter: 'blur(10px)' }} animate={{ opacity: 1, filter: 'blur(0px)' }} transition={{ duration: 1, delay: 0.4 }}>
+                <Typography
+                  component="h1"
                   sx={{
-                    px: 5, py: 1.75, fontSize: '0.88rem', letterSpacing: '0.08em',
-                    animation: 'pulse-glow 3s ease-in-out infinite',
+                    fontSize: { xs: '2.2rem', md: '3.2rem', lg: '4.2rem' },
+                    fontWeight: 900,
+                    lineHeight: 0.95,
+                    letterSpacing: '-0.03em',
+                    color: 'var(--mirai-white)',
+                    mb: 2.5,
                   }}
                 >
-                  Acheter maintenant
-                </Button>
-                <Button component={Link} to="/products" variant="outlined" size="large" sx={{ px: 5, py: 1.75, fontSize: '0.88rem', letterSpacing: '0.08em' }}>
-                  Voir les modèles
-                </Button>
-              </Box>
-
-              {/* Stats bar */}
-              <Box sx={{ display: 'flex', gap: { xs: 3, md: 4 }, flexWrap: 'wrap' }}>
-                {stats.map(({ icon, value, label }, i) => (
-                  <Box key={label} sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                    {i > 0 && (
-                      <Box sx={{ width: 1, height: 32, background: 'linear-gradient(to bottom, transparent, rgba(0,194,255,0.3), transparent)', mr: 1 }} />
-                    )}
-                    <Box sx={{ color: '#00C2FF', display: 'flex' }}>{icon}</Box>
-                    <Box>
-                      <Typography sx={{ fontWeight: 800, fontSize: '1.1rem', color: '#F5F7FA', lineHeight: 1 }}>{value}</Typography>
-                      <Typography sx={{ fontSize: '0.68rem', color: '#9CA3AF', fontWeight: 500 }}>{label}</Typography>
-                    </Box>
+                  L&apos;AVENIR DE LA{' '}
+                  <Box component="span" className="mirai-gradient-text" sx={{ filter: 'drop-shadow(0 0 20px rgba(0,194,255,0.3))' }}>
+                    MOBILITÉ
                   </Box>
-                ))}
-              </Box>
-            </Box>
-          </Grid>
+                  <br />URBAINE
+                </Typography>
+              </motion.div>
 
-          {/* Right side — animated concentric rings */}
-          <Grid size={{ xs: 12, md: 6 }} sx={{ display: { xs: 'none', md: 'flex' }, justifyContent: 'center', alignItems: 'center', py: 4 }}>
-            <Box sx={{ position: 'relative', width: 420, height: 420, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              {[380, 300, 220, 140].map((size, i) => (
-                <Box key={size} sx={{
-                  position: 'absolute', width: size, height: size, borderRadius: '50%',
-                  border: `1px solid rgba(0,194,255,${0.04 + i * 0.03})`,
-                  animation: `${i % 2 === 0 ? 'rotate-slow' : 'rotate-slow-reverse'} ${30 + i * 10}s linear infinite`,
-                }} />
-              ))}
-              {/* Neon center icon */}
-              <Box sx={{
-                width: 100, height: 100, borderRadius: '50%',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                background: 'radial-gradient(circle, rgba(0,194,255,0.1) 0%, transparent 70%)',
-              }}>
-                <ElectricScooterIcon sx={{ fontSize: 48, color: '#00C2FF', opacity: 0.6, filter: 'drop-shadow(0 0 12px rgba(0,194,255,0.4))' }} />
-              </Box>
+              <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.6 }}>
+                <Typography sx={{ color: 'var(--mirai-gray)', fontSize: { xs: '1rem', md: '1.2rem' }, mb: 4, lineHeight: 1.8, maxWidth: 520 }}>
+                  Scooters électriques premium conçus pour la performance, l&apos;autonomie et le style. Découvrez la nouvelle génération de mobilité urbaine.
+                </Typography>
+              </motion.div>
+
+              <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6, delay: 0.8, type: 'spring' }}>
+                <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mb: 6 }}>
+                  <Button
+                    component={Link}
+                    to="/products"
+                    variant="contained"
+                    size="large"
+                    className="mirai-glow"
+                    sx={{
+                      px: 5, py: 1.75, fontSize: '0.88rem', letterSpacing: '0.08em', borderRadius: '12px',
+                      background: 'linear-gradient(45deg, #00C2FF, #0099CC)',
+                      transition: 'all 0.3s ease',
+                      '&:hover': {
+                        transform: 'translateY(-2px)',
+                        boxShadow: '0 12px 24px rgba(0,194,255,0.4)',
+                      }
+                    }}
+                  >
+                    Acheter maintenant
+                  </Button>
+                  <Button component={Link} to="/products" variant="outlined" size="large" sx={{ px: 5, py: 1.75, fontSize: '0.88rem', letterSpacing: '0.08em', borderRadius: '12px', borderColor: 'var(--mirai-border)', color: 'var(--mirai-white)', '&:hover': { borderColor: 'var(--mirai-cyan)', background: 'var(--mirai-cyan-glow)' } }}>
+                    Voir les modèles
+                  </Button>
+                </Box>
+              </motion.div>
             </Box>
           </Grid>
         </Grid>

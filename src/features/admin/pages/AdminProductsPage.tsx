@@ -138,18 +138,18 @@ export function AdminProductsPage() {
         </Button>
       </Box>
 
-      <TableContainer component={Paper}>
-        <Table size="small">
+      <TableContainer component={Paper} elevation={0} sx={{ background: 'transparent' }}>
+        <Table size="small" sx={{ borderCollapse: 'separate', borderSpacing: '0 8px' }}>
           <TableHead>
             <TableRow>
-              <TableCell>Image</TableCell>
-              <TableCell>Nom (FR) / Name (FR)</TableCell>
-              <TableCell>SKU</TableCell>
-              <TableCell>Prix / Price</TableCell>
-              <TableCell>Stock</TableCell>
-              <TableCell>Actif / Active</TableCell>
-              <TableCell>Vedette / Featured</TableCell>
-              <TableCell align="right">Actions</TableCell>
+              <TableCell sx={{ borderBottom: 'none', color: 'var(--mirai-gray)', fontWeight: 600 }}>Image</TableCell>
+              <TableCell sx={{ borderBottom: 'none', color: 'var(--mirai-gray)', fontWeight: 600 }}>Nom (FR)</TableCell>
+              <TableCell sx={{ borderBottom: 'none', color: 'var(--mirai-gray)', fontWeight: 600 }}>SKU</TableCell>
+              <TableCell sx={{ borderBottom: 'none', color: 'var(--mirai-gray)', fontWeight: 600 }}>Prix</TableCell>
+              <TableCell sx={{ borderBottom: 'none', color: 'var(--mirai-gray)', fontWeight: 600 }}>Stock</TableCell>
+              <TableCell sx={{ borderBottom: 'none', color: 'var(--mirai-gray)', fontWeight: 600 }}>Actif</TableCell>
+              <TableCell sx={{ borderBottom: 'none', color: 'var(--mirai-gray)', fontWeight: 600 }}>Vedette</TableCell>
+              <TableCell sx={{ borderBottom: 'none', color: 'var(--mirai-gray)', fontWeight: 600 }} align="right">Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -163,7 +163,19 @@ export function AdminProductsPage() {
               products.map((product) => {
                 const thumb = product.images?.[0]?.thumbnail;
                 return (
-                  <TableRow key={product.id} hover>
+                  <TableRow
+                    key={product.id}
+                    hover
+                    sx={{
+                      backgroundColor: 'rgba(22, 22, 28, 0.4)',
+                      backdropFilter: 'blur(12px)',
+                      transition: 'transform 0.2s, box-shadow 0.2s',
+                      '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 8px 24px rgba(0,0,0,0.4)', backgroundColor: 'rgba(22, 22, 28, 0.7)' },
+                      '& td:first-of-type': { borderTopLeftRadius: '12px', borderBottomLeftRadius: '12px' },
+                      '& td:last-child': { borderTopRightRadius: '12px', borderBottomRightRadius: '12px' },
+                      '& td': { borderBottom: 'none', py: 1.5 }
+                    }}
+                  >
                     <TableCell>
                       {thumb ? (
                         <img

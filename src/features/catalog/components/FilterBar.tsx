@@ -82,16 +82,22 @@ export function FilterBar() {
 
   return (
     <Box
+      className="mirai-glass"
       sx={{
-        backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(22, 22, 28, 0.6)' : 'background.paper',
-        backdropFilter: (theme) => theme.palette.mode === 'dark' ? 'blur(16px)' : 'none',
-        border: '1px solid',
-        borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'divider',
-        borderRadius: '12px',
+        borderRadius: '16px',
         p: 2.5,
         position: { md: 'sticky' },
         top: { md: 80 },
-        boxShadow: (theme) => theme.palette.mode === 'dark' ? '0 8px 32px rgba(0,0,0,0.2)' : 'none',
+        overflow: 'hidden',
+        '&::before': {
+          content: '""',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: 2,
+          background: 'linear-gradient(90deg, #00C2FF, transparent)',
+        },
       }}
     >
       {/* Header */}
@@ -100,6 +106,9 @@ export function FilterBar() {
           <TuneIcon sx={{ fontSize: '1rem', color: '#00C2FF' }} />
           <Typography sx={{ fontWeight: 700, fontSize: '0.78rem', letterSpacing: '0.1em', color: 'text.primary', textTransform: 'uppercase' }}>
             {"Filtres"}
+          </Typography>
+          <Typography sx={{ fontFamily: '"Noto Serif JP", serif', fontSize: '0.55rem', color: 'rgba(0,194,255,0.2)' }}>
+            フィルター
           </Typography>
         </Box>
         {hasActiveFilters && (
@@ -114,7 +123,7 @@ export function FilterBar() {
               '&:hover': { backgroundColor: 'rgba(230,57,70,0.08)' },
             }}
           >
-            {"Effacer les filtres"}
+            {"Effacer"}
           </Button>
         )}
       </Box>
@@ -142,7 +151,7 @@ export function FilterBar() {
           />
         </Box>
 
-        <Divider />
+        <Divider sx={{ borderColor: 'rgba(0,194,255,0.08)' }} />
 
         {/* Category */}
         <Box>
@@ -166,7 +175,7 @@ export function FilterBar() {
           </FormControl>
         </Box>
 
-        <Divider />
+        <Divider sx={{ borderColor: 'rgba(0,194,255,0.08)' }} />
 
         {/* Price Range */}
         <Box>
@@ -193,7 +202,7 @@ export function FilterBar() {
           </Stack>
         </Box>
 
-        <Divider />
+        <Divider sx={{ borderColor: 'rgba(0,194,255,0.08)' }} />
 
         {/* In Stock */}
         <FormControlLabel

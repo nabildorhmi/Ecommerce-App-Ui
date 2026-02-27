@@ -44,32 +44,46 @@ export function CatalogPage() {
       {/* Page header */}
       <Box
         sx={{
-          borderBottom: '1px solid',
-          borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'divider',
-          background: (theme) => theme.palette.mode === 'dark' ? 'linear-gradient(to right, rgba(0,194,255,0.05), transparent)' : 'background.paper',
+          borderBottom: '1px solid rgba(0,194,255,0.1)',
+          background: 'linear-gradient(135deg, rgba(0,194,255,0.04) 0%, transparent 50%, rgba(230,57,70,0.02) 100%)',
           py: 4,
+          position: 'relative',
+          overflow: 'hidden',
+          '&::after': {
+            content: '""',
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            width: '100%',
+            height: 1,
+            background: 'linear-gradient(90deg, transparent, rgba(0,194,255,0.3), transparent)',
+          },
         }}
       >
         <Container maxWidth="xl">
-          <Typography
-            sx={{
-              fontSize: '0.68rem',
-              letterSpacing: '0.3em',
-              color: '#00C2FF',
-              fontWeight: 600,
-              mb: 1,
-              textTransform: 'uppercase',
-            }}
-          >
-            スクーター — CATALOGUE
-          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
+            <Typography
+              sx={{
+                fontSize: '0.68rem',
+                letterSpacing: '0.3em',
+                color: '#00C2FF',
+                fontWeight: 600,
+                textTransform: 'uppercase',
+              }}
+            >
+              スクーター — CATALOGUE
+            </Typography>
+            <Typography sx={{ fontFamily: '"Noto Serif JP", serif', fontSize: '0.6rem', color: 'rgba(0,194,255,0.15)', letterSpacing: '0.1em' }}>
+              製品一覧
+            </Typography>
+          </Box>
           <Box sx={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: 2 }}>
             <Typography variant="h4" sx={{ color: 'text.primary', fontWeight: 800, letterSpacing: '0.04em' }}>
               {"Catalogue"}
             </Typography>
             {!isLoading && total > 0 && (
-              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                {`${total} produit(s) trouvé(s)`}
+              <Typography variant="body2" sx={{ color: 'var(--mirai-cyan)', fontWeight: 600 }}>
+                {`${total} produit(s)`}
               </Typography>
             )}
           </Box>

@@ -134,18 +134,31 @@ export function ProfilePage() {
     <Container maxWidth="sm" sx={{ py: 6 }}>
       <Paper
         elevation={0}
+        className="mirai-glass"
         sx={{
           p: 4,
-          backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(22, 22, 28, 0.6)' : 'background.paper',
-          backdropFilter: (theme) => theme.palette.mode === 'dark' ? 'blur(16px)' : 'none',
-          border: '1px solid',
-          borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'divider',
-          borderRadius: '16px',
+          borderRadius: '20px',
+          position: 'relative',
+          overflow: 'hidden',
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 2,
+            background: 'linear-gradient(90deg, #00C2FF, #0099CC, transparent)',
+          },
         }}
       >
-        <Typography variant="h5" fontWeight="bold" mb={3}>
-          {"Mon profil"}
-        </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 3 }}>
+          <Typography variant="h5" fontWeight={800} color="var(--mirai-white)">
+            {"Mon profil"}
+          </Typography>
+          <Typography sx={{ fontFamily: '"Noto Serif JP", serif', fontSize: '0.7rem', color: 'rgba(0,194,255,0.2)', letterSpacing: '0.1em' }}>
+            プロフィール
+          </Typography>
+        </Box>
 
         {serverError && (
           <Alert severity="error" sx={{ mb: 2 }}>
@@ -232,8 +245,16 @@ export function ProfilePage() {
             type="submit"
             variant="contained"
             disabled={isSubmitting}
-            startIcon={isSubmitting ? <CircularProgress size={16} /> : undefined}
-            sx={{ mt: 1 }}
+            startIcon={isSubmitting ? <CircularProgress size={16} color="inherit" /> : undefined}
+            sx={{
+              mt: 1,
+              py: 1.5,
+              borderRadius: '12px',
+              fontWeight: 700,
+              background: 'linear-gradient(45deg, #00C2FF, #0099CC)',
+              '&:hover': { transform: 'translateY(-2px)' },
+              transition: 'transform 0.2s',
+            }}
           >
             {"Enregistrer"}
           </Button>
@@ -243,19 +264,32 @@ export function ProfilePage() {
       {/* Change Password Section */}
       <Paper
         elevation={0}
+        className="mirai-glass"
         sx={{
           p: 4,
           mt: 3,
-          backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(22, 22, 28, 0.6)' : 'background.paper',
-          backdropFilter: (theme) => theme.palette.mode === 'dark' ? 'blur(16px)' : 'none',
-          border: '1px solid',
-          borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'divider',
-          borderRadius: '16px',
+          borderRadius: '20px',
+          position: 'relative',
+          overflow: 'hidden',
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 2,
+            background: 'linear-gradient(90deg, #E63946, #0099CC, transparent)',
+          },
         }}
       >
-        <Typography variant="h5" fontWeight="bold" mb={3}>
-          {"Changer le mot de passe"}
-        </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 3 }}>
+          <Typography variant="h5" fontWeight={800} color="var(--mirai-white)">
+            {"Changer le mot de passe"}
+          </Typography>
+          <Typography sx={{ fontFamily: '"Noto Serif JP", serif', fontSize: '0.7rem', color: 'rgba(0,194,255,0.2)', letterSpacing: '0.1em' }}>
+            パスワード
+          </Typography>
+        </Box>
 
         {passwordError && (
           <Alert severity="error" sx={{ mb: 2 }}>
@@ -300,8 +334,16 @@ export function ProfilePage() {
             type="submit"
             variant="contained"
             disabled={isPasswordSubmitting}
-            startIcon={isPasswordSubmitting ? <CircularProgress size={16} /> : undefined}
-            sx={{ mt: 1 }}
+            startIcon={isPasswordSubmitting ? <CircularProgress size={16} color="inherit" /> : undefined}
+            sx={{
+              mt: 1,
+              py: 1.5,
+              borderRadius: '12px',
+              fontWeight: 700,
+              background: 'linear-gradient(45deg, #E63946, #C62828)',
+              '&:hover': { transform: 'translateY(-2px)' },
+              transition: 'transform 0.2s',
+            }}
           >
             {"Modifier le mot de passe"}
           </Button>

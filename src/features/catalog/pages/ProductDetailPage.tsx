@@ -226,14 +226,21 @@ export function ProductDetailPage() {
           {/* Right: product info panel */}
           <Grid size={{ xs: 12, md: 5 }}>
             <Box
+              className="mirai-glass"
               sx={{
-                backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(22, 22, 28, 0.6)' : 'background.paper',
-                backdropFilter: (theme) => theme.palette.mode === 'dark' ? 'blur(16px)' : 'none',
-                border: '1px solid',
-                borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'divider',
-                borderRadius: '16px',
+                borderRadius: '20px',
                 p: { xs: 2.5, md: 3.5 },
-                boxShadow: (theme) => theme.palette.mode === 'dark' ? '0 16px 40px rgba(0,0,0,0.4)' : 'none',
+                position: 'relative',
+                overflow: 'hidden',
+                '&::before': {
+                  content: '""',
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: 2,
+                  background: 'linear-gradient(90deg, #00C2FF, #0099CC, transparent)',
+                },
               }}
             >
               <Stack spacing={2.5}>
@@ -359,9 +366,13 @@ export function ProductDetailPage() {
                       fontWeight: 700,
                       letterSpacing: '0.06em',
                       textTransform: 'uppercase',
+                      borderRadius: '12px',
+                      background: isAddDisabled ? undefined : 'linear-gradient(45deg, #00C2FF, #0099CC)',
                       boxShadow: isAddDisabled
                         ? 'none'
                         : '0 0 24px rgba(0,194,255,0.35)',
+                      transition: 'all 0.3s',
+                      '&:hover': { transform: isAddDisabled ? 'none' : 'translateY(-2px)' },
                     }}
                   >
                     {variantNotSelected
