@@ -20,6 +20,8 @@ export interface ProductVariantDisplay {
   id: number;
   sku: string | null;
   price: number; // integer in centimes
+  promo_price: number | null;
+  is_on_sale: boolean;
   stock: number;
   attribute_values: { attribute: string; value: string }[];
 }
@@ -33,13 +35,16 @@ export interface Product {
   attributes: Record<string, string | number> | null;
   is_active: boolean;
   is_featured: boolean;
+  promo_price: number | null;
+  is_new: boolean;
+  is_on_sale: boolean;
   name: string;
   description: string | null;
   slug: string;
   category: Category | null;
   images: ProductImage[];
   /** Default variant — always present (holds base stock/price) */
-  default_variant?: { id: number; sku: string; price: number; stock: number } | null;
+  default_variant?: { id: number; sku: string; price: number; promo_price: number | null; is_on_sale: boolean; stock: number } | null;
   /** Non-default variants (only if product has attribute-based variants) */
   variants?: ProductVariantDisplay[];
   created_at: string;
@@ -73,6 +78,8 @@ export interface CatalogFilters {
   'filter[in_stock]'?: string;
   'filter[search]'?: string;
   'filter[is_featured]'?: string;
+  'filter[is_new]'?: string;
+  'filter[is_on_sale]'?: string;
   sort?: string;
   page?: number;
   per_page?: number;

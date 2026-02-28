@@ -29,6 +29,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import StarIcon from '@mui/icons-material/Star';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
+import NewReleasesIcon from '@mui/icons-material/NewReleases';
+import NewReleasesOutlinedIcon from '@mui/icons-material/NewReleasesOutlined';
 import { useAdminProducts, useDeleteProduct, useUpdateProduct } from '../api/products';
 import type { AdminProduct } from '../types';
 function formatPrice(centimes: number): string {
@@ -104,6 +106,13 @@ export function AdminProductsPage() {
     });
   };
 
+  const handleToggleNew = async (product: AdminProduct) => {
+    await updateMutation.mutateAsync({
+      id: product.id,
+      is_new: !product.is_new,
+    });
+  };
+
   const handleDelete = async (id: number) => {
     await deleteMutation.mutateAsync(id);
     setDeleteTarget(null);
@@ -154,9 +163,11 @@ export function AdminProductsPage() {
               <TableCell sx={{ borderBottom: 'none', color: 'var(--mirai-gray)', fontWeight: 600 }}>Nom (FR)</TableCell>
               <TableCell sx={{ borderBottom: 'none', color: 'var(--mirai-gray)', fontWeight: 600 }}>SKU</TableCell>
               <TableCell sx={{ borderBottom: 'none', color: 'var(--mirai-gray)', fontWeight: 600 }}>Prix</TableCell>
+              <TableCell sx={{ borderBottom: 'none', color: 'var(--mirai-gray)', fontWeight: 600 }}>Promo</TableCell>
               <TableCell sx={{ borderBottom: 'none', color: 'var(--mirai-gray)', fontWeight: 600 }}>Stock</TableCell>
               <TableCell sx={{ borderBottom: 'none', color: 'var(--mirai-gray)', fontWeight: 600 }}>Actif</TableCell>
               <TableCell sx={{ borderBottom: 'none', color: 'var(--mirai-gray)', fontWeight: 600 }}>Vedette</TableCell>
+              <TableCell sx={{ borderBottom: 'none', color: 'var(--mirai-gray)', fontWeight: 600 }}>Nouveau</TableCell>
               <TableCell sx={{ borderBottom: 'none', color: 'var(--mirai-gray)', fontWeight: 600 }} align="right">Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -210,6 +221,20 @@ export function AdminProductsPage() {
                     <TableCell>{product.sku}</TableCell>
                     <TableCell>{formatPrice(product.price)}</TableCell>
                     <TableCell>
+                      {product.is_on_sale && product.default_variant?.promo_price ? (
+                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.25 }}>
+                          <Typography sx={{ fontSize: '0.72rem', color: 'text.disabled', textDecoration: 'line-through' }}>
+                            {formatPrice(product.price)}
+                          </Typography>
+                          <Typography sx={{ fontSize: '0.82rem', color: '#FF6B35', fontWeight: 600 }}>
+                            {formatPrice(product.default_variant.promo_price)}
+                          </Typography>
+                        </Box>
+                      ) : (
+                        '—'
+                      )}
+                    </TableCell>
+                    <TableCell>
                       {product.stock_quantity}
                     </TableCell>
                     <TableCell>
@@ -233,6 +258,16 @@ export function AdminProductsPage() {
                         sx={{ color: product.is_featured ? '#F59E0B' : 'text.disabled' }}
                       >
                         {product.is_featured ? <StarIcon fontSize="small" /> : <StarBorderIcon fontSize="small" />}
+                      </IconButton>
+                    </TableCell>
+                    <TableCell>
+                      <IconButton
+                        size="small"
+                        title={product.is_new ? 'Retirer nouveau / Remove new' : 'Marquer nouveau / Mark new'}
+                        onClick={() => void handleToggleNew(product)}
+                        sx={{ color: product.is_new ? '#00C853' : 'text.disabled' }}
+                      >
+                        {product.is_new ? <NewReleasesIcon fontSize="small" /> : <NewReleasesOutlinedIcon fontSize="small" />}
                       </IconButton>
                     </TableCell>
                     <TableCell align="right">

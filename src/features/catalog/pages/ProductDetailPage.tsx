@@ -102,8 +102,10 @@ export function ProductDetailPage() {
     );
   }, [product?.variants, selectedVariantValues, variationTypes]);
 
-  // Determine displayed price and stock
+  // Determine displayed price, promo, and stock from selected or default variant
   const displayPrice = selectedVariant?.price ?? product?.price ?? 0;
+  const displayPromoPrice = selectedVariant?.promo_price ?? product?.default_variant?.promo_price ?? null;
+  const displayIsOnSale = selectedVariant?.is_on_sale ?? product?.default_variant?.is_on_sale ?? false;
   const displayStock = selectedVariant?.stock ?? product?.stock_quantity ?? 0;
   const displayInStock = displayStock > 0;
 
@@ -248,22 +250,38 @@ export function ProductDetailPage() {
               }}
             >
               <Stack spacing={2.5}>
-                {/* Category chip */}
-                {product.category && (
-                  <Chip
-                    label={product.category.name}
-                    size="small"
-                    sx={{
-                      alignSelf: 'flex-start',
-                      backgroundColor: 'rgba(0,194,255,0.12)',
-                      color: '#00C2FF',
-                      fontSize: '0.65rem',
-                      fontWeight: 700,
-                      letterSpacing: '0.08em',
-                      textTransform: 'uppercase',
-                    }}
-                  />
-                )}
+                {/* Category chip + NEW badge */}
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
+                  {product.category && (
+                    <Chip
+                      label={product.category.name}
+                      size="small"
+                      sx={{
+                        backgroundColor: 'rgba(0,194,255,0.12)',
+                        color: '#00C2FF',
+                        fontSize: '0.65rem',
+                        fontWeight: 700,
+                        letterSpacing: '0.08em',
+                        textTransform: 'uppercase',
+                      }}
+                    />
+                  )}
+                  {product.is_new && (
+                    <Chip
+                      label="NOUVEAU"
+                      size="small"
+                      sx={{
+                        backgroundColor: 'rgba(0,200,83,0.15)',
+                        color: '#00C853',
+                        border: '1px solid rgba(0,200,83,0.3)',
+                        fontSize: '0.65rem',
+                        fontWeight: 700,
+                        letterSpacing: '0.08em',
+                        textTransform: 'uppercase',
+                      }}
+                    />
+                  )}
+                </Box>
 
                 {/* Product name */}
                 <Typography
@@ -280,20 +298,64 @@ export function ProductDetailPage() {
                 </Typography>
 
                 {/* Price */}
-                <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1 }}>
-                  <BoltIcon sx={{ fontSize: '1.2rem', color: '#00C2FF', mb: '-2px' }} />
-                  <Typography
-                    sx={{
-                      fontSize: '2rem',
-                      fontWeight: 800,
-                      color: '#00C2FF',
-                      lineHeight: 1,
-                      textShadow: '0 0 20px rgba(0,194,255,0.4)',
-                    }}
-                  >
-                    {formatCurrency(displayPrice)}
-                  </Typography>
-                </Box>
+                {displayIsOnSale && displayPromoPrice != null ? (
+                  <Box>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
+                      <Chip
+                        label="PROMO"
+                        size="small"
+                        sx={{
+                          backgroundColor: 'rgba(255,107,53,0.15)',
+                          color: '#FF6B35',
+                          border: '1px solid rgba(255,107,53,0.3)',
+                          fontSize: '0.6rem',
+                          fontWeight: 700,
+                          letterSpacing: '0.08em',
+                          height: 20,
+                        }}
+                      />
+                      <Typography
+                        sx={{
+                          fontSize: '0.95rem',
+                          color: 'text.disabled',
+                          textDecoration: 'line-through',
+                          fontWeight: 500,
+                        }}
+                      >
+                        {formatCurrency(displayPrice)}
+                      </Typography>
+                    </Box>
+                    <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1 }}>
+                      <BoltIcon sx={{ fontSize: '1.2rem', color: '#FF6B35', mb: '-2px' }} />
+                      <Typography
+                        sx={{
+                          fontSize: '2rem',
+                          fontWeight: 800,
+                          color: '#FF6B35',
+                          lineHeight: 1,
+                          textShadow: '0 0 20px rgba(255,107,53,0.4)',
+                        }}
+                      >
+                        {formatCurrency(displayPromoPrice)}
+                      </Typography>
+                    </Box>
+                  </Box>
+                ) : (
+                  <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1 }}>
+                    <BoltIcon sx={{ fontSize: '1.2rem', color: '#00C2FF', mb: '-2px' }} />
+                    <Typography
+                      sx={{
+                        fontSize: '2rem',
+                        fontWeight: 800,
+                        color: '#00C2FF',
+                        lineHeight: 1,
+                        textShadow: '0 0 20px rgba(0,194,255,0.4)',
+                      }}
+                    >
+                      {formatCurrency(displayPrice)}
+                    </Typography>
+                  </Box>
+                )}
 
                 {/* Variant selectors */}
                 {variationTypes.length > 0 && (
