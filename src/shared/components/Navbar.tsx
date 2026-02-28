@@ -14,7 +14,6 @@ import ListItemText from '@mui/material/ListItemText';
 import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import Drawer from '@mui/material/Drawer';
-import Tooltip from '@mui/material/Tooltip';
 import Badge from '@mui/material/Badge';
 import InputBase from '@mui/material/InputBase';
 import Popper from '@mui/material/Popper';
@@ -34,8 +33,6 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
-import DarkModeRoundedIcon from '@mui/icons-material/DarkModeRounded';
-import LightModeRoundedIcon from '@mui/icons-material/LightModeRounded';
 import PeopleIcon from '@mui/icons-material/People';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import TuneIcon from '@mui/icons-material/Tune';
@@ -44,7 +41,6 @@ import { useAuthStore } from '../../features/auth/store';
 import { CartBadge } from '../../features/cart/components/CartBadge';
 import { CartDrawer } from '../../features/cart/components/CartDrawer';
 import { useCategories } from '../../features/catalog/api/categories';
-import { useThemeStore } from '../../app/themeStore';
 import { apiClient } from '../api/client';
 import miraiLogo from '../../assets/miraiTech-Logo.png';
 
@@ -56,7 +52,6 @@ export function Navbar() {
   const location = useLocation();
   const user = useAuthStore((s) => s.user);
   const clearAuth = useAuthStore((s) => s.clearAuth);
-  const { mode, toggleMode } = useThemeStore();
 
   const { data: categoriesData } = useCategories();
   const categories = categoriesData?.data ?? [];
@@ -399,19 +394,6 @@ export function Navbar() {
 
           {/* ── Right Actions ── */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.25, ml: 'auto' }}>
-            {/* ── Theme Toggle ── */}
-            <Tooltip title={mode === 'dark' ? 'Mode clair' : 'Mode sombre'}>
-              <IconButton
-                onClick={toggleMode}
-                size="small"
-                sx={{ color: 'text.secondary', '&:hover': { color: 'text.primary', backgroundColor: 'rgba(255,255,255,0.06)' } }}
-              >
-                {mode === 'dark'
-                  ? <LightModeRoundedIcon fontSize="small" />
-                  : <DarkModeRoundedIcon fontSize="small" />}
-              </IconButton>
-            </Tooltip>
-
             <CartBadge onToggle={() => setDrawerOpen(true)} />
 
             {user ? (
