@@ -7,8 +7,13 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { AnimatePresence, motion, useMotionValue, animate } from 'framer-motion';
 import { useHeroBanners } from '../../admin/api/heroBanners';
 
-/* ─── Progress bar that resets every slide ───────────────────────────── */
-function ProgressBar({ duration, resetKey }: { duration: number; resetKey: number }) {
+const CYAN = '#00C2FF';
+const PINK = '#FF2D78';
+
+/* ─── Segmented progress bar ─────────────────────────────────────────── */
+function ProgressBar({ duration, resetKey, current, total }: {
+  duration: number; resetKey: number; current: number; total: number;
+}) {
   const scaleX = useMotionValue(0);
 
   useEffect(() => {
@@ -19,27 +24,38 @@ function ProgressBar({ duration, resetKey }: { duration: number; resetKey: numbe
   }, [resetKey, duration]);
 
   return (
-    <Box sx={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 2, bgcolor: 'rgba(255,255,255,0.08)', zIndex: 5, overflow: 'hidden' }}>
-      <motion.div
-        style={{
-          width: '100%',
-          height: '100%',
-          background: 'linear-gradient(90deg, #00C2FF, #0099CC)',
-          scaleX,
-          transformOrigin: 'left',
-        }}
-      />
+    <Box sx={{
+      position: 'absolute', bottom: 0, left: 0, right: 0, height: 3, zIndex: 5,
+      display: 'flex', gap: '2px',
+    }}>
+      {Array.from({ length: total }).map((_, i) => (
+        <Box key={i} sx={{ flex: 1, bgcolor: 'rgba(255,255,255,0.06)', overflow: 'hidden', borderRadius: 0.5 }}>
+          {i < current ? (
+            /* Already played — full bar */
+            <Box sx={{ width: '100%', height: '100%', background: `linear-gradient(90deg, ${CYAN}, ${CYAN}AA)` }} />
+          ) : i === current ? (
+            /* Active segment — animated fill */
+            <motion.div style={{
+              width: '100%', height: '100%',
+              background: `linear-gradient(90deg, ${CYAN}, ${PINK}AA)`,
+              scaleX, transformOrigin: 'left',
+            }} />
+          ) : null}
+        </Box>
+      ))}
     </Box>
   );
 }
 
 /* ─── Ken-Burns zoom on active image ─────────────────────────────────── */
-function SlideImage({ src, alt, duration, objectPosition }: { src: string; alt: string; duration: number; objectPosition?: string }) {
+function SlideImage({ src, alt, duration, objectPosition }: {
+  src: string; alt: string; duration: number; objectPosition?: string;
+}) {
   return (
     <motion.div
-      initial={{ scale: 1.04 }}
-      animate={{ scale: 1.12 }}
-      transition={{ duration: duration / 1000 + 0.6, ease: 'linear' }}
+      initial={{ scale: 1.02 }}
+      animate={{ scale: 1.1 }}
+      transition={{ duration: duration / 1000 + 0.8, ease: 'linear' }}
       style={{ width: '100%', height: '100%', position: 'absolute', inset: 0 }}
     >
       <Box
@@ -52,9 +68,24 @@ function SlideImage({ src, alt, duration, objectPosition }: { src: string; alt: 
   );
 }
 
+/* ─── Neon border glow overlay ───────────────────────────────────────── */
+function NeonBorderOverlay() {
+  return (
+    <motion.div
+      animate={{ opacity: [0.3, 0.6, 0.3] }}
+      transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+      style={{
+        position: 'absolute', inset: 0, zIndex: 3, pointerEvents: 'none',
+        borderRadius: 'inherit',
+        boxShadow: `inset 0 0 30px rgba(0,194,255,0.08), inset 0 0 60px rgba(0,194,255,0.03)`,
+      }}
+    />
+  );
+}
+
 /**
- * Hero image carousel — crossfade + scale transitions, Ken-Burns zoom,
- * animated progress bar, same-tab link navigation.
+ * Hero image carousel — crossfade + directional slide transitions,
+ * Ken-Burns zoom, segmented progress bar, cyberpunk overlays.
  */
 export function HeroCarousel() {
   const { data } = useHeroBanners();
@@ -109,6 +140,7 @@ export function HeroCarousel() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
+          border: '1px solid rgba(0,194,255,0.08)',
         }}
       >
         <Typography sx={{ color: 'rgba(0,194,255,0.2)', fontSize: '0.75rem', letterSpacing: '0.2em' }}>
@@ -120,11 +152,26 @@ export function HeroCarousel() {
 
   const current = banners[index];
 
-  /* Crossfade + subtle directional offset + scale */
+  /* Crossfade + directional slide + scale */
   const variants = {
-    enter: (d: number) => ({ x: d > 0 ? 45 : -45, opacity: 0, scale: 0.97 }),
-    center: { x: 0, opacity: 1, scale: 1 },
-    exit:  (d: number) => ({ x: d > 0 ? -45 : 45, opacity: 0, scale: 1.02 }),
+    enter: (d: number) => ({
+      x: d > 0 ? 60 : -60,
+      opacity: 0,
+      scale: 0.96,
+      filter: 'brightness(0.6)',
+    }),
+    center: {
+      x: 0,
+      opacity: 1,
+      scale: 1,
+      filter: 'brightness(1)',
+    },
+    exit: (d: number) => ({
+      x: d > 0 ? -60 : 60,
+      opacity: 0,
+      scale: 1.03,
+      filter: 'brightness(0.5)',
+    }),
   };
 
   return (
@@ -136,8 +183,13 @@ export function HeroCarousel() {
         aspectRatio: { xs: '16/9', md: '21/9' },
         borderRadius: 3,
         overflow: 'hidden',
+        border: '1px solid rgba(0,194,255,0.06)',
+        boxShadow: '0 0 40px rgba(0,194,255,0.06), 0 4px 30px rgba(0,0,0,0.4)',
       }}
     >
+      {/* Neon border glow */}
+      <NeonBorderOverlay />
+
       <AnimatePresence initial={false} custom={direction} mode="wait">
         <motion.div
           key={current.id}
@@ -147,9 +199,10 @@ export function HeroCarousel() {
           animate="center"
           exit="exit"
           transition={{
-            opacity: { duration: 0.5, ease: 'easeInOut' },
-            x:       { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] },
-            scale:   { duration: 0.5, ease: 'easeInOut' },
+            opacity:    { duration: 0.55, ease: 'easeInOut' },
+            x:          { duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94] },
+            scale:      { duration: 0.55, ease: 'easeInOut' },
+            filter:     { duration: 0.55, ease: 'easeInOut' },
           }}
           style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}
         >
@@ -175,12 +228,15 @@ export function HeroCarousel() {
               objectPosition={current.object_position}
             />
 
-            {/* Dark gradient for readability */}
+            {/* Dark cinematic gradient */}
             <Box
               sx={{
                 position: 'absolute',
                 inset: 0,
-                background: 'linear-gradient(to top, rgba(11,11,14,0.82) 0%, rgba(11,11,14,0.18) 55%, transparent 100%)',
+                background: `
+                  linear-gradient(to top, rgba(11,11,14,0.88) 0%, rgba(11,11,14,0.25) 45%, transparent 100%),
+                  linear-gradient(to right, rgba(11,11,14,0.3) 0%, transparent 20%, transparent 80%, rgba(11,11,14,0.3) 100%)
+                `,
                 zIndex: 1,
               }}
             />
@@ -190,7 +246,18 @@ export function HeroCarousel() {
               sx={{
                 position: 'absolute',
                 inset: 0,
-                backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.055) 3px, rgba(0,0,0,0.055) 4px)',
+                backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.06) 3px, rgba(0,0,0,0.06) 4px)',
+                pointerEvents: 'none',
+                zIndex: 2,
+              }}
+            />
+
+            {/* Subtle vignette overlay */}
+            <Box
+              sx={{
+                position: 'absolute',
+                inset: 0,
+                background: 'radial-gradient(ellipse at center, transparent 50%, rgba(11,11,14,0.35) 100%)',
                 pointerEvents: 'none',
                 zIndex: 2,
               }}
@@ -200,19 +267,19 @@ export function HeroCarousel() {
             {(current.title || current.subtitle) && (
               <Box sx={{ position: 'absolute', bottom: 46, left: 18, right: 18, zIndex: 3 }}>
                 <motion.div
-                  initial={{ opacity: 0, y: 10 }}
+                  initial={{ opacity: 0, y: 14 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.22, duration: 0.45 }}
+                  transition={{ delay: 0.25, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
                 >
                   {current.title && (
                     <Typography
                       sx={{
-                        fontSize: { xs: '0.92rem', md: '1.15rem' },
+                        fontSize: { xs: '0.92rem', md: '1.2rem' },
                         fontWeight: 800,
                         color: '#F5F7FA',
-                        letterSpacing: '0.03em',
-                        textShadow: '0 2px 10px rgba(0,0,0,0.75)',
-                        mb: 0.4,
+                        letterSpacing: '0.05em',
+                        textShadow: `0 2px 12px rgba(0,0,0,0.8), 0 0 20px rgba(0,194,255,0.15)`,
+                        mb: 0.5,
                         lineHeight: 1.25,
                       }}
                     >
@@ -221,15 +288,25 @@ export function HeroCarousel() {
                   )}
                   {current.subtitle && (
                     <Typography
-                      sx={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.58)', letterSpacing: '0.07em' }}
+                      sx={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.55)', letterSpacing: '0.08em' }}
                     >
                       {current.subtitle}
                     </Typography>
                   )}
                   {current.link && (
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.6, mt: 0.7 }}>
-                      <Box sx={{ width: 16, height: 1.5, bgcolor: '#00C2FF' }} />
-                      <Typography sx={{ fontSize: '0.62rem', fontWeight: 700, color: '#00C2FF', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.7, mt: 0.8 }}>
+                      <motion.div
+                        animate={{ width: [16, 24, 16] }}
+                        transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+                        style={{ height: 2, background: `linear-gradient(90deg, ${CYAN}, ${PINK})`, borderRadius: 1 }}
+                      />
+                      <Typography sx={{
+                        fontSize: '0.62rem', fontWeight: 700, letterSpacing: '0.14em',
+                        textTransform: 'uppercase',
+                        background: `linear-gradient(90deg, ${CYAN}, ${PINK})`,
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                      }}>
                         EXPLORER
                       </Typography>
                     </Box>
@@ -241,15 +318,17 @@ export function HeroCarousel() {
         </motion.div>
       </AnimatePresence>
 
-      {/* Animated bottom progress bar */}
-      <ProgressBar duration={DURATION} resetKey={resetKey} />
+      {/* Segmented progress bar */}
+      {count > 1 && (
+        <ProgressBar duration={DURATION} resetKey={resetKey} current={index} total={count} />
+      )}
 
       {/* Navigation */}
       {count > 1 && (
         <Box
           sx={{
             position: 'absolute',
-            bottom: 12,
+            bottom: 14,
             left: '50%',
             transform: 'translateX(-50%)',
             display: 'flex',
@@ -263,11 +342,12 @@ export function HeroCarousel() {
             onClick={() => go(-1)}
             sx={{
               p: 0.4,
-              color: 'rgba(255,255,255,0.75)',
-              bgcolor: 'rgba(0,0,0,0.45)',
-              backdropFilter: 'blur(6px)',
-              transition: 'all 0.2s',
-              '&:hover': { bgcolor: 'rgba(0,194,255,0.3)', color: '#00C2FF' },
+              color: 'rgba(255,255,255,0.8)',
+              bgcolor: 'rgba(0,0,0,0.5)',
+              backdropFilter: 'blur(8px)',
+              border: '1px solid rgba(0,194,255,0.12)',
+              transition: 'all 0.25s',
+              '&:hover': { bgcolor: 'rgba(0,194,255,0.25)', color: CYAN, borderColor: 'rgba(0,194,255,0.35)' },
             }}
           >
             <KeyboardArrowLeftIcon sx={{ fontSize: 16 }} />
@@ -276,15 +356,19 @@ export function HeroCarousel() {
           {banners.map((_, i) => (
             <motion.div
               key={i}
-              animate={{ width: i === index ? 18 : 5, opacity: i === index ? 1 : 0.35 }}
-              transition={{ duration: 0.3 }}
+              animate={{
+                width: i === index ? 20 : 6,
+                opacity: i === index ? 1 : 0.3,
+              }}
+              transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
               onClick={() => goTo(i)}
               style={{
-                height: 5,
+                height: 6,
                 borderRadius: 3,
-                backgroundColor: '#00C2FF',
+                background: i === index ? `linear-gradient(90deg, ${CYAN}, ${PINK})` : CYAN,
                 cursor: 'pointer',
                 flexShrink: 0,
+                boxShadow: i === index ? `0 0 8px ${CYAN}55` : 'none',
               }}
             />
           ))}
@@ -294,15 +378,35 @@ export function HeroCarousel() {
             onClick={() => go(1)}
             sx={{
               p: 0.4,
-              color: 'rgba(255,255,255,0.75)',
-              bgcolor: 'rgba(0,0,0,0.45)',
-              backdropFilter: 'blur(6px)',
-              transition: 'all 0.2s',
-              '&:hover': { bgcolor: 'rgba(0,194,255,0.3)', color: '#00C2FF' },
+              color: 'rgba(255,255,255,0.8)',
+              bgcolor: 'rgba(0,0,0,0.5)',
+              backdropFilter: 'blur(8px)',
+              border: '1px solid rgba(0,194,255,0.12)',
+              transition: 'all 0.25s',
+              '&:hover': { bgcolor: 'rgba(0,194,255,0.25)', color: CYAN, borderColor: 'rgba(0,194,255,0.35)' },
             }}
           >
             <KeyboardArrowRightIcon sx={{ fontSize: 16 }} />
           </IconButton>
+        </Box>
+      )}
+
+      {/* Slide counter */}
+      {count > 1 && (
+        <Box sx={{
+          position: 'absolute', top: 12, right: 14, zIndex: 6,
+          display: 'flex', alignItems: 'center', gap: 0.5,
+          bgcolor: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(8px)',
+          borderRadius: 1.5, px: 1, py: 0.3,
+          border: '1px solid rgba(0,194,255,0.1)',
+        }}>
+          <Typography sx={{ fontSize: '0.58rem', fontWeight: 700, color: CYAN, fontFamily: 'monospace' }}>
+            {String(index + 1).padStart(2, '0')}
+          </Typography>
+          <Box sx={{ width: 8, height: 1, bgcolor: 'rgba(255,255,255,0.2)' }} />
+          <Typography sx={{ fontSize: '0.58rem', fontWeight: 700, color: 'rgba(255,255,255,0.35)', fontFamily: 'monospace' }}>
+            {String(count).padStart(2, '0')}
+          </Typography>
         </Box>
       )}
     </Box>
