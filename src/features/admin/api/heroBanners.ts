@@ -16,6 +16,7 @@ export interface HeroBanner {
   link: string | null;
   sort_order: number;
   is_active: boolean;
+  object_position: string;
   image: HeroBannerImage | null;
   created_at: string;
   updated_at: string;

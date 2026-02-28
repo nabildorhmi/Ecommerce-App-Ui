@@ -34,7 +34,7 @@ function ProgressBar({ duration, resetKey }: { duration: number; resetKey: numbe
 }
 
 /* ─── Ken-Burns zoom on active image ─────────────────────────────────── */
-function SlideImage({ src, alt, duration }: { src: string; alt: string; duration: number }) {
+function SlideImage({ src, alt, duration, objectPosition }: { src: string; alt: string; duration: number; objectPosition?: string }) {
   return (
     <motion.div
       initial={{ scale: 1.04 }}
@@ -46,7 +46,7 @@ function SlideImage({ src, alt, duration }: { src: string; alt: string; duration
         component="img"
         src={src}
         alt={alt}
-        sx={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+        sx={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: objectPosition ?? 'center center', display: 'block' }}
       />
     </motion.div>
   );
@@ -101,8 +101,9 @@ export function HeroCarousel() {
     return (
       <Box
         sx={{
-          width: '100%',
-          height: { xs: 260, sm: 360, md: '25vh', lg: '35vh' },
+          width: { xs: '100%', md: 'min(100%, calc(44vh * (21 / 9)))' },
+          mx: 'auto',
+          aspectRatio: { xs: '16/9', md: '21/9' },
           borderRadius: 3,
           bgcolor: '#0B0B0E',
           display: 'flex',
@@ -130,8 +131,9 @@ export function HeroCarousel() {
     <Box
       sx={{
         position: 'relative',
-        width: '100%',
-        height: { xs: 260, sm: 360, md: '25vh', lg: '35vh' },
+        width: { xs: '100%', md: 'min(100%, calc(44vh * (21 / 9)))' },
+        mx: 'auto',
+        aspectRatio: { xs: '16/9', md: '21/9' },
         borderRadius: 3,
         overflow: 'hidden',
       }}
@@ -170,6 +172,7 @@ export function HeroCarousel() {
               src={current.image!.hero}
               alt={current.title ?? 'Banner'}
               duration={DURATION}
+              objectPosition={current.object_position}
             />
 
             {/* Dark gradient for readability */}

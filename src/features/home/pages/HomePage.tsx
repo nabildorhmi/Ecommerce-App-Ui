@@ -32,7 +32,6 @@ function HeroBanner() {
         bgcolor: 'background.default',
         py: { xs: 3, md: 4 },
         overflow: 'hidden',
-        maxHeight: '45vh'
       }}
     >
       {/* Futuristic / Japanese side decorations */}

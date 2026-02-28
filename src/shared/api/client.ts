@@ -16,6 +16,13 @@ apiClient.interceptors.request.use((config) => {
     config.headers.Authorization = `Bearer ${token}`;
   }
   config.headers['Accept-Language'] = 'fr';
+
+  // When sending FormData, remove the default Content-Type so axios can
+  // auto-set "multipart/form-data; boundary=…" with the correct boundary.
+  if (config.data instanceof FormData) {
+    delete config.headers['Content-Type'];
+  }
+
   return config;
 });
 

@@ -18,10 +18,13 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import Skeleton from '@mui/material/Skeleton';
 import Alert from '@mui/material/Alert';
+import Tooltip from '@mui/material/Tooltip';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
+import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
+import CenterFocusStrongIcon from '@mui/icons-material/CenterFocusStrong';
 import {
   useAdminHeroBanners,
   useCreateHeroBanner,
@@ -151,6 +154,8 @@ function BannerDialog({
   const createMutation = useCreateHeroBanner();
   const updateMutation = useUpdateHeroBanner();
   const fileRef = useRef<HTMLInputElement>(null);
+  const dragRef = useRef<{ x: number; y: number; px: number; py: number } | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
 
   const [title, setTitle] = useState('');
   const [subtitle, setSubtitle] = useState('');
@@ -159,6 +164,7 @@ function BannerDialog({
   const [isActive, setIsActive] = useState(true);
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
+  const [objectPosition, setObjectPosition] = useState('50% 50%');
 
   // Populate fields when dialog opens for editing
   const handleEnter = () => {
@@ -169,6 +175,7 @@ function BannerDialog({
       setSortOrder(banner.sort_order);
       setIsActive(banner.is_active);
       setPreview(banner.image?.hero ?? null);
+      setObjectPosition(banner.object_position ?? '50% 50%');
     } else {
       setTitle('');
       setSubtitle('');
@@ -176,6 +183,7 @@ function BannerDialog({
       setSortOrder(0);
       setIsActive(true);
       setPreview(null);
+      setObjectPosition('50% 50%');
     }
     setFile(null);
   };
@@ -185,7 +193,37 @@ function BannerDialog({
     if (selected) {
       setFile(selected);
       setPreview(URL.createObjectURL(selected));
+      setObjectPosition('50% 50%');
     }
+  };
+
+  const handleResetPosition = () => setObjectPosition('50% 50%');
+
+  /** Drag-to-pan: pointerdown starts tracking */
+  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    e.currentTarget.setPointerCapture(e.pointerId);
+    const [px, py] = objectPosition.split(' ').map(parseFloat);
+    dragRef.current = { x: e.clientX, y: e.clientY, px, py };
+    setIsDragging(true);
+  };
+
+  /** Drag-to-pan: each pointer move shifts the visible portion of the image */
+  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!dragRef.current) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    // Dragging right → image moves right → decreasing X reveals left side
+    const dx = ((dragRef.current.x - e.clientX) / rect.width) * 100 * 1.8;
+    const dy = ((dragRef.current.y - e.clientY) / rect.height) * 100 * 1.8;
+    const nx = Math.min(100, Math.max(0, dragRef.current.px + dx));
+    const ny = Math.min(100, Math.max(0, dragRef.current.py + dy));
+    setObjectPosition(`${Math.round(nx)}% ${Math.round(ny)}%`);
+    // Incremental: next delta is relative to current pos
+    dragRef.current = { x: e.clientX, y: e.clientY, px: nx, py: ny };
+  };
+
+  const onPointerUp = () => {
+    dragRef.current = null;
+    setIsDragging(false);
   };
 
   const handleSubmit = async () => {
@@ -195,6 +233,7 @@ function BannerDialog({
     fd.append('link', link);
     fd.append('sort_order', String(sortOrder));
     fd.append('is_active', isActive ? '1' : '0');
+    fd.append('object_position', objectPosition);
     if (file) fd.append('image', file);
 
     if (banner) {
@@ -212,42 +251,86 @@ function BannerDialog({
     <Dialog
       open={open}
       onClose={onClose}
-      maxWidth="sm"
+      maxWidth="md"
       fullWidth
       TransitionProps={{ onEnter: handleEnter }}
     >
       <DialogTitle>{isCreate ? 'Ajouter un banner' : 'Modifier le banner'}</DialogTitle>
       <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: '8px !important' }}>
-        {/* Image preview / upload */}
-        <Box
-          sx={{
-            width: '100%',
-            height: 200,
-            border: '2px dashed',
-            borderColor: 'divider',
-            borderRadius: 2,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            overflow: 'hidden',
-            position: 'relative',
-            bgcolor: 'action.hover',
-          }}
-          onClick={() => fileRef.current?.click()}
-        >
-          {preview ? (
-            <Box component="img" src={preview} alt="Preview" sx={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-          ) : (
+        {/* Image preview — drag to pan, same 21:9 aspect ratio as desktop hero */}
+        {preview ? (
+          <Box sx={{ position: 'relative', width: '100%' }}>
+            <Box
+              sx={{
+                width: '100%',
+                aspectRatio: '21/9',
+                borderRadius: 2,
+                overflow: 'hidden',
+                position: 'relative',
+                cursor: isDragging ? 'grabbing' : 'grab',
+                border: '2px solid',
+                borderColor: 'primary.main',
+                userSelect: 'none',
+              }}
+              onPointerDown={onPointerDown}
+              onPointerMove={onPointerMove}
+              onPointerUp={onPointerUp}
+              onPointerLeave={onPointerUp}
+            >
+              <Box
+                component="img"
+                src={preview}
+                alt="Preview"
+                draggable={false}
+                sx={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition, display: 'block', pointerEvents: 'none', userSelect: 'none' }}
+              />
+            </Box>
+            {/* Hint + controls */}
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 0.5 }}>
+              <Typography variant="caption" color="text.secondary">
+                Glissez l’image pour ajuster le cadrage
+              </Typography>
+              <Box display="flex" gap={0.5}>
+                <Tooltip title="Centrer">
+                  <IconButton size="small" onClick={handleResetPosition}>
+                    <CenterFocusStrongIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Changer l'image">
+                  <IconButton size="small" onClick={() => fileRef.current?.click()}>
+                    <PhotoCameraIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              </Box>
+            </Box>
+          </Box>
+        ) : (
+          <Box
+            sx={{
+              width: '100%',
+              aspectRatio: '21/9',
+              border: '2px dashed',
+              borderColor: 'divider',
+              borderRadius: 2,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              overflow: 'hidden',
+              position: 'relative',
+              bgcolor: 'action.hover',
+            }}
+            onClick={() => fileRef.current?.click()}
+          >
             <Box textAlign="center">
               <CloudUploadIcon sx={{ fontSize: 40, color: 'text.secondary' }} />
               <Typography variant="body2" color="text.secondary">
                 Cliquez pour sélectionner une image
               </Typography>
             </Box>
-          )}
-          <input ref={fileRef} type="file" accept="image/*" hidden onChange={handleFileChange} />
-        </Box>
+          </Box>
+        )}
+        <input ref={fileRef} type="file" accept="image/*" hidden onChange={handleFileChange} />
 
         <TextField label="Titre" size="small" value={title} onChange={(e) => setTitle(e.target.value)} />
         <TextField label="Sous-titre" size="small" value={subtitle} onChange={(e) => setSubtitle(e.target.value)} />
