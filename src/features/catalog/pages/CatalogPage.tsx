@@ -18,7 +18,7 @@ function ProductGridSkeleton() {
   return (
     <Grid container spacing={2}>
       {Array.from({ length: 8 }).map((_, i) => (
-        <Grid key={i} size={{ xs: 6, sm: 4, md: 3 }}>
+        <Grid key={i} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
           <Skeleton variant="rectangular" sx={{ borderRadius: '8px', bgcolor: 'action.hover', aspectRatio: '1 / 1', mb: 1 }} />
           <Skeleton height={18} sx={{ bgcolor: 'action.hover', mb: 0.5 }} />
           <Skeleton height={16} width="50%" sx={{ bgcolor: 'action.hover' }} />
@@ -51,7 +51,7 @@ export function CatalogPage() {
         sx={{
           borderBottom: '1px solid rgba(0,194,255,0.1)',
           background: 'linear-gradient(135deg, rgba(0,194,255,0.04) 0%, transparent 50%, rgba(230,57,70,0.02) 100%)',
-          py: 4,
+          py: 2.5,
           position: 'relative',
           overflow: 'hidden',
           '&::after': {
@@ -95,8 +95,8 @@ export function CatalogPage() {
         </Container>
       </Box>
 
-      <Container maxWidth="xl" sx={{ py: 4 }}>
-        <Grid container spacing={3}>
+      <Container maxWidth="xl" sx={{ py: 2.5 }}>
+        <Grid container spacing={2}>
           {/* Sidebar Filters */}
           <Grid size={{ xs: 12, md: 3, lg: 2.5 }}>
             <FilterBar />
@@ -105,7 +105,7 @@ export function CatalogPage() {
           {/* Product Grid */}
           <Grid size={{ xs: 12, md: 9, lg: 9.5 }}>
             {/* Sort + Per-page bar */}
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 3, gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2, gap: 1.5, alignItems: 'center', flexWrap: 'wrap' }}>
               <Typography sx={{ fontSize: '0.78rem', color: 'text.secondary', letterSpacing: '0.06em' }}>
                 Trier par
               </Typography>
@@ -179,7 +179,7 @@ export function CatalogPage() {
             ) : (
               <Grid container spacing={2}>
                 {products.map((product) => (
-                  <Grid key={product.id} size={{ xs: 6, sm: 4, md: 3 }}>
+                  <Grid key={product.id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
                     <ProductCard product={product} />
                   </Grid>
                 ))}

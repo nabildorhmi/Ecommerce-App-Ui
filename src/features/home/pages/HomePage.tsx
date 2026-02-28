@@ -233,11 +233,27 @@ function CategoryFeaturedRow({ categoryId, categoryName, products }: CategoryFea
               }}
             >
               <Box sx={{ position: 'relative', bgcolor: 'action.hover', aspectRatio: '1 / 1', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-                <Chip
-                  label="Featured"
-                  size="small"
-                  sx={{ position: 'absolute', top: 10, left: 10, zIndex: 1, bgcolor: 'rgba(0,194,255,0.14)', color: '#00C2FF', border: '1px solid rgba(0,194,255,0.3)', fontSize: '0.6rem', fontWeight: 700, height: 22, borderRadius: '6px' }}
-                />
+                <Stack spacing={0.5} sx={{ position: 'absolute', top: 10, left: 10, zIndex: 1 }}>
+                  <Chip
+                    label="Vedette"
+                    size="small"
+                    sx={{ bgcolor: 'rgba(0,194,255,0.14)', color: '#00C2FF', border: '1px solid rgba(0,194,255,0.3)', fontSize: '0.6rem', fontWeight: 700, height: 22, borderRadius: '6px' }}
+                  />
+                  {product.is_on_sale && (
+                    <Chip
+                      label="PROMO"
+                      size="small"
+                      sx={{ bgcolor: 'rgba(255,107,53,0.15)', color: '#FF6B35', border: '1px solid rgba(255,107,53,0.3)', fontSize: '0.6rem', fontWeight: 700, height: 22, borderRadius: '6px' }}
+                    />
+                  )}
+                  {product.is_new && (
+                    <Chip
+                      label="NOUVEAU"
+                      size="small"
+                      sx={{ bgcolor: 'rgba(0,200,83,0.15)', color: '#00C853', border: '1px solid rgba(0,200,83,0.3)', fontSize: '0.6rem', fontWeight: 700, height: 22, borderRadius: '6px' }}
+                    />
+                  )}
+                </Stack>
                 {!product.in_stock && (
                   <Chip
                     label="Rupture"
@@ -264,16 +280,34 @@ function CategoryFeaturedRow({ categoryId, categoryName, products }: CategoryFea
                 </Typography>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   {/* Price badge */}
-                  <Box sx={{
-                    display: 'inline-flex', alignItems: 'center',
-                    bgcolor: 'rgba(0,194,255,0.08)',
-                    border: '1px solid rgba(0,194,255,0.2)',
-                    borderRadius: '8px', px: 1.25, py: 0.4,
-                  }}>
-                    <Typography sx={{ fontWeight: 800, fontSize: '1rem', color: '#00C2FF', letterSpacing: '-0.02em' }}>
-                      {formatCurrency(product.price)}
-                    </Typography>
-                  </Box>
+                  {product.is_on_sale && product.default_variant?.promo_price != null ? (
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.25 }}>
+                      <Typography sx={{ fontSize: '0.68rem', color: 'text.disabled', textDecoration: 'line-through', fontWeight: 500 }}>
+                        {formatCurrency(product.price)}
+                      </Typography>
+                      <Box sx={{
+                        display: 'inline-flex', alignItems: 'center',
+                        bgcolor: 'rgba(255,107,53,0.08)',
+                        border: '1px solid rgba(255,107,53,0.2)',
+                        borderRadius: '8px', px: 1.25, py: 0.4,
+                      }}>
+                        <Typography sx={{ fontWeight: 800, fontSize: '1rem', color: '#FF6B35', letterSpacing: '-0.02em' }}>
+                          {formatCurrency(product.default_variant.promo_price)}
+                        </Typography>
+                      </Box>
+                    </Box>
+                  ) : (
+                    <Box sx={{
+                      display: 'inline-flex', alignItems: 'center',
+                      bgcolor: 'rgba(0,194,255,0.08)',
+                      border: '1px solid rgba(0,194,255,0.2)',
+                      borderRadius: '8px', px: 1.25, py: 0.4,
+                    }}>
+                      <Typography sx={{ fontWeight: 800, fontSize: '1rem', color: '#00C2FF', letterSpacing: '-0.02em' }}>
+                        {formatCurrency(product.price)}
+                      </Typography>
+                    </Box>
+                  )}
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
                     <Box sx={{ width: 7, height: 7, borderRadius: '50%', bgcolor: product.in_stock ? '#00C853' : '#E63946', boxShadow: product.in_stock ? '0 0 8px #00C853' : 'none', animation: product.in_stock ? 'pulse-dot 2s ease infinite' : 'none' }} />
                     <Typography sx={{ fontSize: '0.65rem', color: 'text.secondary', fontWeight: 500 }}>
