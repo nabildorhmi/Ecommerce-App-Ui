@@ -13,8 +13,8 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import ElectricScooterIcon from '@mui/icons-material/ElectricScooter';
 import { useFeaturedProducts } from '../../catalog/api/products';
 import { useCategories } from '../../catalog/api/categories';
-import { formatCurrency } from '@/shared/utils/formatCurrency';
 import type { Product } from '../../catalog/types';
+import { ProductCard } from '../../catalog/components/ProductCard';
 import { HeroCarousel } from '../components/HeroCarousel';
 import { HeroSideDecor } from '../components/HeroSideDecor';
 
@@ -30,7 +30,7 @@ function HeroBanner() {
       sx={{
         position: 'relative',
         bgcolor: 'background.default',
-        py: { xs: 3, md: 4 },
+        py: { xs: 1, md: 2 },
         overflow: 'hidden',
       }}
     >
@@ -63,7 +63,7 @@ function CategoriesStrip() {
         : 'background.paper',
     }}>
       <Container maxWidth="xl">
-        <Box sx={{ py: 2.5, display: 'flex', alignItems: 'center', gap: 1.5, overflowX: 'auto', scrollbarWidth: 'none', '&::-webkit-scrollbar': { display: 'none' } }}>
+        <Box sx={{ py: 1.5, display: 'flex', alignItems: 'center', gap: 1.5, overflowX: 'auto', scrollbarWidth: 'none', '&::-webkit-scrollbar': { display: 'none' } }}>
           <Typography sx={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.12em', color: 'text.secondary', textTransform: 'uppercase', whiteSpace: 'nowrap', mr: 2, flexShrink: 0 }}>
             NOS MODÈLES
           </Typography>
@@ -129,16 +129,16 @@ function CategoryFeaturedRow({ categoryId, categoryName, products }: CategoryFea
   };
 
   return (
-    <Box sx={{ mb: 7 }}>
+    <Box sx={{ mb: 4 }}>
       {/* Section header */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3.5 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <Box sx={{ width: 4, height: 32, background: 'linear-gradient(to bottom, #00C2FF, #0099CC)', borderRadius: 2, boxShadow: '0 0 12px rgba(0,194,255,0.3)' }} />
+          <Box sx={{ width: 4, height: 24, background: 'linear-gradient(to bottom, #00C2FF, #0099CC)', borderRadius: 2, boxShadow: '0 0 12px rgba(0,194,255,0.3)' }} />
           <Box>
             <Typography sx={{ fontSize: '0.62rem', letterSpacing: '0.25em', color: 'primary.main', fontWeight: 600, textTransform: 'uppercase', mb: 0.5 }}>
               精選モデル — HANDPICKED
             </Typography>
-            <Typography sx={{ fontWeight: 800, fontSize: { xs: '1.4rem', md: '1.7rem' }, color: 'text.primary', letterSpacing: '-0.01em', lineHeight: 1 }}>
+            <Typography sx={{ fontWeight: 800, fontSize: { xs: '1.1rem', md: '1.35rem' }, color: 'text.primary', letterSpacing: '-0.01em', lineHeight: 1 }}>
               NOS {categoryName.toUpperCase()} EN VEDETTE
             </Typography>
           </Box>
@@ -167,161 +167,17 @@ function CategoryFeaturedRow({ categoryId, categoryName, products }: CategoryFea
       {/* Scrollable product cards */}
       <Box
         ref={scrollRef}
-        sx={{ display: 'flex', gap: 2.5, overflowX: 'auto', scrollbarWidth: 'none', '&::-webkit-scrollbar': { display: 'none' }, pb: 1 }}
+        sx={{ display: 'flex', gap: 1.5, overflowX: 'auto', scrollbarWidth: 'none', '&::-webkit-scrollbar': { display: 'none' }, pb: 1 }}
       >
-        {products.map((product) => {
-          const PLACEHOLDER = 'https://placehold.co/600x400/111116/00C2FF?text=MiraiTech';
-          const imageUrl = product.images.length > 0 ? product.images[0].card : PLACEHOLDER;
-          return (
-            <Box
-              key={product.id}
-              component={Link}
-              to={`/products/${product.slug}`}
-              sx={{
-                flexShrink: 0,
-                width: { xs: 250, sm: 270, md: 290 },
-                textDecoration: 'none',
-                display: 'flex',
-                flexDirection: 'column',
-                bgcolor: 'background.paper',
-                backgroundImage: 'linear-gradient(to bottom, transparent, rgba(0,0,0,0.15))',
-                border: '1px solid',
-                borderColor: 'rgba(255, 255, 255, 0.05)',
-                borderRadius: '14px',
-                overflow: 'hidden',
-                transition: 'all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-                position: 'relative',
-                /* Shimmer overlay */
-                '&::after': {
-                  content: '""',
-                  position: 'absolute',
-                  top: 0, left: 0,
-                  width: '100%', height: '100%',
-                  background: 'linear-gradient(105deg, transparent 40%, rgba(0,194,255,0.04) 45%, rgba(0,194,255,0.08) 50%, rgba(0,194,255,0.04) 55%, transparent 60%)',
-                  transform: 'translateX(-100%)',
-                  pointerEvents: 'none',
-                  zIndex: 2,
-                },
-                '&::before': {
-                  content: '""',
-                  position: 'absolute',
-                  top: 0, left: 0, right: 0, bottom: 0,
-                  borderRadius: '14px',
-                  padding: '1px',
-                  background: 'linear-gradient(135deg, rgba(0,194,255,0.4) 0%, transparent 50%, rgba(0,194,255,0.1) 100%)',
-                  WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-                  WebkitMaskComposite: 'xor',
-                  maskComposite: 'exclude',
-                  opacity: 0,
-                  transition: 'opacity 0.3s ease',
-                  pointerEvents: 'none',
-                },
-                '&:hover': {
-                  borderColor: 'transparent',
-                  transform: 'translateY(-8px)',
-                  boxShadow: '0 16px 40px rgba(0,194,255,0.12), 0 0 0 1px rgba(0,194,255,0.2)',
-                  '&::before': { opacity: 1 },
-                  '&::after': { animation: 'shimmer 0.8s ease-out forwards' },
-                  '& .feat-img': {
-                    transform: 'scale(1.06)',
-                  },
-                  '& .quick-view-overlay': {
-                    opacity: 1,
-                  },
-                },
-              }}
-            >
-              <Box sx={{ position: 'relative', bgcolor: 'action.hover', aspectRatio: '1 / 1', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-                <Stack spacing={0.5} sx={{ position: 'absolute', top: 10, left: 10, zIndex: 1 }}>
-                  <Chip
-                    label="Vedette"
-                    size="small"
-                    sx={{ bgcolor: 'rgba(0,194,255,0.14)', color: '#00C2FF', border: '1px solid rgba(0,194,255,0.3)', fontSize: '0.6rem', fontWeight: 700, height: 22, borderRadius: '6px' }}
-                  />
-                  {product.is_on_sale && (
-                    <Chip
-                      label="PROMO"
-                      size="small"
-                      sx={{ bgcolor: 'rgba(255,107,53,0.15)', color: '#FF6B35', border: '1px solid rgba(255,107,53,0.3)', fontSize: '0.6rem', fontWeight: 700, height: 22, borderRadius: '6px' }}
-                    />
-                  )}
-                  {product.is_new && (
-                    <Chip
-                      label="NOUVEAU"
-                      size="small"
-                      sx={{ bgcolor: 'rgba(0,200,83,0.15)', color: '#00C853', border: '1px solid rgba(0,200,83,0.3)', fontSize: '0.6rem', fontWeight: 700, height: 22, borderRadius: '6px' }}
-                    />
-                  )}
-                </Stack>
-                {!product.in_stock && (
-                  <Chip
-                    label="Rupture"
-                    size="small"
-                    sx={{ position: 'absolute', top: 10, right: 10, zIndex: 1, bgcolor: 'rgba(230,57,70,0.14)', color: '#E63946', border: '1px solid rgba(230,57,70,0.3)', fontSize: '0.6rem', fontWeight: 700, height: 22, borderRadius: '6px' }}
-                  />
-                )}
-                {/* Vignette */}
-                <Box sx={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle at center, transparent 30%, rgba(11,11,14,0.5) 110%)', pointerEvents: 'none', zIndex: 0 }} />
-                {/* Quick-view overlay */}
-                <Box className="quick-view-overlay" sx={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,194,255,0.15), transparent 60%)', display: 'flex', alignItems: 'flex-end', justifyContent: 'center', pb: 2, opacity: 0, transition: 'opacity 0.3s ease', zIndex: 1 }}>
-                  <Typography sx={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.15em', color: '#F5F7FA', textTransform: 'uppercase', bgcolor: 'rgba(0,194,255,0.2)', backdropFilter: 'blur(8px)', px: 2, py: 0.5, borderRadius: '6px', border: '1px solid rgba(0,194,255,0.3)' }}>
-                    VOIR LE PRODUIT
-                  </Typography>
-                </Box>
-                <Box className="feat-img" sx={{ height: '100%', width: '100%', backgroundImage: `url("${imageUrl}")`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', transition: 'transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)' }} />
-              </Box>
-              <Box sx={{ p: 2, flex: 1, display: 'flex', flexDirection: 'column' }}>
-                <Typography sx={{ fontSize: '0.65rem', letterSpacing: '0.08em', color: 'primary.main', textTransform: 'uppercase', fontWeight: 600, mb: 0.5 }}>
-                  {product.category?.name ?? 'Scooter'}
-                </Typography>
-                <Typography sx={{ fontWeight: 700, color: 'text.primary', fontSize: '0.92rem', mb: 1.5, flex: 1, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', lineHeight: 1.4 }}>
-                  {product.name}
-                </Typography>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  {/* Price badge */}
-                  {product.is_on_sale && product.default_variant?.promo_price != null ? (
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.25 }}>
-                      <Typography sx={{ fontSize: '0.68rem', color: 'text.disabled', textDecoration: 'line-through', fontWeight: 500 }}>
-                        {formatCurrency(product.price)}
-                      </Typography>
-                      <Box sx={{
-                        display: 'inline-flex', alignItems: 'center',
-                        bgcolor: 'rgba(255,107,53,0.08)',
-                        border: '1px solid rgba(255,107,53,0.2)',
-                        borderRadius: '8px', px: 1.25, py: 0.4,
-                      }}>
-                        <Typography sx={{ fontWeight: 800, fontSize: '1rem', color: '#FF6B35', letterSpacing: '-0.02em' }}>
-                          {formatCurrency(product.default_variant.promo_price)}
-                        </Typography>
-                      </Box>
-                    </Box>
-                  ) : (
-                    <Box sx={{
-                      display: 'inline-flex', alignItems: 'center',
-                      bgcolor: 'rgba(0,194,255,0.08)',
-                      border: '1px solid rgba(0,194,255,0.2)',
-                      borderRadius: '8px', px: 1.25, py: 0.4,
-                    }}>
-                      <Typography sx={{ fontWeight: 800, fontSize: '1rem', color: '#00C2FF', letterSpacing: '-0.02em' }}>
-                        {formatCurrency(product.price)}
-                      </Typography>
-                    </Box>
-                  )}
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-                    <Box sx={{ width: 7, height: 7, borderRadius: '50%', bgcolor: product.in_stock ? '#00C853' : '#E63946', boxShadow: product.in_stock ? '0 0 8px #00C853' : 'none', animation: product.in_stock ? 'pulse-dot 2s ease infinite' : 'none' }} />
-                    <Typography sx={{ fontSize: '0.65rem', color: 'text.secondary', fontWeight: 500 }}>
-                      {product.in_stock ? 'En stock' : 'Épuisé'}
-                    </Typography>
-                  </Box>
-                </Box>
-              </Box>
-            </Box>
-          );
-        })}
+        {products.map((product) => (
+          <Box key={product.id} sx={{ flexShrink: 0, width: { xs: 200, sm: 220, md: 240 } }}>
+            <ProductCard product={product} />
+          </Box>
+        ))}
       </Box>
 
       {/* Per-category button */}
-      <Box sx={{ textAlign: 'center', mt: 4 }}>
+      <Box sx={{ textAlign: 'center', mt: 2.5 }}>
         <Button
           component={Link}
           to={`/products?filter[category_id]=${categoryId}`}
@@ -355,7 +211,7 @@ function FeaturedSection() {
   }, new Map<number, { categoryName: string; products: Product[] }>());
 
   return (
-    <Box component="section" sx={{ bgcolor: 'background.default', py: { xs: 6, md: 8 } }}>
+    <Box component="section" sx={{ bgcolor: 'background.default', py: { xs: 3, md: 5 } }}>
       <Container maxWidth="xl">
         {isLoading ? (
           <Box>
@@ -412,7 +268,7 @@ function PromoBanners() {
   ];
 
   return (
-    <Box component="section" sx={{ py: { xs: 3, md: 5 }, bgcolor: 'background.default' }}>
+    <Box component="section" sx={{ py: { xs: 2, md: 3 }, bgcolor: 'background.default' }}>
       <Container maxWidth="xl">
         <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 3 }}>
           {banners.map(({ label, title, sub, accent, bg }) => (
@@ -430,9 +286,9 @@ function PromoBanners() {
                 overflow: 'hidden',
                 background: bg,
                 backdropFilter: 'blur(12px)',
-                p: { xs: 4, md: 5.5 },
+                p: { xs: 2.5, md: 3.5 },
                 position: 'relative',
-                minHeight: 200,
+                minHeight: 140,
                 transition: 'all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
                 '&::before': {
                   content: '""',
@@ -460,7 +316,7 @@ function PromoBanners() {
                 <Box sx={{ width: 6, height: 6, borderRadius: '50%', bgcolor: accent, animation: 'pulse-dot 2s ease infinite' }} />
                 <Typography sx={{ fontSize: '0.62rem', fontWeight: 700, letterSpacing: '0.15em', color: accent, textTransform: 'uppercase' }}>{label}</Typography>
               </Box>
-              <Typography sx={{ fontWeight: 800, fontSize: { xs: '1.5rem', md: '1.8rem' }, color: '#F5F7FA', lineHeight: 1.15, mb: 1, textTransform: 'uppercase' }}>{title}</Typography>
+              <Typography sx={{ fontWeight: 800, fontSize: { xs: '1.2rem', md: '1.45rem' }, color: '#F5F7FA', lineHeight: 1.15, mb: 0.75, textTransform: 'uppercase' }}>{title}</Typography>
               <Typography sx={{ fontSize: '0.85rem', color: '#9CA3AF', mb: 3, maxWidth: 280 }}>{sub}</Typography>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <Typography sx={{ fontSize: '0.75rem', fontWeight: 700, color: accent, letterSpacing: '0.08em', textTransform: 'uppercase' }}>Découvrir</Typography>

@@ -200,7 +200,7 @@ export function ProductCard({ product }: ProductCardProps) {
       </Box>
 
       {/* Content */}
-      <Box sx={{ p: 2, flex: 1, display: 'flex', flexDirection: 'column' }}>
+      <Box sx={{ p: 1.5, flex: 1, display: 'flex', flexDirection: 'column' }}>
         {product.category && (
           <Typography
             sx={{
@@ -220,8 +220,8 @@ export function ProductCard({ product }: ProductCardProps) {
           sx={{
             fontWeight: 700,
             color: 'text.primary',
-            fontSize: '0.92rem',
-            mb: 1.5,
+            fontSize: '0.78rem',
+            mb: 1,
             flex: 1,
             overflow: 'hidden',
             display: '-webkit-box',
@@ -235,7 +235,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
         {/* Attributes preview — show first 3 attributes as chips */}
         {product.attributes && Object.keys(product.attributes).length > 0 && (
-          <Box sx={{ display: 'flex', gap: 1, mb: 1.5, flexWrap: 'wrap' }}>
+          <Box sx={{ display: 'flex', gap: 0.75, mb: 1, flexWrap: 'wrap' }}>
             {Object.entries(product.attributes).slice(0, 3).map(([, value]) => (
               <Box key={String(value)} sx={{ fontSize: '0.65rem', color: 'text.secondary', bgcolor: 'action.hover', px: 1, py: 0.25, borderRadius: '4px', border: '1px solid', borderColor: 'divider' }}>
                 {String(value)}

@@ -132,7 +132,7 @@ export function HeroCarousel() {
     return (
       <Box
         sx={{
-          width: { xs: '100%', md: 'min(100%, calc(44vh * (21 / 9)))' },
+          width: { xs: '100%', md: 'min(100%, calc(34vh * (21 / 9)))' },
           mx: 'auto',
           aspectRatio: { xs: '16/9', md: '21/9' },
           borderRadius: 3,
@@ -178,7 +178,7 @@ export function HeroCarousel() {
     <Box
       sx={{
         position: 'relative',
-        width: { xs: '100%', md: 'min(100%, calc(44vh * (21 / 9)))' },
+        width: { xs: '100%', md: 'min(100%, calc(34vh * (21 / 9)))' },
         mx: 'auto',
         aspectRatio: { xs: '16/9', md: '21/9' },
         borderRadius: 3,
