@@ -17,7 +17,7 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import BoltIcon from '@mui/icons-material/Bolt';
 import { useProduct } from '../api/products';
-import { formatCurrency } from '../../../shared/utils/formatCurrency';
+import { formatCurrency } from '@/shared/utils/formatCurrency';
 import { ProductGallery } from '../components/ProductGallery';
 import { SpecsTable } from '../components/SpecsTable';
 import { StockBadge } from '../components/StockBadge';
@@ -25,7 +25,7 @@ import { TrustSignals } from '../components/TrustSignals';
 import { CategoryBreadcrumb } from '../components/CategoryBreadcrumb';
 import { useCartStore } from '../../cart/store';
 import type { ProductVariantDisplay } from '../types';
-import { PageDecor } from '../../../shared/components/PageDecor';
+import { PageDecor } from '@/shared/components/PageDecor';
 
 function ProductDetailSkeleton() {
   return (
@@ -157,6 +157,8 @@ export function ProductDetailPage() {
           id: product.default_variant.id,
           sku: product.default_variant.sku,
           price: product.default_variant.price,
+          promo_price: product.default_variant.promo_price,
+          is_on_sale: product.default_variant.is_on_sale,
           stock: product.default_variant.stock,
           attribute_values: [],
         } as ProductVariantDisplay

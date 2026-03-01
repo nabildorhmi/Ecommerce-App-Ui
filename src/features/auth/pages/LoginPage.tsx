@@ -12,7 +12,7 @@ import { RegisterForm } from '../components/RegisterForm';
 import { loginApi, registerApi } from '../api/auth';
 import { useAuthStore } from '../store';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
-import { PageDecor } from '../../../shared/components/PageDecor';
+import { PageDecor } from '@/shared/components/PageDecor';
 
 const bgVariants: Variants = {
   animate: {

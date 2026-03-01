@@ -13,7 +13,7 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import ElectricScooterIcon from '@mui/icons-material/ElectricScooter';
 import { useFeaturedProducts } from '../../catalog/api/products';
 import { useCategories } from '../../catalog/api/categories';
-import { formatCurrency } from '../../../shared/utils/formatCurrency';
+import { formatCurrency } from '@/shared/utils/formatCurrency';
 import type { Product } from '../../catalog/types';
 import { HeroCarousel } from '../components/HeroCarousel';
 import { HeroSideDecor } from '../components/HeroSideDecor';

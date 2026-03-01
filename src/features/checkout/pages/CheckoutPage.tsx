@@ -23,7 +23,7 @@ import Paper from '@mui/material/Paper';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
-import { PageDecor } from '../../../shared/components/PageDecor';
+import { PageDecor } from '@/shared/components/PageDecor';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import PhoneOutlinedIcon from '@mui/icons-material/PhoneOutlined';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
@@ -32,10 +32,10 @@ import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import { useCartStore } from '../../cart/store';
 import { useAuthStore } from '../../auth/store';
 import { usePlaceOrder } from '../api/orders';
-import { formatCurrency } from '../../../shared/utils/formatCurrency';
+import { formatCurrency } from '@/shared/utils/formatCurrency';
 import { RegisterForm } from '../../auth/components/RegisterForm';
 import { registerApi, updateProfileApi, type RegisterData } from '../../auth/api/auth';
-import { MOROCCAN_CITIES } from '../../../shared/constants/moroccanCities';
+import { MOROCCAN_CITIES } from '@/shared/constants/moroccanCities';
 
 const orderSchema = z.object({
   note: z.string().max(500, { message: 'Note must be 500 characters or less' }).optional(),
@@ -85,8 +85,11 @@ export function CheckoutPage() {
       useAuthStore.getState().setAuth(data.token, data.user);
       setRegisterError(null);
     },
-    onError: (error: any) => {
-      setRegisterError(error.response?.data?.message ?? 'Registration failed');
+    onError: (error: unknown) => {
+      const message =
+        (error as { response?: { data?: { message?: string } } })?.response?.data
+          ?.message ?? 'Registration failed';
+      setRegisterError(message);
     },
   });
 
@@ -99,8 +102,11 @@ export function CheckoutPage() {
       setEditingDelivery(false);
       setSaveError(null);
     },
-    onError: (err: any) => {
-      setSaveError(err.response?.data?.message ?? 'Erreur lors de la sauvegarde');
+    onError: (err: unknown) => {
+      const message =
+        (err as { response?: { data?: { message?: string } } })?.response?.data
+          ?.message ?? 'Erreur lors de la sauvegarde';
+      setSaveError(message);
     },
   });
 

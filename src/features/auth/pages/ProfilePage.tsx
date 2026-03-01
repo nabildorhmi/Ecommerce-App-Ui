@@ -18,9 +18,9 @@ import Snackbar from '@mui/material/Snackbar';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import { updateProfileApi, changePasswordApi } from '../api/auth';
-import { PageDecor } from '../../../shared/components/PageDecor';
+import { PageDecor } from '@/shared/components/PageDecor';
 import { useAuthStore } from '../store';
-import { MOROCCAN_CITIES } from '../../../shared/constants/moroccanCities';
+import { MOROCCAN_CITIES } from '@/shared/constants/moroccanCities';
 
 const profileSchema = z.object({
   name: z

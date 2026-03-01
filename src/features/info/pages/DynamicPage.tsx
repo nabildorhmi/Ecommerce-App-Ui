@@ -14,7 +14,7 @@ import Tab from '@mui/material/Tab';
 import Paper from '@mui/material/Paper';
 import EditIcon from '@mui/icons-material/Edit';
 import MDEditor from '@uiw/react-md-editor';
-import { PageDecor } from '../../../shared/components/PageDecor';
+import { PageDecor } from '@/shared/components/PageDecor';
 import { usePageBySlug } from '../api/pages';
 import { useUpdatePage } from '../../admin/api/pages';
 import { useAuthStore } from '../../auth/store';

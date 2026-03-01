@@ -11,7 +11,7 @@ import FormHelperText from '@mui/material/FormHelperText';
 import Button from '@mui/material/Button';
 import Alert from '@mui/material/Alert';
 import CircularProgress from '@mui/material/CircularProgress';
-import { MOROCCAN_CITIES } from '../../../shared/constants/moroccanCities';
+import { MOROCCAN_CITIES } from '@/shared/constants/moroccanCities';
 
 const registerSchema = z
   .object({

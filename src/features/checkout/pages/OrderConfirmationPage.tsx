@@ -9,8 +9,8 @@ import Paper from '@mui/material/Paper';
 import Divider from '@mui/material/Divider';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
-import { formatCurrency } from '../../../shared/utils/formatCurrency';
-import { PageDecor } from '../../../shared/components/PageDecor';
+import { formatCurrency } from '@/shared/utils/formatCurrency';
+import { PageDecor } from '@/shared/components/PageDecor';
 import type { OrderConfirmation } from '../types';
 
 const WHATSAPP_NUMBER = import.meta.env.VITE_WHATSAPP_NUMBER ?? '212600000000';

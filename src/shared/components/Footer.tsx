@@ -5,8 +5,8 @@ import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Divider from '@mui/material/Divider';
 import { Link } from 'react-router';
-import { useCategories } from '../../features/catalog/api/categories';
-import miraiLogo from '../../assets/miraiTech-Logo.png';
+import { useCategories } from '@/features/catalog/api/categories';
+import miraiLogo from '@/assets/miraiTech-Logo.png';
 
 /**
  * MiraiTech Footer — dark, minimal, Japanese-inspired.

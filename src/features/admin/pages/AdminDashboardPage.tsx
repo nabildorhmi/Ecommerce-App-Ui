@@ -31,7 +31,7 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { useAdminDashboard } from '../api/dashboard';
-import { formatCurrency } from '../../../shared/utils/formatCurrency';
+import { formatCurrency } from '@/shared/utils/formatCurrency';
 import type { DashboardFilters } from '../types';
 import CountUp from 'react-countup';
 import { motion } from 'framer-motion';

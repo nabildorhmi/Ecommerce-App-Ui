@@ -12,7 +12,7 @@ import { useProducts } from '../api/products';
 import { useCatalogFilters } from '../hooks/useCatalogFilters';
 import { FilterBar } from '../components/FilterBar';
 import { ProductCard } from '../components/ProductCard';
-import { PageDecor } from '../../../shared/components/PageDecor';
+import { PageDecor } from '@/shared/components/PageDecor';
 
 function ProductGridSkeleton() {
   return (

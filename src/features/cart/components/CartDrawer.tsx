@@ -10,7 +10,7 @@ import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import { useNavigate } from 'react-router';
 import { useCartStore } from '../store';
 import { CartItem } from './CartItem';
-import { formatCurrency } from '../../../shared/utils/formatCurrency';
+import { formatCurrency } from '@/shared/utils/formatCurrency';
 
 interface CartDrawerProps {
   open: boolean;

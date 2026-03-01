@@ -14,7 +14,7 @@ import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
 import CircularProgress from '@mui/material/CircularProgress';
 import { resetPasswordApi } from '../api/auth';
-import { PageDecor } from '../../../shared/components/PageDecor';
+import { PageDecor } from '@/shared/components/PageDecor';
 
 const resetSchema = z
   .object({

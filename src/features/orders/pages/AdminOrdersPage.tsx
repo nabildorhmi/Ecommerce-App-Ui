@@ -19,7 +19,7 @@ import Alert from '@mui/material/Alert';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import { useAdminOrders } from '../api/orders';
 import { OrderStatusChip } from '../components/OrderStatusChip';
-import { formatCurrency } from '../../../shared/utils/formatCurrency';
+import { formatCurrency } from '@/shared/utils/formatCurrency';
 import type { AdminOrderFilters } from '../api/orders';
 
 const ORDER_STATUSES = ['pending', 'confirmed', 'dispatched', 'delivered', 'cancelled'];

@@ -1,7 +1,7 @@
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { useEffect } from 'react';
-import { createMiraiTheme } from '../../app/theme';
+import { createMiraiTheme } from '@/app/theme';
 
 interface RTLProviderProps {
   children: React.ReactNode;

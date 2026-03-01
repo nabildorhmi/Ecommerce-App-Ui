@@ -37,12 +37,12 @@ import PeopleIcon from '@mui/icons-material/People';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import TuneIcon from '@mui/icons-material/Tune';
 import ViewCarouselIcon from '@mui/icons-material/ViewCarousel';
-import { useAuthStore } from '../../features/auth/store';
-import { CartBadge } from '../../features/cart/components/CartBadge';
-import { CartDrawer } from '../../features/cart/components/CartDrawer';
-import { useCategories } from '../../features/catalog/api/categories';
-import { apiClient } from '../api/client';
-import miraiLogo from '../../assets/miraiTech-Logo.png';
+import { useAuthStore } from '@/features/auth/store';
+import { CartBadge } from '@/features/cart/components/CartBadge';
+import { CartDrawer } from '@/features/cart/components/CartDrawer';
+import { useCategories } from '@/features/catalog/api/categories';
+import { apiClient } from '@/shared/api/client';
+import miraiLogo from '@/assets/miraiTech-Logo.png';
 
 /**
  * MiraiTech Navbar — sticky, transparent/dark blur, dynamic categories.
