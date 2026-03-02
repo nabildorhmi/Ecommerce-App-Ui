@@ -11,7 +11,7 @@ import Stack from '@mui/material/Stack';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import ElectricScooterIcon from '@mui/icons-material/ElectricScooter';
-import { useFeaturedProducts } from '../../catalog/api/products';
+import { useFeaturedProducts, useProducts } from '../../catalog/api/products';
 import { useCategories } from '../../catalog/api/categories';
 import type { Product } from '../../catalog/types';
 import { ProductCard } from '../../catalog/components/ProductCard';
@@ -192,6 +192,192 @@ function CategoryFeaturedRow({ categoryId, categoryName, products }: CategoryFea
 }
 
 /* ════════════════════════════════════════════════════════════════════
+   PROMO SECTION — Products on sale with orange glow
+   ════════════════════════════════════════════════════════════════════ */
+function PromoSection() {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const { data, isLoading } = useProducts({ 'filter[is_on_sale]': '1', per_page: 16 });
+  const products = data?.data ?? [];
+
+  const scroll = (dir: 'left' | 'right') => {
+    scrollRef.current?.scrollBy({ left: dir === 'left' ? -320 : 320, behavior: 'smooth' });
+  };
+
+  if (!isLoading && products.length === 0) return null;
+
+  return (
+    <Box component="section" sx={{ bgcolor: 'background.default', pt: { xs: 3, md: 5 }, pb: 0 }}>
+      <Container maxWidth="xl">
+        <Box sx={{ mb: 4 }}>
+          {/* Header */}
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Box sx={{ width: 4, height: 28, background: 'linear-gradient(to bottom, #FF6B35, #CC4400)', borderRadius: 2, boxShadow: '0 0 14px rgba(255,107,53,0.5)', animation: 'promo-glow 2.5s ease-in-out infinite' }} />
+              <Box>
+                <Typography sx={{ fontSize: '0.62rem', letterSpacing: '0.25em', color: '#FF6B35', fontWeight: 600, textTransform: 'uppercase', mb: 0.5, textShadow: '0 0 8px rgba(255,107,53,0.4)' }}>
+                  セール中 — EN PROMOTION
+                </Typography>
+                <Typography sx={{ fontWeight: 800, fontSize: { xs: '1.1rem', md: '1.35rem' }, letterSpacing: '-0.01em', lineHeight: 1, color: '#FF6B35', textShadow: '0 0 12px rgba(255,107,53,0.4)', animation: 'promo-glow 2.5s ease-in-out infinite' }}>
+                  NOS PROMOS EN VEDETTE
+                </Typography>
+              </Box>
+            </Box>
+            <Stack direction="row" spacing={1} alignItems="center">
+              {['left', 'right'].map((dir) => (
+                <IconButton
+                  key={dir}
+                  onClick={() => scroll(dir as 'left' | 'right')}
+                  size="small"
+                  sx={{
+                    border: '1px solid rgba(255,107,53,0.2)',
+                    color: '#FF6B35',
+                    width: 36, height: 36,
+                    transition: 'all 0.3s ease',
+                    '&:hover': { borderColor: '#FF6B35', bgcolor: 'rgba(255,107,53,0.08)', boxShadow: '0 0 12px rgba(255,107,53,0.2)' }
+                  }}
+                >
+                  {dir === 'left' ? <KeyboardArrowLeftIcon fontSize="small" /> : <KeyboardArrowRightIcon fontSize="small" />}
+                </IconButton>
+              ))}
+            </Stack>
+          </Box>
+
+          {/* Cards */}
+          {isLoading ? (
+            <Box sx={{ display: 'flex', gap: 2, pb: 1 }}>
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Box key={i} sx={{ flexShrink: 0, width: { xs: 200, sm: 220, md: 240 } }}>
+                  <Skeleton variant="rectangular" height={220} sx={{ borderRadius: '14px', mb: 1.5 }} />
+                  <Skeleton height={22} sx={{ mb: 0.5 }} />
+                  <Skeleton height={18} width="55%" />
+                </Box>
+              ))}
+            </Box>
+          ) : (
+            <Box ref={scrollRef} sx={{ display: 'flex', gap: 1.5, overflowX: 'auto', scrollbarWidth: 'none', '&::-webkit-scrollbar': { display: 'none' }, pb: 1 }}>
+              {products.map((product) => (
+                <Box key={product.id} sx={{ flexShrink: 0, width: { xs: 200, sm: 220, md: 240 } }}>
+                  <ProductCard product={product} />
+                </Box>
+              ))}
+            </Box>
+          )}
+
+          <Box sx={{ textAlign: 'center', mt: 2.5 }}>
+            <Button
+              component={Link}
+              to="/products?filter[is_on_sale]=1"
+              variant="outlined"
+              sx={{
+                px: 5, py: 1.25, fontSize: '0.78rem', letterSpacing: '0.1em',
+                color: '#FF6B35',
+                borderColor: 'rgba(255,107,53,0.4)',
+                '&:hover': { borderColor: '#FF6B35', bgcolor: 'rgba(255,107,53,0.08)', boxShadow: '0 0 16px rgba(255,107,53,0.2)' }
+              }}
+            >
+              VOIR TOUTES LES PROMOS
+            </Button>
+          </Box>
+        </Box>
+      </Container>
+    </Box>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   NOUVEAUTÉS SECTION — New products with green glow
+   ════════════════════════════════════════════════════════════════════ */
+function NouveauteSection() {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const { data, isLoading } = useProducts({ 'filter[is_new]': '1', per_page: 16 });
+  const products = data?.data ?? [];
+
+  const scroll = (dir: 'left' | 'right') => {
+    scrollRef.current?.scrollBy({ left: dir === 'left' ? -320 : 320, behavior: 'smooth' });
+  };
+
+  if (!isLoading && products.length === 0) return null;
+
+  return (
+    <Box component="section" sx={{ bgcolor: 'background.default', pt: { xs: 3, md: 5 }, pb: 0 }}>
+      <Container maxWidth="xl">
+        <Box sx={{ mb: 4 }}>
+          {/* Header */}
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Box sx={{ width: 4, height: 28, background: 'linear-gradient(to bottom, #00C853, #007A30)', borderRadius: 2, boxShadow: '0 0 14px rgba(0,200,83,0.5)', animation: 'nouveaute-glow 2.5s ease-in-out infinite' }} />
+              <Box>
+                <Typography sx={{ fontSize: '0.62rem', letterSpacing: '0.25em', color: '#00C853', fontWeight: 600, textTransform: 'uppercase', mb: 0.5, textShadow: '0 0 8px rgba(0,200,83,0.4)' }}>
+                  新着アイテム — TOUT NEUF
+                </Typography>
+                <Typography sx={{ fontWeight: 800, fontSize: { xs: '1.1rem', md: '1.35rem' }, letterSpacing: '-0.01em', lineHeight: 1, color: '#00C853', textShadow: '0 0 12px rgba(0,200,83,0.4)', animation: 'nouveaute-glow 2.5s ease-in-out infinite' }}>
+                  NOS NOUVEAUTÉS EN VEDETTE
+                </Typography>
+              </Box>
+            </Box>
+            <Stack direction="row" spacing={1} alignItems="center">
+              {['left', 'right'].map((dir) => (
+                <IconButton
+                  key={dir}
+                  onClick={() => scroll(dir as 'left' | 'right')}
+                  size="small"
+                  sx={{
+                    border: '1px solid rgba(0,200,83,0.2)',
+                    color: '#00C853',
+                    width: 36, height: 36,
+                    transition: 'all 0.3s ease',
+                    '&:hover': { borderColor: '#00C853', bgcolor: 'rgba(0,200,83,0.08)', boxShadow: '0 0 12px rgba(0,200,83,0.2)' }
+                  }}
+                >
+                  {dir === 'left' ? <KeyboardArrowLeftIcon fontSize="small" /> : <KeyboardArrowRightIcon fontSize="small" />}
+                </IconButton>
+              ))}
+            </Stack>
+          </Box>
+
+          {/* Cards */}
+          {isLoading ? (
+            <Box sx={{ display: 'flex', gap: 2, pb: 1 }}>
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Box key={i} sx={{ flexShrink: 0, width: { xs: 200, sm: 220, md: 240 } }}>
+                  <Skeleton variant="rectangular" height={220} sx={{ borderRadius: '14px', mb: 1.5 }} />
+                  <Skeleton height={22} sx={{ mb: 0.5 }} />
+                  <Skeleton height={18} width="55%" />
+                </Box>
+              ))}
+            </Box>
+          ) : (
+            <Box ref={scrollRef} sx={{ display: 'flex', gap: 1.5, overflowX: 'auto', scrollbarWidth: 'none', '&::-webkit-scrollbar': { display: 'none' }, pb: 1 }}>
+              {products.map((product) => (
+                <Box key={product.id} sx={{ flexShrink: 0, width: { xs: 200, sm: 220, md: 240 } }}>
+                  <ProductCard product={product} />
+                </Box>
+              ))}
+            </Box>
+          )}
+
+          <Box sx={{ textAlign: 'center', mt: 2.5 }}>
+            <Button
+              component={Link}
+              to="/products?filter[is_new]=1"
+              variant="outlined"
+              sx={{
+                px: 5, py: 1.25, fontSize: '0.78rem', letterSpacing: '0.1em',
+                color: '#00C853',
+                borderColor: 'rgba(0,200,83,0.4)',
+                '&:hover': { borderColor: '#00C853', bgcolor: 'rgba(0,200,83,0.08)', boxShadow: '0 0 16px rgba(0,200,83,0.2)' }
+              }}
+            >
+              VOIR TOUTES LES NOUVEAUTÉS
+            </Button>
+          </Box>
+        </Box>
+      </Container>
+    </Box>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════════
    FEATURED SECTION — Products grouped by category
    ════════════════════════════════════════════════════════════════════ */
 function FeaturedSection() {
@@ -338,6 +524,8 @@ export function HomePage() {
     <Box sx={{ bgcolor: 'background.default', minHeight: '100vh' }}>
       <HeroBanner />
       <CategoriesStrip />
+      <PromoSection />
+      <NouveauteSection />
       <FeaturedSection />
       <PromoBanners />
     </Box>
