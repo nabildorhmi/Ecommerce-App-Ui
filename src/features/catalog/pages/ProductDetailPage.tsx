@@ -25,7 +25,6 @@ import { formatCurrency } from '@/shared/utils/formatCurrency';
 import { ProductGallery } from '../components/ProductGallery';
 import { SpecsTable } from '../components/SpecsTable';
 import { StockBadge } from '../components/StockBadge';
-import { TrustSignals } from '../components/TrustSignals';
 import { CategoryBreadcrumb } from '../components/CategoryBreadcrumb';
 import { useCartStore } from '../../cart/store';
 import type { ProductVariantDisplay } from '../types';
@@ -203,9 +202,33 @@ export function ProductDetailPage() {
 
           {/* Description + Specs — shown after cart on mobile */}
           <Grid size={{ xs: 12, md: 7 }} sx={{ order: { xs: 3, md: 3 } }}>
+            {/* Specs */}
+            {product.attributes && Object.keys(product.attributes).length > 0 && (
+              <Box>
+                <Typography
+                  sx={{
+                    fontSize: '0.8rem',
+                    fontWeight: 800,
+                    letterSpacing: '0.15em',
+                    color: '#00C2FF',
+                    textTransform: 'uppercase',
+                    fontFamily: '"Orbitron", sans-serif',
+                    mb: 2,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1,
+                  }}
+                >
+                  <span style={{ width: 8, height: 8, backgroundColor: '#00C2FF', borderRadius: '50%', display: 'inline-block' }} />
+                  CARACTÉRISTIQUES TECHNIQUES
+                </Typography>
+                <SpecsTable attributes={product.attributes} />
+              </Box>
+            )}
+
             {/* Description */}
             {product.description && (
-              <Box>
+              <Box sx={{ mt: 4 }}>
                 <Typography
                   sx={{
                     fontSize: '0.8rem',
@@ -281,30 +304,6 @@ export function ProductDetailPage() {
                     {descExpanded ? 'Afficher moins' : 'Afficher plus'}
                   </Button>
                 )}
-              </Box>
-            )}
-
-            {/* Specs */}
-            {product.attributes && Object.keys(product.attributes).length > 0 && (
-              <Box sx={{ mt: 4 }}>
-                <Typography
-                  sx={{
-                    fontSize: '0.8rem',
-                    fontWeight: 800,
-                    letterSpacing: '0.15em',
-                    color: '#00C2FF',
-                    textTransform: 'uppercase',
-                    fontFamily: '"Orbitron", sans-serif',
-                    mb: 2,
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 1,
-                  }}
-                >
-                  <span style={{ width: 8, height: 8, backgroundColor: '#00C2FF', borderRadius: '50%', display: 'inline-block' }} />
-                  CARACTÉRISTIQUES TECHNIQUES
-                </Typography>
-                <SpecsTable attributes={product.attributes} />
               </Box>
             )}
           </Grid>
@@ -577,11 +576,6 @@ export function ProductDetailPage() {
             </motion.div>
           </Grid>
         </Grid>
-
-        {/* Trust signals */}
-        <Box sx={{ mt: 8 }}>
-          <TrustSignals />
-        </Box>
 
         {/* Related Products */}
         <RelatedProductsSection categoryId={product.category?.id} excludeProductId={product.id} />
