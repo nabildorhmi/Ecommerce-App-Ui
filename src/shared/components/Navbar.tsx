@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
+import Container from '@mui/material/Container';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -136,404 +137,406 @@ export function Navbar() {
           borderBottom: '1px solid var(--glass-border)',
         }}
       >
-        <Toolbar sx={{ minHeight: { xs: 60, md: 68 }, px: { xs: 2, md: 4 } }}>
-          {/* ── Brand Logo ── */}
-          <Box
-            component={Link}
-            to="/"
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              textDecoration: 'none',
-              mr: { md: 4 },
-              flexShrink: 0,
-            }}
-          >
+        <Container maxWidth="xl">
+          <Toolbar disableGutters sx={{ minHeight: { xs: 60, md: 68 } }}>
+            {/* ── Brand Logo ── */}
             <Box
-              component="img"
-              src={miraiLogo}
-              alt="MiraiTech"
-              sx={{ height: { xs: 25, md: 35 }, width: 'auto', display: 'block' }}
-            />
-          </Box>
-
-          {/* ── Desktop Category Nav ── */}
-          <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 0.25, flex: 1 }}>
-            <Button
               component={Link}
-              to="/products"
+              to="/"
               sx={{
-                color: isActive('/products') && !location.search.includes('category_id') ? '#00C2FF' : '#9CA3AF',
-                fontWeight: 600,
-                fontSize: '0.75rem',
-                letterSpacing: '0.08em',
-                px: 1.5,
-                py: 0.75,
-                borderRadius: '4px',
-                minWidth: 'auto',
-                '&:hover': { color: '#F5F7FA', backgroundColor: 'rgba(255,255,255,0.04)' },
+                display: 'flex',
+                alignItems: 'center',
+                textDecoration: 'none',
+                mr: { md: 4 },
+                flexShrink: 0,
               }}
             >
-              TOUS LES PRODUITS
-            </Button>
+              <Box
+                component="img"
+                src={miraiLogo}
+                alt="MiraiTech"
+                sx={{ height: { xs: 25, md: 35 }, width: 'auto', display: 'block' }}
+              />
+            </Box>
 
-            <Button
-              component={Link}
-              to="/products?filter[is_on_sale]=1"
-              sx={{
-                color: '#FF6B35',
-                fontWeight: 700,
-                fontSize: '0.75rem',
-                letterSpacing: '0.08em',
-                px: 1.5,
-                py: 0.75,
-                borderRadius: '6px',
-                minWidth: 'auto',
-                border: location.search.includes('is_on_sale') ? '2px solid #FF6B35' : '1px solid rgba(255,107,53,0.3)',
-                backgroundColor: location.search.includes('is_on_sale') ? 'rgba(255,107,53,0.2)' : 'rgba(255,107,53,0.06)',
-                animation: location.search.includes('is_on_sale') ? 'none' : 'promo-glow 2.5s ease-in-out infinite',
-                textShadow: '0 0 8px rgba(255,107,53,0.4)',
-                boxShadow: location.search.includes('is_on_sale') ? '0 0 12px rgba(255,107,53,0.4), inset 0 0 8px rgba(255,107,53,0.1)' : 'none',
-                position: 'relative',
-                '&::after': location.search.includes('is_on_sale') ? {
-                  content: '""',
-                  position: 'absolute',
-                  bottom: 0,
-                  left: '20%',
-                  right: '20%',
-                  height: '2px',
-                  backgroundColor: '#FF6B35',
-                  borderRadius: '2px',
-                } : {},
-                '&:hover': { color: '#FF6B35', backgroundColor: 'rgba(255,107,53,0.15)', borderColor: 'rgba(255,107,53,0.5)' },
-              }}
-            >
-              {location.search.includes('is_on_sale') ? '✦ PROMOS' : 'PROMOS'}
-            </Button>
-
-            <Button
-              component={Link}
-              to="/products?filter[is_new]=1"
-              sx={{
-                color: '#00C853',
-                fontWeight: 700,
-                fontSize: '0.75rem',
-                letterSpacing: '0.08em',
-                px: 1.5,
-                py: 0.75,
-                borderRadius: '6px',
-                minWidth: 'auto',
-                border: location.search.includes('is_new') ? '2px solid #00C853' : '1px solid rgba(0,200,83,0.3)',
-                backgroundColor: location.search.includes('is_new') ? 'rgba(0,200,83,0.2)' : 'rgba(0,200,83,0.06)',
-                animation: location.search.includes('is_new') ? 'none' : 'nouveaute-glow 2.5s ease-in-out infinite',
-                textShadow: '0 0 8px rgba(0,200,83,0.4)',
-                boxShadow: location.search.includes('is_new') ? '0 0 12px rgba(0,200,83,0.4), inset 0 0 8px rgba(0,200,83,0.1)' : 'none',
-                position: 'relative',
-                '&::after': location.search.includes('is_new') ? {
-                  content: '""',
-                  position: 'absolute',
-                  bottom: 0,
-                  left: '20%',
-                  right: '20%',
-                  height: '2px',
-                  backgroundColor: '#00C853',
-                  borderRadius: '2px',
-                } : {},
-                '&:hover': { color: '#00C853', backgroundColor: 'rgba(0,200,83,0.15)', borderColor: 'rgba(0,200,83,0.5)' },
-              }}
-            >
-              {location.search.includes('is_new') ? '✦ NOUVEAUTÉS' : 'NOUVEAUTÉS'}
-            </Button>
-
-            {categories.length > 0 && (
-              <>
-                <Button
-                  endIcon={<KeyboardArrowDownIcon sx={{ fontSize: '0.9rem !important' }} />}
-                  onClick={(e) => setCatMenuAnchor(e.currentTarget)}
-                  sx={{
-                    color: '#9CA3AF',
-                    fontWeight: 600,
-                    fontSize: '0.75rem',
-                    letterSpacing: '0.08em',
-                    px: 1.5,
-                    py: 0.75,
-                    borderRadius: '4px',
-                    minWidth: 'auto',
-                    '&:hover': { color: '#F5F7FA', backgroundColor: 'rgba(255,255,255,0.04)' },
-                  }}
-                >
-                  CATÉGORIES
-                </Button>
-                <Menu
-                  anchorEl={catMenuAnchor}
-                  open={Boolean(catMenuAnchor)}
-                  onClose={closeCatMenu}
-                  disableScrollLock
-                  PaperProps={{
-                    sx: {
-                      mt: 1,
-                      minWidth: 220,
-                      backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(22, 22, 28, 0.6)' : 'background.paper',
-                      backdropFilter: (theme) => theme.palette.mode === 'dark' ? 'blur(16px)' : 'none',
-                      border: '1px solid',
-                      borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'divider',
-                      boxShadow: '0 16px 40px rgba(0,0,0,0.6)',
-                      borderRadius: 2,
-                    },
-                  }}
-                >
-                  {categories.map((cat) => (
-                    <MenuItem
-                      key={cat.id}
-                      component={Link}
-                      to={`/products?filter[category_id]=${cat.id}`}
-                      onClick={closeCatMenu}
-                      sx={{
-                        fontSize: '0.85rem',
-                        fontWeight: 500,
-                        color: 'text.primary',
-                        py: 1,
-                        borderLeft: '2px solid transparent',
-                        '&:hover': {
-                          backgroundColor: 'rgba(0,194,255,0.08)',
-                          color: '#00C2FF',
-                          borderLeftColor: '#00C2FF',
-                        },
-                      }}
-                    >
-                      {cat.name}
-                    </MenuItem>
-                  ))}
-                </Menu>
-              </>
-            )}
-
-            {/* Desktop search */}
-            <ClickAwayListener onClickAway={() => setSearchFocused(false)}>
-              <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center', position: 'relative' }}>
-                <Box
-                  ref={handleSearchBoxRef}
-                  component="form"
-                  onSubmit={(e: React.FormEvent) => { e.preventDefault(); handleSearch(); }}
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    bgcolor: 'rgba(255,255,255,0.06)',
-                    borderRadius: '6px',
-                    border: '1px solid',
-                    borderColor: 'divider',
-                    px: 1.5,
-                    py: 0.25,
-                    transition: 'border-color 0.2s',
-                    '&:focus-within': { borderColor: 'primary.main' },
-                  }}
-                >
-                  <SearchIcon sx={{ fontSize: '1rem', color: 'text.secondary', mr: 1 }} />
-                  <InputBase
-                    placeholder="Rechercher..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    onFocus={() => setSearchFocused(true)}
-                    sx={{
-                      fontSize: '0.8rem',
-                      color: 'text.primary',
-                      width: 160,
-                      '& input::placeholder': { color: 'text.secondary', opacity: 1 },
-                    }}
-                  />
-                </Box>
-                <Popper
-                  open={suggestionsOpen}
-                  anchorEl={searchAnchorEl}
-                  placement="bottom-start"
-                  style={{ zIndex: 1300, minWidth: 240 }}
-                >
-                  <Paper
-                    elevation={8}
-                    sx={{
-                      mt: 0.5,
-                      border: '1px solid',
-                      borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'divider',
-                      backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(22, 22, 28, 0.8)' : 'background.paper',
-                      backdropFilter: (theme) => theme.palette.mode === 'dark' ? 'blur(20px)' : 'none',
-                      overflow: 'hidden',
-                      minWidth: 240,
-                      borderRadius: 2,
-                    }}
-                  >
-                    <List dense disablePadding>
-                      {suggestions.map((product) => (
-                        <ListItemButton
-                          key={product.id}
-                          onClick={() => handleSuggestionClick(product.slug)}
-                          sx={{
-                            py: 0.75,
-                            px: 1.5,
-                            gap: 1.5,
-                            '&:hover': { backgroundColor: 'rgba(0,194,255,0.08)' },
-                          }}
-                        >
-                          <Avatar
-                            src={product.images?.[0]?.thumbnail}
-                            alt={product.name}
-                            variant="rounded"
-                            sx={{ width: 36, height: 36, flexShrink: 0, bgcolor: 'rgba(255,255,255,0.06)' }}
-                          />
-                          <ListItemText
-                            primary={product.name}
-                            primaryTypographyProps={{ fontSize: '0.83rem', fontWeight: 500, noWrap: true }}
-                          />
-                        </ListItemButton>
-                      ))}
-                    </List>
-                  </Paper>
-                </Popper>
-              </Box>
-            </ClickAwayListener>
-          </Box>
-
-          {/* ── Right Actions ── */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.25, ml: 'auto' }}>
-            <CartBadge onToggle={() => setDrawerOpen(true)} />
-
-            {user ? (
-              <>
-                {(user.role === 'admin' || user.role === 'global_admin') && (
-                  <>
-                    <IconButton
-                      onClick={(e) => setAdminMenuAnchor(e.currentTarget)}
-                      aria-label="Administration"
-                      size="small"
-                      sx={{ color: 'text.secondary', '&:hover': { color: '#00C2FF' } }}
-                    >
-                      <Badge variant="dot" color="error" invisible={pendingCount === 0}>
-                        <AdminPanelSettingsIcon sx={{ fontSize: '1.1rem' }} />
-                      </Badge>
-                    </IconButton>
-                    <Menu
-                      anchorEl={adminMenuAnchor}
-                      open={Boolean(adminMenuAnchor)}
-                      onClose={closeAdminMenu}
-                      disableScrollLock
-                      PaperProps={{
-                        sx: {
-                          mt: 1,
-                          minWidth: 200,
-                          backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(22, 22, 28, 0.8)' : 'background.paper',
-                          backdropFilter: (theme) => theme.palette.mode === 'dark' ? 'blur(20px)' : 'none',
-                          border: '1px solid',
-                          borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'divider',
-                          boxShadow: '0 16px 40px rgba(0,0,0,0.6)',
-                          borderRadius: 2,
-                        },
-                      }}
-                    >
-                      {(() => {
-                        const menuItems = [
-                          { to: '/admin', icon: <DashboardIcon fontSize="small" />, label: 'Tableau de bord' },
-                          { to: '/admin/products', icon: <AssignmentIcon fontSize="small" />, label: 'Produits' },
-                          { to: '/admin/categories', icon: <AssignmentIcon fontSize="small" />, label: 'Catégories' },
-                          { to: '/admin/variation-types', icon: <TuneIcon fontSize="small" />, label: 'Types de variations' },
-                          { to: '/admin/orders', icon: <Badge badgeContent={pendingCount} color="error" max={99}><ReceiptLongIcon fontSize="small" /></Badge>, label: 'Commandes' },
-                          { to: '/admin/pages', icon: <DescriptionIcon fontSize="small" />, label: 'Pages' },
-                          { to: '/admin/hero-banners', icon: <ViewCarouselIcon fontSize="small" />, label: 'Hero Banners' },
-                        ];
-
-                        // Add Utilisateurs menu item only for global_admin
-                        if (user.role === 'global_admin') {
-                          menuItems.push({ to: '/admin/users', icon: <PeopleIcon fontSize="small" />, label: 'Utilisateurs' });
-                        }
-
-                        return menuItems.map(({ to, icon, label }) => (
-                          <MenuItem
-                            key={to}
-                            component={Link}
-                            to={to}
-                            onClick={closeAdminMenu}
-                            sx={{
-                              fontSize: '0.85rem',
-                              py: 1,
-                              borderLeft: '2px solid transparent',
-                              color: 'text.primary',
-                              '&:hover': { backgroundColor: 'rgba(0,194,255,0.08)', color: '#00C2FF', borderLeftColor: '#00C2FF' },
-                            }}
-                          >
-                            <ListItemIcon sx={{ color: '#00C2FF', minWidth: 32 }}>{icon}</ListItemIcon>
-                            <ListItemText primaryTypographyProps={{ fontSize: '0.85rem' }}>{label}</ListItemText>
-                          </MenuItem>
-                        ));
-                      })()}
-                    </Menu>
-                  </>
-                )}
-
-                <IconButton
-                  onClick={(e) => setUserMenuAnchor(e.currentTarget)}
-                  size="small"
-                  sx={{ color: 'text.secondary', '&:hover': { color: '#00C2FF' } }}
-                >
-                  <AccountCircleIcon sx={{ fontSize: '1.1rem' }} />
-                </IconButton>
-                <Menu
-                  anchorEl={userMenuAnchor}
-                  open={Boolean(userMenuAnchor)}
-                  onClose={closeUserMenu}
-                  disableScrollLock
-                  PaperProps={{
-                    sx: {
-                      mt: 1,
-                      minWidth: 190,
-                      backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(22, 22, 28, 0.8)' : 'background.paper',
-                      backdropFilter: (theme) => theme.palette.mode === 'dark' ? 'blur(20px)' : 'none',
-                      border: '1px solid',
-                      borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'divider',
-                      boxShadow: '0 16px 40px rgba(0,0,0,0.6)',
-                      borderRadius: 2,
-                    },
-                  }}
-                >
-                  <MenuItem component={Link} to="/profile" onClick={closeUserMenu}
-                    sx={{ fontSize: '0.85rem', py: 1, borderLeft: '2px solid transparent', color: 'text.primary', '&:hover': { color: '#00C2FF', backgroundColor: 'rgba(0,194,255,0.08)', borderLeftColor: '#00C2FF' } }}>
-                    <ListItemIcon sx={{ color: '#00C2FF', minWidth: 32 }}><PersonOutlineIcon fontSize="small" /></ListItemIcon>
-                    <ListItemText primaryTypographyProps={{ fontSize: '0.85rem' }}>Mon compte</ListItemText>
-                  </MenuItem>
-                  <MenuItem component={Link} to="/orders" onClick={closeUserMenu}
-                    sx={{ fontSize: '0.85rem', py: 1, borderLeft: '2px solid transparent', color: 'text.primary', '&:hover': { color: '#00C2FF', backgroundColor: 'rgba(0,194,255,0.08)', borderLeftColor: '#00C2FF' } }}>
-                    <ListItemIcon sx={{ color: '#00C2FF', minWidth: 32 }}><ReceiptLongIcon fontSize="small" /></ListItemIcon>
-                    <ListItemText primaryTypographyProps={{ fontSize: '0.85rem' }}>Mes commandes</ListItemText>
-                  </MenuItem>
-                  <Divider sx={{ borderColor: 'divider', my: 0.5 }} />
-                  <MenuItem
-                    onClick={() => { closeUserMenu(); handleLogout(); }}
-                    sx={{ fontSize: '0.85rem', py: 1, color: '#E63946', '&:hover': { backgroundColor: 'rgba(230,57,70,0.08)' } }}
-                  >
-                    <ListItemIcon sx={{ color: '#E63946', minWidth: 32 }}><LogoutIcon fontSize="small" /></ListItemIcon>
-                    <ListItemText primaryTypographyProps={{ fontSize: '0.85rem', color: '#E63946' }}>Déconnexion</ListItemText>
-                  </MenuItem>
-                </Menu>
-              </>
-            ) : (
+            {/* ── Desktop Category Nav ── */}
+            <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 0.25, flex: 1 }}>
               <Button
                 component={Link}
-                to="/login"
-                variant="outlined"
-                size="small"
-                sx={{ ml: 0.5, fontSize: '0.72rem', letterSpacing: '0.08em', py: 0.5, px: 1.5 }}
+                to="/products"
+                sx={{
+                  color: isActive('/products') && !location.search.includes('category_id') ? '#00C2FF' : '#9CA3AF',
+                  fontWeight: 600,
+                  fontSize: '0.75rem',
+                  letterSpacing: '0.08em',
+                  px: 1.5,
+                  py: 0.75,
+                  borderRadius: '4px',
+                  minWidth: 'auto',
+                  '&:hover': { color: '#F5F7FA', backgroundColor: 'rgba(255,255,255,0.04)' },
+                }}
               >
-                Connexion
+                TOUS LES PRODUITS
               </Button>
-            )}
 
-            {/* Mobile hamburger */}
-            <IconButton
-              sx={{ display: { md: 'none' }, color: 'text.secondary', ml: 0.25 }}
-              onClick={() => setMobileOpen(true)}
-              size="small"
-            >
-              <MenuIcon fontSize="small" />
-            </IconButton>
-          </Box>
-        </Toolbar>
+              <Button
+                component={Link}
+                to="/products?filter[is_on_sale]=1"
+                sx={{
+                  color: '#FF6B35',
+                  fontWeight: 700,
+                  fontSize: '0.75rem',
+                  letterSpacing: '0.08em',
+                  px: 1.5,
+                  py: 0.75,
+                  borderRadius: '6px',
+                  minWidth: 'auto',
+                  border: location.search.includes('is_on_sale') ? '2px solid #FF6B35' : '1px solid rgba(255,107,53,0.3)',
+                  backgroundColor: location.search.includes('is_on_sale') ? 'rgba(255,107,53,0.2)' : 'rgba(255,107,53,0.06)',
+                  animation: location.search.includes('is_on_sale') ? 'none' : 'promo-glow 2.5s ease-in-out infinite',
+                  textShadow: '0 0 8px rgba(255,107,53,0.4)',
+                  boxShadow: location.search.includes('is_on_sale') ? '0 0 12px rgba(255,107,53,0.4), inset 0 0 8px rgba(255,107,53,0.1)' : 'none',
+                  position: 'relative',
+                  '&::after': location.search.includes('is_on_sale') ? {
+                    content: '""',
+                    position: 'absolute',
+                    bottom: 0,
+                    left: '20%',
+                    right: '20%',
+                    height: '2px',
+                    backgroundColor: '#FF6B35',
+                    borderRadius: '2px',
+                  } : {},
+                  '&:hover': { color: '#FF6B35', backgroundColor: 'rgba(255,107,53,0.15)', borderColor: 'rgba(255,107,53,0.5)' },
+                }}
+              >
+                {location.search.includes('is_on_sale') ? '✦ PROMOS' : 'PROMOS'}
+              </Button>
+
+              <Button
+                component={Link}
+                to="/products?filter[is_new]=1"
+                sx={{
+                  color: '#00C853',
+                  fontWeight: 700,
+                  fontSize: '0.75rem',
+                  letterSpacing: '0.08em',
+                  px: 1.5,
+                  py: 0.75,
+                  borderRadius: '6px',
+                  minWidth: 'auto',
+                  border: location.search.includes('is_new') ? '2px solid #00C853' : '1px solid rgba(0,200,83,0.3)',
+                  backgroundColor: location.search.includes('is_new') ? 'rgba(0,200,83,0.2)' : 'rgba(0,200,83,0.06)',
+                  animation: location.search.includes('is_new') ? 'none' : 'nouveaute-glow 2.5s ease-in-out infinite',
+                  textShadow: '0 0 8px rgba(0,200,83,0.4)',
+                  boxShadow: location.search.includes('is_new') ? '0 0 12px rgba(0,200,83,0.4), inset 0 0 8px rgba(0,200,83,0.1)' : 'none',
+                  position: 'relative',
+                  '&::after': location.search.includes('is_new') ? {
+                    content: '""',
+                    position: 'absolute',
+                    bottom: 0,
+                    left: '20%',
+                    right: '20%',
+                    height: '2px',
+                    backgroundColor: '#00C853',
+                    borderRadius: '2px',
+                  } : {},
+                  '&:hover': { color: '#00C853', backgroundColor: 'rgba(0,200,83,0.15)', borderColor: 'rgba(0,200,83,0.5)' },
+                }}
+              >
+                {location.search.includes('is_new') ? '✦ NOUVEAUTÉS' : 'NOUVEAUTÉS'}
+              </Button>
+
+              {categories.length > 0 && (
+                <>
+                  <Button
+                    endIcon={<KeyboardArrowDownIcon sx={{ fontSize: '0.9rem !important' }} />}
+                    onClick={(e) => setCatMenuAnchor(e.currentTarget)}
+                    sx={{
+                      color: '#9CA3AF',
+                      fontWeight: 600,
+                      fontSize: '0.75rem',
+                      letterSpacing: '0.08em',
+                      px: 1.5,
+                      py: 0.75,
+                      borderRadius: '4px',
+                      minWidth: 'auto',
+                      '&:hover': { color: '#F5F7FA', backgroundColor: 'rgba(255,255,255,0.04)' },
+                    }}
+                  >
+                    CATÉGORIES
+                  </Button>
+                  <Menu
+                    anchorEl={catMenuAnchor}
+                    open={Boolean(catMenuAnchor)}
+                    onClose={closeCatMenu}
+                    disableScrollLock
+                    PaperProps={{
+                      sx: {
+                        mt: 1,
+                        minWidth: 220,
+                        backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(22, 22, 28, 0.6)' : 'background.paper',
+                        backdropFilter: (theme) => theme.palette.mode === 'dark' ? 'blur(16px)' : 'none',
+                        border: '1px solid',
+                        borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'divider',
+                        boxShadow: '0 16px 40px rgba(0,0,0,0.6)',
+                        borderRadius: 2,
+                      },
+                    }}
+                  >
+                    {categories.map((cat) => (
+                      <MenuItem
+                        key={cat.id}
+                        component={Link}
+                        to={`/products?filter[category_id]=${cat.id}`}
+                        onClick={closeCatMenu}
+                        sx={{
+                          fontSize: '0.85rem',
+                          fontWeight: 500,
+                          color: 'text.primary',
+                          py: 1,
+                          borderLeft: '2px solid transparent',
+                          '&:hover': {
+                            backgroundColor: 'rgba(0,194,255,0.08)',
+                            color: '#00C2FF',
+                            borderLeftColor: '#00C2FF',
+                          },
+                        }}
+                      >
+                        {cat.name}
+                      </MenuItem>
+                    ))}
+                  </Menu>
+                </>
+              )}
+
+              {/* Desktop search */}
+              <ClickAwayListener onClickAway={() => setSearchFocused(false)}>
+                <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center', position: 'relative' }}>
+                  <Box
+                    ref={handleSearchBoxRef}
+                    component="form"
+                    onSubmit={(e: React.FormEvent) => { e.preventDefault(); handleSearch(); }}
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      bgcolor: 'rgba(255,255,255,0.06)',
+                      borderRadius: '6px',
+                      border: '1px solid',
+                      borderColor: 'divider',
+                      px: 1.5,
+                      py: 0.25,
+                      transition: 'border-color 0.2s',
+                      '&:focus-within': { borderColor: 'primary.main' },
+                    }}
+                  >
+                    <SearchIcon sx={{ fontSize: '1rem', color: 'text.secondary', mr: 1 }} />
+                    <InputBase
+                      placeholder="Rechercher..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      onFocus={() => setSearchFocused(true)}
+                      sx={{
+                        fontSize: '0.8rem',
+                        color: 'text.primary',
+                        width: 160,
+                        '& input::placeholder': { color: 'text.secondary', opacity: 1 },
+                      }}
+                    />
+                  </Box>
+                  <Popper
+                    open={suggestionsOpen}
+                    anchorEl={searchAnchorEl}
+                    placement="bottom-start"
+                    style={{ zIndex: 1300, minWidth: 240 }}
+                  >
+                    <Paper
+                      elevation={8}
+                      sx={{
+                        mt: 0.5,
+                        border: '1px solid',
+                        borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'divider',
+                        backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(22, 22, 28, 0.8)' : 'background.paper',
+                        backdropFilter: (theme) => theme.palette.mode === 'dark' ? 'blur(20px)' : 'none',
+                        overflow: 'hidden',
+                        minWidth: 240,
+                        borderRadius: 2,
+                      }}
+                    >
+                      <List dense disablePadding>
+                        {suggestions.map((product) => (
+                          <ListItemButton
+                            key={product.id}
+                            onClick={() => handleSuggestionClick(product.slug)}
+                            sx={{
+                              py: 0.75,
+                              px: 1.5,
+                              gap: 1.5,
+                              '&:hover': { backgroundColor: 'rgba(0,194,255,0.08)' },
+                            }}
+                          >
+                            <Avatar
+                              src={product.images?.[0]?.thumbnail}
+                              alt={product.name}
+                              variant="rounded"
+                              sx={{ width: 36, height: 36, flexShrink: 0, bgcolor: 'rgba(255,255,255,0.06)' }}
+                            />
+                            <ListItemText
+                              primary={product.name}
+                              primaryTypographyProps={{ fontSize: '0.83rem', fontWeight: 500, noWrap: true }}
+                            />
+                          </ListItemButton>
+                        ))}
+                      </List>
+                    </Paper>
+                  </Popper>
+                </Box>
+              </ClickAwayListener>
+            </Box>
+
+            {/* ── Right Actions ── */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.25, ml: 'auto' }}>
+              <CartBadge onToggle={() => setDrawerOpen(true)} />
+
+              {user ? (
+                <>
+                  {(user.role === 'admin' || user.role === 'global_admin') && (
+                    <>
+                      <IconButton
+                        onClick={(e) => setAdminMenuAnchor(e.currentTarget)}
+                        aria-label="Administration"
+                        size="small"
+                        sx={{ color: 'text.secondary', '&:hover': { color: '#00C2FF' } }}
+                      >
+                        <Badge variant="dot" color="error" invisible={pendingCount === 0}>
+                          <AdminPanelSettingsIcon sx={{ fontSize: '1.1rem' }} />
+                        </Badge>
+                      </IconButton>
+                      <Menu
+                        anchorEl={adminMenuAnchor}
+                        open={Boolean(adminMenuAnchor)}
+                        onClose={closeAdminMenu}
+                        disableScrollLock
+                        PaperProps={{
+                          sx: {
+                            mt: 1,
+                            minWidth: 200,
+                            backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(22, 22, 28, 0.8)' : 'background.paper',
+                            backdropFilter: (theme) => theme.palette.mode === 'dark' ? 'blur(20px)' : 'none',
+                            border: '1px solid',
+                            borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'divider',
+                            boxShadow: '0 16px 40px rgba(0,0,0,0.6)',
+                            borderRadius: 2,
+                          },
+                        }}
+                      >
+                        {(() => {
+                          const menuItems = [
+                            { to: '/admin', icon: <DashboardIcon fontSize="small" />, label: 'Tableau de bord' },
+                            { to: '/admin/products', icon: <AssignmentIcon fontSize="small" />, label: 'Produits' },
+                            { to: '/admin/categories', icon: <AssignmentIcon fontSize="small" />, label: 'Catégories' },
+                            { to: '/admin/variation-types', icon: <TuneIcon fontSize="small" />, label: 'Types de variations' },
+                            { to: '/admin/orders', icon: <Badge badgeContent={pendingCount} color="error" max={99}><ReceiptLongIcon fontSize="small" /></Badge>, label: 'Commandes' },
+                            { to: '/admin/pages', icon: <DescriptionIcon fontSize="small" />, label: 'Pages' },
+                            { to: '/admin/hero-banners', icon: <ViewCarouselIcon fontSize="small" />, label: 'Hero Banners' },
+                          ];
+
+                          // Add Utilisateurs menu item only for global_admin
+                          if (user.role === 'global_admin') {
+                            menuItems.push({ to: '/admin/users', icon: <PeopleIcon fontSize="small" />, label: 'Utilisateurs' });
+                          }
+
+                          return menuItems.map(({ to, icon, label }) => (
+                            <MenuItem
+                              key={to}
+                              component={Link}
+                              to={to}
+                              onClick={closeAdminMenu}
+                              sx={{
+                                fontSize: '0.85rem',
+                                py: 1,
+                                borderLeft: '2px solid transparent',
+                                color: 'text.primary',
+                                '&:hover': { backgroundColor: 'rgba(0,194,255,0.08)', color: '#00C2FF', borderLeftColor: '#00C2FF' },
+                              }}
+                            >
+                              <ListItemIcon sx={{ color: '#00C2FF', minWidth: 32 }}>{icon}</ListItemIcon>
+                              <ListItemText primaryTypographyProps={{ fontSize: '0.85rem' }}>{label}</ListItemText>
+                            </MenuItem>
+                          ));
+                        })()}
+                      </Menu>
+                    </>
+                  )}
+
+                  <IconButton
+                    onClick={(e) => setUserMenuAnchor(e.currentTarget)}
+                    size="small"
+                    sx={{ color: 'text.secondary', '&:hover': { color: '#00C2FF' } }}
+                  >
+                    <AccountCircleIcon sx={{ fontSize: '1.1rem' }} />
+                  </IconButton>
+                  <Menu
+                    anchorEl={userMenuAnchor}
+                    open={Boolean(userMenuAnchor)}
+                    onClose={closeUserMenu}
+                    disableScrollLock
+                    PaperProps={{
+                      sx: {
+                        mt: 1,
+                        minWidth: 190,
+                        backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(22, 22, 28, 0.8)' : 'background.paper',
+                        backdropFilter: (theme) => theme.palette.mode === 'dark' ? 'blur(20px)' : 'none',
+                        border: '1px solid',
+                        borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'divider',
+                        boxShadow: '0 16px 40px rgba(0,0,0,0.6)',
+                        borderRadius: 2,
+                      },
+                    }}
+                  >
+                    <MenuItem component={Link} to="/profile" onClick={closeUserMenu}
+                      sx={{ fontSize: '0.85rem', py: 1, borderLeft: '2px solid transparent', color: 'text.primary', '&:hover': { color: '#00C2FF', backgroundColor: 'rgba(0,194,255,0.08)', borderLeftColor: '#00C2FF' } }}>
+                      <ListItemIcon sx={{ color: '#00C2FF', minWidth: 32 }}><PersonOutlineIcon fontSize="small" /></ListItemIcon>
+                      <ListItemText primaryTypographyProps={{ fontSize: '0.85rem' }}>Mon compte</ListItemText>
+                    </MenuItem>
+                    <MenuItem component={Link} to="/orders" onClick={closeUserMenu}
+                      sx={{ fontSize: '0.85rem', py: 1, borderLeft: '2px solid transparent', color: 'text.primary', '&:hover': { color: '#00C2FF', backgroundColor: 'rgba(0,194,255,0.08)', borderLeftColor: '#00C2FF' } }}>
+                      <ListItemIcon sx={{ color: '#00C2FF', minWidth: 32 }}><ReceiptLongIcon fontSize="small" /></ListItemIcon>
+                      <ListItemText primaryTypographyProps={{ fontSize: '0.85rem' }}>Mes commandes</ListItemText>
+                    </MenuItem>
+                    <Divider sx={{ borderColor: 'divider', my: 0.5 }} />
+                    <MenuItem
+                      onClick={() => { closeUserMenu(); handleLogout(); }}
+                      sx={{ fontSize: '0.85rem', py: 1, color: '#E63946', '&:hover': { backgroundColor: 'rgba(230,57,70,0.08)' } }}
+                    >
+                      <ListItemIcon sx={{ color: '#E63946', minWidth: 32 }}><LogoutIcon fontSize="small" /></ListItemIcon>
+                      <ListItemText primaryTypographyProps={{ fontSize: '0.85rem', color: '#E63946' }}>Déconnexion</ListItemText>
+                    </MenuItem>
+                  </Menu>
+                </>
+              ) : (
+                <Button
+                  component={Link}
+                  to="/login"
+                  variant="outlined"
+                  size="small"
+                  sx={{ ml: 0.5, fontSize: '0.72rem', letterSpacing: '0.08em', py: 0.5, px: 1.5 }}
+                >
+                  Connexion
+                </Button>
+              )}
+
+              {/* Mobile hamburger */}
+              <IconButton
+                sx={{ display: { md: 'none' }, color: 'text.secondary', ml: 0.25 }}
+                onClick={() => setMobileOpen(true)}
+                size="small"
+              >
+                <MenuIcon fontSize="small" />
+              </IconButton>
+            </Box>
+          </Toolbar>
+        </Container>
       </AppBar>
 
       {/* ── Mobile Drawer ── */}

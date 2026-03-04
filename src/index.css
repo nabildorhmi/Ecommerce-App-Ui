@@ -1,5 +1,5 @@
 /* Japanese cyberpunk font */
-@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Orbitron:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
 /* MiraiTech Global Styles */
 *,
@@ -18,6 +18,11 @@
   --mirai-white: #F5F7FA;
   --mirai-gray: #9CA3AF;
   --mirai-red: #E63946;
+  --mirai-gold: #F0B429;
+  --mirai-gold-glow: rgba(240, 180, 41, 0.25);
+  --mirai-emerald: #00C853;
+  --mirai-emerald-glow: rgba(0, 200, 83, 0.25);
+  --mirai-orange: #FF6B35;
 
   /* Glassmorphism / Neumorphism base values */
   --glass-bg: rgba(17, 17, 22, 0.45);
@@ -25,7 +30,10 @@
   --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
   --glass-blur: blur(16px);
 
-  font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+  /* Spacing scale */
+  --section-gap: clamp(48px, 6vw, 96px);
+
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -49,6 +57,11 @@ body {
 a {
   color: var(--mirai-cyan);
   text-decoration: none;
+}
+
+::selection {
+  background: rgba(0, 194, 255, 0.25);
+  color: var(--mirai-white);
 }
 
 /* Neon glow utility */
@@ -91,7 +104,49 @@ a {
   background: var(--mirai-cyan);
 }
 
-/* Utility classes that use animations defined in animations.css */
+/* ── Trust Badge Utility ──────────────────────────────────────────── */
+.mirai-trust-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 20px;
+  background: rgba(17, 17, 22, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.mirai-trust-badge:hover {
+  border-color: rgba(0, 194, 255, 0.3);
+  background: rgba(0, 194, 255, 0.05);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(0, 194, 255, 0.1);
+}
+
+/* ── Section Divider ──────────────────────────────────────────────── */
+.mirai-section-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0, 194, 255, 0.2) 30%, rgba(0, 194, 255, 0.4) 50%, rgba(0, 194, 255, 0.2) 70%, transparent);
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ── Premium Badge ────────────────────────────────────────────────── */
+.mirai-premium-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* ── Utility classes that use animations defined in animations.css ── */
 .mirai-animate-in {
   animation: miraiSlideUp 0.6s ease forwards;
 }

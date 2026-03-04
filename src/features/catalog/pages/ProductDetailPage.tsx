@@ -192,15 +192,20 @@ export function ProductDetailPage() {
               <Box>
                 <Typography
                   sx={{
-                    fontSize: '0.7rem',
-                    fontWeight: 700,
-                    letterSpacing: '0.12em',
+                    fontSize: '0.8rem',
+                    fontWeight: 800,
+                    letterSpacing: '0.15em',
                     color: '#00C2FF',
                     textTransform: 'uppercase',
-                    mb: 1.5,
+                    fontFamily: '"Orbitron", sans-serif',
+                    mb: 2,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1,
                   }}
                 >
-                  DESCRIPTION
+                  <span style={{ width: 8, height: 8, backgroundColor: '#00C2FF', borderRadius: '50%', display: 'inline-block' }} />
+                  DESCRIPTION DU PRODUIT
                 </Typography>
                 <Box sx={{ position: 'relative' }}>
                   <Box
@@ -268,15 +273,20 @@ export function ProductDetailPage() {
               <Box sx={{ mt: 4 }}>
                 <Typography
                   sx={{
-                    fontSize: '0.7rem',
-                    fontWeight: 700,
-                    letterSpacing: '0.12em',
+                    fontSize: '0.8rem',
+                    fontWeight: 800,
+                    letterSpacing: '0.15em',
                     color: '#00C2FF',
                     textTransform: 'uppercase',
-                    mb: 1.5,
+                    fontFamily: '"Orbitron", sans-serif',
+                    mb: 2,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1,
                   }}
                 >
-                  SPÉCIFICATIONS
+                  <span style={{ width: 8, height: 8, backgroundColor: '#00C2FF', borderRadius: '50%', display: 'inline-block' }} />
+                  CARACTÉRISTIQUES TECHNIQUES
                 </Typography>
                 <SpecsTable attributes={product.attributes} />
               </Box>
@@ -341,11 +351,13 @@ export function ProductDetailPage() {
                 <Typography
                   component="h1"
                   sx={{
-                    fontSize: { xs: '1.5rem', md: '1.8rem' },
-                    fontWeight: 800,
-                    lineHeight: 1.2,
+                    fontSize: { xs: '1.8rem', md: '2.4rem' },
+                    fontWeight: 900,
+                    lineHeight: 1.1,
                     color: 'text.primary',
-                    letterSpacing: '-0.02em',
+                    letterSpacing: '0.02em',
+                    fontFamily: '"Orbitron", sans-serif',
+                    textTransform: 'uppercase',
                   }}
                 >
                   {product.name}
@@ -508,8 +520,32 @@ export function ProductDetailPage() {
         </Grid>
 
         {/* Trust signals */}
-        <Box sx={{ mt: 6 }}>
+        <Box sx={{ mt: 8 }}>
           <TrustSignals />
+        </Box>
+
+        {/* Related Products Placeholder */}
+        <Box sx={{ mt: 8, pt: 6, borderTop: '1px solid rgba(0,194,255,0.1)' }}>
+          <Typography
+            variant="h4"
+            sx={{
+              fontFamily: '"Orbitron", sans-serif',
+              fontWeight: 800,
+              mb: 4,
+              color: 'text.primary',
+              textAlign: 'center',
+              textTransform: 'uppercase',
+            }}
+          >
+            PRODUITS SIMILAIRES
+          </Typography>
+          <Grid container spacing={2}>
+            {[1, 2, 3, 4].map((i) => (
+              <Grid key={i} size={{ xs: 6, sm: 4, md: 3 }}>
+                <Skeleton variant="rectangular" sx={{ borderRadius: '12px', bgcolor: 'rgba(255,255,255,0.02)', aspectRatio: '1 / 1.3' }} />
+              </Grid>
+            ))}
+          </Grid>
         </Box>
       </Container>
 

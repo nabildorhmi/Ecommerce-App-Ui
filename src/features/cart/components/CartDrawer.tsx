@@ -1,12 +1,16 @@
-import Drawer from '@mui/material/Drawer';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
-import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+import Divider from '@mui/material/Divider';
+import Chip from '@mui/material/Chip';
+import IconButton from '@mui/material/IconButton';
+import Button from '@mui/material/Button';
+import Drawer from '@mui/material/Drawer';
+import LinearProgress from '@mui/material/LinearProgress';
 import CloseIcon from '@mui/icons-material/Close';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
+import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { useNavigate } from 'react-router';
 import { useCartStore } from '../store';
 import { CartItem } from './CartItem';
@@ -16,6 +20,9 @@ interface CartDrawerProps {
   open: boolean;
   onClose: () => void;
 }
+
+/* Free shipping threshold in centimes (e.g. 50000 = 500 MAD) */
+const FREE_SHIPPING_THRESHOLD = 50000;
 
 export function CartDrawer({ open, onClose }: CartDrawerProps) {
   const navigate = useNavigate();
@@ -28,6 +35,9 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
     void navigate('/checkout');
   };
 
+  const remaining = Math.max(0, FREE_SHIPPING_THRESHOLD - subtotalCentimes);
+  const progressPct = Math.min(100, (subtotalCentimes / FREE_SHIPPING_THRESHOLD) * 100);
+
   return (
     <Drawer
       anchor="right"
@@ -35,10 +45,10 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
       onClose={onClose}
       PaperProps={{
         sx: {
-          width: { xs: '100%', sm: 420 },
+          width: { xs: '100%', sm: 440 },
           display: 'flex',
           flexDirection: 'column',
-          backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(11, 11, 14, 0.75)' : 'background.paper',
+          backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(11, 11, 14, 0.82)' : 'background.paper',
           backdropFilter: (theme) => theme.palette.mode === 'dark' ? 'blur(24px)' : 'none',
           borderLeft: '1px solid',
           borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'divider',
@@ -48,37 +58,32 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
       {/* Header */}
       <Box
         sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          px: 2.5,
-          py: 2,
-          borderBottom: '1px solid rgba(0,194,255,0.1)',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          px: 2.5, py: 2,
+          borderBottom: '1px solid rgba(0,194,255,0.08)',
           background: 'linear-gradient(180deg, rgba(0,194,255,0.04) 0%, transparent 100%)',
           position: 'relative',
           '&::after': {
-            content: '""',
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            width: '100%',
-            height: 1,
+            content: '""', position: 'absolute', bottom: 0, left: 0, width: '100%', height: 1,
             background: 'linear-gradient(90deg, transparent, rgba(0,194,255,0.3), transparent)',
             pointerEvents: 'none',
           },
         }}
       >
-        <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1 }}>
+        <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1.25 }}>
+          <ShoppingCartOutlinedIcon sx={{ fontSize: '1.1rem', color: '#00C2FF', mr: 0.5 }} />
           <Typography variant="h6" fontWeight={800} color="var(--mirai-white)">
-            {"Panier"}
+            Panier
           </Typography>
           <Typography sx={{ fontFamily: '"Noto Serif JP", serif', fontSize: '0.6rem', color: 'rgba(0,194,255,0.2)', letterSpacing: '0.1em' }}>
             カート
           </Typography>
           {totalItems > 0 && (
-            <Typography component="span" variant="body2" sx={{ color: 'var(--mirai-cyan)', fontWeight: 700 }}>
-              ({`${totalItems}`})
-            </Typography>
+            <Chip
+              label={totalItems}
+              size="small"
+              sx={{ height: 20, fontSize: '0.65rem', fontWeight: 700, bgcolor: 'rgba(0,194,255,0.15)', color: '#00C2FF', border: '1px solid rgba(0,194,255,0.25)', ml: 0.25, minWidth: 20 }}
+            />
           )}
         </Box>
         <IconButton onClick={onClose} aria-label="Fermer" sx={{ color: 'var(--mirai-gray)', position: 'relative', zIndex: 1, '&:hover': { color: 'var(--mirai-white)' } }}>
@@ -86,12 +91,48 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
         </IconButton>
       </Box>
 
+      {/* Free shipping progress */}
+      {items.length > 0 && (
+        <Box sx={{ px: 2.5, pt: 2, pb: 1.5, borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+          {remaining > 0 ? (
+            <Box>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                <LocalShippingOutlinedIcon sx={{ fontSize: '0.9rem', color: '#00C2FF' }} />
+                <Typography sx={{ fontSize: '0.72rem', color: 'text.secondary', fontWeight: 500 }}>
+                  Plus que <Box component="span" sx={{ color: '#00C2FF', fontWeight: 700 }}>{formatCurrency(remaining)}</Box> pour la livraison gratuite !
+                </Typography>
+              </Box>
+              <LinearProgress
+                variant="determinate"
+                value={progressPct}
+                sx={{ height: 5, borderRadius: 4, bgcolor: 'rgba(0,194,255,0.1)', '& .MuiLinearProgress-bar': { background: 'linear-gradient(90deg, #00C2FF, #0099CC)' } }}
+              />
+            </Box>
+          ) : (
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <LocalShippingOutlinedIcon sx={{ fontSize: '0.9rem', color: '#00C853' }} />
+              <Typography sx={{ fontSize: '0.72rem', color: '#00C853', fontWeight: 700 }}>
+                🎉 Livraison gratuite débloquée !
+              </Typography>
+            </Box>
+          )}
+        </Box>
+      )}
+
       {/* Body */}
-      <Box sx={{ flex: 1, overflowY: 'auto', px: 2 }}>
+      <Box sx={{ flex: 1, overflowY: 'auto', px: 2, py: 1 }}>
         {items.length === 0 ? (
-          <Stack alignItems="center" justifyContent="center" spacing={2} sx={{ py: 8 }}>
-            <ShoppingCartOutlinedIcon sx={{ fontSize: 64, color: 'text.disabled' }} />
-            <Typography color="text.secondary">{"Votre panier est vide"}</Typography>
+          <Stack alignItems="center" justifyContent="center" spacing={2.5} sx={{ py: 10 }}>
+            <Box sx={{ width: 80, height: 80, borderRadius: '50%', bgcolor: 'rgba(0,194,255,0.06)', border: '1px solid rgba(0,194,255,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <ShoppingCartOutlinedIcon sx={{ fontSize: 36, color: 'rgba(0,194,255,0.4)' }} />
+            </Box>
+            <Box sx={{ textAlign: 'center' }}>
+              <Typography fontWeight={700} color="text.primary" sx={{ mb: 0.5 }}>Votre panier est vide</Typography>
+              <Typography color="text.secondary" variant="body2">Découvrez nos scooters électriques premium</Typography>
+            </Box>
+            <Button variant="outlined" size="small" onClick={() => { onClose(); void navigate('/products'); }} sx={{ letterSpacing: '0.06em', fontSize: '0.78rem' }}>
+              Explorer le catalogue
+            </Button>
           </Stack>
         ) : (
           <Box>
@@ -103,41 +144,52 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
       </Box>
 
       {/* Footer */}
-      <Box sx={{
-        borderTop: '1px solid rgba(0,194,255,0.1)',
-        background: 'linear-gradient(0deg, rgba(0,194,255,0.04) 0%, transparent 100%)',
-        px: 2.5,
-        py: 2
-      }}>
-        <Stack spacing={1.5}>
-          <Stack direction="row" justifyContent="space-between" alignItems="center">
-            <Typography variant="body1" fontWeight={600} color="var(--mirai-gray)">
-              {"Sous-total"}
-            </Typography>
-            <Typography variant="body1" fontWeight={800} sx={{ color: 'var(--mirai-cyan)' }}>
-              {formatCurrency(subtotalCentimes)}
-            </Typography>
+      {items.length > 0 && (
+        <Box sx={{ borderTop: '1px solid rgba(0,194,255,0.08)', background: 'linear-gradient(0deg, rgba(0,194,255,0.04) 0%, transparent 100%)', px: 2.5, py: 2.5 }}>
+          <Stack spacing={1.75}>
+            {/* Subtotal */}
+            <Stack direction="row" justifyContent="space-between" alignItems="center">
+              <Typography variant="body2" color="text.secondary" fontWeight={500}>Sous-total ({totalItems} article{totalItems > 1 ? 's' : ''})</Typography>
+              <Typography variant="body1" fontWeight={800} sx={{ color: 'var(--mirai-cyan)' }}>
+                {formatCurrency(subtotalCentimes)}
+              </Typography>
+            </Stack>
+            <Stack direction="row" justifyContent="space-between" alignItems="center">
+              <Typography variant="body2" color="text.secondary" fontWeight={500}>Livraison</Typography>
+              <Typography variant="body2" fontWeight={700} color={remaining === 0 ? '#00C853' : 'text.primary'}>
+                {remaining === 0 ? 'Gratuit' : 'Calculée à la commande'}
+              </Typography>
+            </Stack>
+
+            <Divider sx={{ borderColor: 'rgba(0,194,255,0.08)' }} />
+
+            <Button
+              variant="contained"
+              size="large"
+              fullWidth
+              onClick={handleCheckout}
+              disabled={items.length === 0}
+              sx={{
+                py: 1.75, borderRadius: '12px', fontWeight: 700, fontSize: '0.9rem',
+                background: 'linear-gradient(135deg, #00C2FF, #0099CC)',
+                boxShadow: '0 8px 24px rgba(0,194,255,0.35)',
+                '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 12px 32px rgba(0,194,255,0.5)' },
+                transition: 'all 0.3s ease',
+              }}
+            >
+              Passer la commande
+            </Button>
+
+            {/* Trust signal */}
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.75 }}>
+              <LockOutlinedIcon sx={{ fontSize: '0.8rem', color: 'text.disabled' }} />
+              <Typography sx={{ fontSize: '0.68rem', color: 'text.disabled' }}>
+                Paiement sécurisé · Retour facile 30 jours
+              </Typography>
+            </Box>
           </Stack>
-          <Divider sx={{ borderColor: 'rgba(0,194,255,0.1)' }} />
-          <Button
-            variant="contained"
-            size="large"
-            fullWidth
-            onClick={handleCheckout}
-            disabled={items.length === 0}
-            sx={{
-              py: 1.5,
-              borderRadius: '12px',
-              fontWeight: 700,
-              background: 'linear-gradient(45deg, #00C2FF, #0099CC)',
-              '&:hover': { transform: 'translateY(-2px)' },
-              transition: 'transform 0.2s',
-            }}
-          >
-            {"Passer la commande"}
-          </Button>
-        </Stack>
-      </Box>
+        </Box>
+      )}
     </Drawer>
   );
 }

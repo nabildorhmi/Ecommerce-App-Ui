@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
@@ -8,7 +9,14 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import Skeleton from '@mui/material/Skeleton';
+import Drawer from '@mui/material/Drawer';
+import IconButton from '@mui/material/IconButton';
+import Button from '@mui/material/Button';
+import Chip from '@mui/material/Chip';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import CloseIcon from '@mui/icons-material/Close';
 import { useProducts } from '../api/products';
+import { useCategories } from '../api/categories';
 import { useCatalogFilters } from '../hooks/useCatalogFilters';
 import { FilterBar } from '../components/FilterBar';
 import { ProductCard } from '../components/ProductCard';
@@ -33,13 +41,29 @@ function ProductGridSkeleton() {
  * Sidebar FilterBar + product grid + pagination.
  */
 export function CatalogPage() {
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const { filters, setFilter } = useCatalogFilters();
   const { data, isLoading } = useProducts(filters);
+  const { data: categoriesData } = useCategories();
 
   const products = data?.data ?? [];
   const totalPages = data?.meta?.last_page ?? 1;
   const currentPage = filters.page ?? 1;
   const total = data?.meta?.total ?? 0;
+  const categories = categoriesData?.data ?? [];
+
+  // Active chips mapping
+  const activeChips = [];
+  if (filters['filter[search]']) activeChips.push({ key: 'filter[search]', label: `Recherche: ${filters['filter[search]']}` });
+  if (filters['filter[min_price]']) activeChips.push({ key: 'filter[min_price]', label: `Min: ${parseInt(filters['filter[min_price]'], 10) / 100} MAD` });
+  if (filters['filter[max_price]']) activeChips.push({ key: 'filter[max_price]', label: `Max: ${parseInt(filters['filter[max_price]'], 10) / 100} MAD` });
+  if (filters['filter[in_stock]']) activeChips.push({ key: 'filter[in_stock]', label: 'En stock' });
+  if (filters['filter[is_new]']) activeChips.push({ key: 'filter[is_new]', label: 'Nouveautés' });
+  if (filters['filter[is_on_sale]']) activeChips.push({ key: 'filter[is_on_sale]', label: 'Promotions' });
+  if (filters['filter[category_id]']) {
+    const cat = categories.find(c => String(c.id) === filters['filter[category_id]']);
+    if (cat) activeChips.push({ key: 'filter[category_id]', label: `Catégorie: ${cat.name}` });
+  }
 
   return (
     <Box sx={{ bgcolor: 'background.default', minHeight: '100vh', position: 'relative', overflow: 'hidden' }}>
@@ -95,68 +119,102 @@ export function CatalogPage() {
         </Container>
       </Box>
 
-      <Container maxWidth="xl" sx={{ py: 1.5 }}>
-        <Grid container spacing={2}>
-          {/* Sidebar Filters */}
-          <Grid size={{ xs: 12, md: 3, lg: 2.5 }}>
+      <Container maxWidth="xl" sx={{ py: 3 }}>
+        <Grid container spacing={3}>
+          {/* Sidebar Filters (Desktop) */}
+          <Grid size={{ xs: 12, md: 3, lg: 2.5 }} sx={{ display: { xs: 'none', md: 'block' } }}>
             <FilterBar />
           </Grid>
 
           {/* Product Grid */}
           <Grid size={{ xs: 12, md: 9, lg: 9.5 }}>
-            {/* Sort + Per-page bar */}
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2, gap: 1.5, alignItems: 'center', flexWrap: 'wrap' }}>
-              <Typography sx={{ fontSize: '0.78rem', color: 'text.secondary', letterSpacing: '0.06em' }}>
-                Trier par
-              </Typography>
-              <FormControl size="small" sx={{ minWidth: 160 }}>
-                <Select
-                  value={filters.sort ?? '-created_at'}
-                  onChange={(e) => setFilter('sort', e.target.value)}
-                  sx={{
-                    fontSize: '0.82rem',
-                    color: 'text.primary',
-                    '& .MuiOutlinedInput-notchedOutline': { borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'divider' },
-                    '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(0,194,255,0.5)' },
-                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: '#00C2FF' },
-                    '& .MuiSvgIcon-root': { color: 'text.secondary' },
-                    backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.02)' : 'background.paper',
-                    transition: 'all 0.3s ease',
-                  }}
-                >
-                  <MenuItem value="-created_at" sx={{ fontSize: '0.82rem' }}>Plus récent</MenuItem>
-                  <MenuItem value="created_at" sx={{ fontSize: '0.82rem' }}>Plus ancien</MenuItem>
-                  <MenuItem value="price" sx={{ fontSize: '0.82rem' }}>Prix : Croissant</MenuItem>
-                  <MenuItem value="-price" sx={{ fontSize: '0.82rem' }}>Prix : Décroissant</MenuItem>
-                </Select>
-              </FormControl>
+            {/* Sort + Per-page + Mobile Filter Toggle bar */}
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3, gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
+              <Button
+                variant="outlined"
+                startIcon={<FilterListIcon />}
+                onClick={() => setMobileFiltersOpen(true)}
+                sx={{
+                  display: { md: 'none' },
+                  color: '#00C2FF',
+                  borderColor: 'rgba(0,194,255,0.3)',
+                  '&:hover': { borderColor: '#00C2FF', backgroundColor: 'rgba(0,194,255,0.1)' }
+                }}
+              >
+                Filtres
+              </Button>
 
-              {/* Per-page selector */}
-              <FormControl size="small" sx={{ minWidth: 110 }}>
-                <InputLabel sx={{ fontSize: '0.8rem' }}>Par page</InputLabel>
-                <Select
-                  label="Par page"
-                  value={String(filters.per_page ?? 12)}
-                  onChange={(e) => {
-                    setFilter('per_page', e.target.value);
-                    setFilter('page', '1');
-                  }}
-                  sx={{
-                    fontSize: '0.82rem',
-                    color: 'text.primary',
-                    '& .MuiOutlinedInput-notchedOutline': { borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'divider' },
-                    '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(0,194,255,0.5)' },
-                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: '#00C2FF' },
-                    '& .MuiSvgIcon-root': { color: 'text.secondary' },
-                    backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.02)' : 'background.paper',
-                    transition: 'all 0.3s ease',
-                  }}
-                >
-                  <MenuItem value="12" sx={{ fontSize: '0.82rem' }}>12 / page</MenuItem>
-                  <MenuItem value="24" sx={{ fontSize: '0.82rem' }}>24 / page</MenuItem>
-                  <MenuItem value="48" sx={{ fontSize: '0.82rem' }}>48 / page</MenuItem>
-                </Select>
-              </FormControl>
+              {/* Active Chips */}
+              <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', flex: 1 }}>
+                {activeChips.map((chip) => (
+                  <Chip
+                    key={chip.key}
+                    label={chip.label}
+                    onDelete={() => setFilter(chip.key as any, '')}
+                    size="small"
+                    sx={{
+                      backgroundColor: 'rgba(0,194,255,0.1)',
+                      color: '#00C2FF',
+                      border: '1px solid rgba(0,194,255,0.2)',
+                      '& .MuiChip-deleteIcon': { color: '#00C2FF', '&:hover': { color: '#fff' } }
+                    }}
+                  />
+                ))}
+              </Box>
+
+              <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'center' }}>
+                <Typography sx={{ fontSize: '0.78rem', color: 'text.secondary', letterSpacing: '0.06em', display: { xs: 'none', sm: 'block' } }}>
+                  Trier par
+                </Typography>
+                <FormControl size="small" sx={{ minWidth: 160 }}>
+                  <Select
+                    value={filters.sort ?? '-created_at'}
+                    onChange={(e) => setFilter('sort', e.target.value)}
+                    sx={{
+                      fontSize: '0.82rem',
+                      color: 'text.primary',
+                      '& .MuiOutlinedInput-notchedOutline': { borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'divider' },
+                      '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(0,194,255,0.5)' },
+                      '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: '#00C2FF' },
+                      '& .MuiSvgIcon-root': { color: 'text.secondary' },
+                      backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.02)' : 'background.paper',
+                      transition: 'all 0.3s ease',
+                    }}
+                  >
+                    <MenuItem value="-created_at" sx={{ fontSize: '0.82rem' }}>Plus récent</MenuItem>
+                    <MenuItem value="created_at" sx={{ fontSize: '0.82rem' }}>Plus ancien</MenuItem>
+                    <MenuItem value="price" sx={{ fontSize: '0.82rem' }}>Prix : Croissant</MenuItem>
+                    <MenuItem value="-price" sx={{ fontSize: '0.82rem' }}>Prix : Décroissant</MenuItem>
+                  </Select>
+                </FormControl>
+
+                {/* Per-page selector */}
+                <FormControl size="small" sx={{ minWidth: 110, display: { xs: 'none', sm: 'inline-flex' } }}>
+                  <InputLabel sx={{ fontSize: '0.8rem', color: 'text.secondary' }}>Par page</InputLabel>
+                  <Select
+                    label="Par page"
+                    value={String(filters.per_page ?? 12)}
+                    onChange={(e) => {
+                      setFilter('per_page', e.target.value);
+                      setFilter('page', '1');
+                    }}
+                    sx={{
+                      fontSize: '0.82rem',
+                      color: 'text.primary',
+                      '& .MuiOutlinedInput-notchedOutline': { borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'divider' },
+                      '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(0,194,255,0.5)' },
+                      '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: '#00C2FF' },
+                      '& .MuiSvgIcon-root': { color: 'text.secondary' },
+                      backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.02)' : 'background.paper',
+                      transition: 'all 0.3s ease',
+                    }}
+                  >
+                    <MenuItem value="12" sx={{ fontSize: '0.82rem' }}>12 / page</MenuItem>
+                    <MenuItem value="24" sx={{ fontSize: '0.82rem' }}>24 / page</MenuItem>
+                    <MenuItem value="48" sx={{ fontSize: '0.82rem' }}>48 / page</MenuItem>
+                  </Select>
+                </FormControl>
+              </Box>
             </Box>
 
             {isLoading ? (
@@ -211,6 +269,30 @@ export function CatalogPage() {
           </Grid>
         </Grid>
       </Container>
+
+      {/* Mobile Filters Drawer */}
+      <Drawer
+        anchor="left"
+        open={mobileFiltersOpen}
+        onClose={() => setMobileFiltersOpen(false)}
+        PaperProps={{
+          sx: {
+            width: 300,
+            bgcolor: 'background.default',
+            backgroundImage: 'none',
+            borderRight: '1px solid rgba(0,194,255,0.1)',
+            p: 2,
+            pt: 4,
+          }
+        }}
+      >
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
+          <IconButton onClick={() => setMobileFiltersOpen(false)} sx={{ color: 'text.secondary' }}>
+            <CloseIcon />
+          </IconButton>
+        </Box>
+        <FilterBar isMobileOpen={() => setMobileFiltersOpen(false)} />
+      </Drawer>
     </Box>
   );
 }
