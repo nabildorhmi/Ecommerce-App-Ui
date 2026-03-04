@@ -349,6 +349,18 @@ export function createMiraiTheme(mode: PaletteMode = 'dark', direction: 'ltr' | 
           },
         },
       },
+      MuiDrawer: {
+        styleOverrides: {
+          paper: {
+            backgroundColor: isDark ? 'rgba(11,11,14,0.97)' : LIGHT_PAPER,
+            backdropFilter: 'blur(24px)',
+            borderLeft: `1px solid ${isDark ? MIRAI_BORDER : LIGHT_BORDER}`,
+            backgroundImage: isDark
+              ? 'linear-gradient(to bottom, rgba(0,194,255,0.02), transparent 30%)'
+              : 'none',
+          },
+        },
+      },
       MuiTooltip: {
         styleOverrides: {
           tooltip: {

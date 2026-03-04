@@ -5,6 +5,7 @@ import Stack from '@mui/material/Stack';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
+import ElectricScooterIcon from '@mui/icons-material/ElectricScooter';
 import { useCartStore } from '../store';
 import { formatCurrency } from '@/shared/utils/formatCurrency';
 import type { CartItem as CartItemType } from '../types';
@@ -54,7 +55,7 @@ export function CartItem({ item }: CartItemProps) {
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}
         >
-          <Typography sx={{ fontSize: '1.4rem' }}>⚡</Typography>
+          <ElectricScooterIcon sx={{ fontSize: '1.4rem', color: 'rgba(0,194,255,0.4)' }} />
         </Box>
       )}
 

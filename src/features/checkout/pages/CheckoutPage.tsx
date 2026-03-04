@@ -433,14 +433,30 @@ export function CheckoutPage() {
                       direction="row"
                       justifyContent="space-between"
                       alignItems="center"
+                      spacing={1.5}
                     >
-                      <Box>
-                        <Typography variant="body2" fontWeight={500}>{item.name}</Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          Qté: {item.quantity} &times; {formatCurrency(item.price)}
-                        </Typography>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flex: 1, minWidth: 0 }}>
+                        {/* Order item thumbnail */}
+                        {item.thumbnailUrl && (
+                          <Box
+                            component="img"
+                            src={item.thumbnailUrl}
+                            alt={item.name}
+                            sx={{
+                              width: 44, height: 44, objectFit: 'cover',
+                              borderRadius: '8px', flexShrink: 0,
+                              border: '1px solid rgba(255,255,255,0.07)',
+                            }}
+                          />
+                        )}
+                        <Box sx={{ minWidth: 0 }}>
+                          <Typography variant="body2" fontWeight={500} noWrap>{item.name}</Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            Qté: {item.quantity} &times; {formatCurrency(item.price)}
+                          </Typography>
+                        </Box>
                       </Box>
-                      <Typography variant="body2" fontWeight={600}>
+                      <Typography variant="body2" fontWeight={600} sx={{ flexShrink: 0 }}>
                         {formatCurrency(item.price * item.quantity)}
                       </Typography>
                     </Stack>
@@ -510,7 +526,7 @@ export function CheckoutPage() {
                   transition: 'all 0.3s ease',
                 }}
               >
-                {isPending ? 'Envoi en cours...' : '🔒 Confirmer la commande'}
+                {isPending ? 'Envoi en cours...' : `Confirmer — ${formatCurrency(subtotalCentimes)}`}
               </Button>
 
               {/* Final reassurance */}

@@ -7,23 +7,31 @@ import Divider from '@mui/material/Divider';
 import { Link } from 'react-router';
 import { useCategories } from '@/features/catalog/api/categories';
 import miraiLogo from '@/assets/miraiTech-Logo.png';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
+import VerifiedUserOutlinedIcon from '@mui/icons-material/VerifiedUserOutlined';
+import UndoIcon from '@mui/icons-material/Undo';
+import PhoneIcon from '@mui/icons-material/Phone';
+import EmailIcon from '@mui/icons-material/Email';
+import ScheduleIcon from '@mui/icons-material/Schedule';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import InstagramIcon from '@mui/icons-material/Instagram';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 
 const socialLinks = [
-  { label: 'Instagram', href: '#', icon: '📸' },
-  { label: 'Facebook', href: '#', icon: '🔵' },
-  { label: 'WhatsApp', href: '#', icon: '💬' },
+  { label: 'Instagram', href: '#', icon: <InstagramIcon sx={{ fontSize: '1rem' }} /> },
+  { label: 'Facebook', href: '#', icon: <FacebookIcon sx={{ fontSize: '1rem' }} /> },
+  { label: 'WhatsApp', href: '#', icon: <WhatsAppIcon sx={{ fontSize: '1rem' }} /> },
 ];
 
 const trustBadges = [
-  { icon: '🔒', label: 'Paiement Sécurisé', sub: 'Données protégées' },
-  { icon: '🚀', label: 'Livraison Express', sub: '2-5 jours ouvrés' },
-  { icon: '🛡️', label: 'Garantie 2 Ans', sub: 'Sur tous nos produits' },
-  { icon: '↩️', label: 'Retour Facile', sub: '30 jours offerts' },
+  { icon: <LockOutlinedIcon sx={{ fontSize: '1.3rem', color: '#00C2FF' }} />, label: 'Paiement Sécurisé', sub: 'Données protégées' },
+  { icon: <LocalShippingOutlinedIcon sx={{ fontSize: '1.3rem', color: '#00C2FF' }} />, label: 'Livraison Express', sub: '2-5 jours ouvrés' },
+  { icon: <VerifiedUserOutlinedIcon sx={{ fontSize: '1.3rem', color: '#00C2FF' }} />, label: 'Garantie 2 Ans', sub: 'Sur tous nos produits' },
+  { icon: <UndoIcon sx={{ fontSize: '1.3rem', color: '#00C2FF' }} />, label: 'Retour Facile', sub: '30 jours offerts' },
 ];
 
-/**
- * MiraiTech Footer — dark, minimal, Japanese-inspired with trust badges.
- */
 export function Footer() {
   const { data } = useCategories();
   const categories = data?.data ?? [];
@@ -57,7 +65,7 @@ export function Footer() {
             {trustBadges.map(({ icon, label, sub }) => (
               <Box key={label} className="mirai-trust-badge" sx={{ flexDirection: 'column', alignItems: 'flex-start', gap: 0.5, cursor: 'default' }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 0.5 }}>
-                  <Typography sx={{ fontSize: '1.5rem', lineHeight: 1 }}>{icon}</Typography>
+                  {icon}
                   <Typography sx={{ fontSize: '0.78rem', fontWeight: 700, color: '#F5F7FA', letterSpacing: '0.02em' }}>{label}</Typography>
                 </Box>
                 <Typography sx={{ fontSize: '0.68rem', color: '#9CA3AF', ml: 0.5 }}>{sub}</Typography>
@@ -80,28 +88,32 @@ export function Footer() {
               />
             </Box>
             <Typography variant="body2" sx={{ color: '#9CA3AF', lineHeight: 1.8, maxWidth: 300, mb: 2 }}>
-              L'avenir de la mobilité urbaine. Scooters électriques premium conçus pour la performance et le style.
+              500+ clients satisfaits au Maroc. Trottinettes électriques premium avec garantie 2 ans et SAV local.
             </Typography>
-            <Typography variant="body2" sx={{ color: '#9CA3AF', fontSize: '0.82rem', lineHeight: 1.7, maxWidth: 300, mb: 3 }}>
-              📍 123 Bd Mohammed V, Casablanca, Maroc
-            </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
+              <LocationOnIcon sx={{ fontSize: '0.9rem', color: '#9CA3AF' }} />
+              <Typography variant="body2" sx={{ color: '#9CA3AF', fontSize: '0.82rem', lineHeight: 1.7, maxWidth: 300 }}>
+                123 Bd Mohammed V, Casablanca, Maroc
+              </Typography>
+            </Box>
 
             {/* Social links */}
             <Box sx={{ display: 'flex', gap: 1 }}>
-              {socialLinks.map(({ label, href }) => (
+              {socialLinks.map(({ label, href, icon }) => (
                 <Box
                   key={label}
                   component="a"
                   href={href}
+                  aria-label={label}
                   sx={{
                     width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center',
                     borderRadius: '8px', border: '1px solid rgba(255,255,255,0.08)',
-                    color: '#9CA3AF', fontSize: '0.72rem', fontWeight: 600, letterSpacing: '0.04em',
+                    color: '#9CA3AF',
                     textDecoration: 'none', transition: 'all 0.3s ease',
                     '&:hover': { borderColor: 'rgba(0,194,255,0.4)', color: '#00C2FF', background: 'rgba(0,194,255,0.06)', boxShadow: '0 0 12px rgba(0,194,255,0.15)' },
                   }}
                 >
-                  {label[0]}
+                  {icon}
                 </Box>
               ))}
             </Box>
@@ -162,15 +174,24 @@ export function Footer() {
               Contact
             </Typography>
             <Stack spacing={1.25}>
-              <Typography sx={{ fontSize: '0.82rem', color: '#9CA3AF', lineHeight: 1.6 }}>
-                📞 +212 6XX XXX XXX
-              </Typography>
-              <Typography sx={{ fontSize: '0.82rem', color: '#9CA3AF', lineHeight: 1.6 }}>
-                ✉️ contact@miraitech.ma
-              </Typography>
-              <Typography sx={{ fontSize: '0.82rem', color: '#9CA3AF', lineHeight: 1.6 }}>
-                🕒 Lun-Sam: 9h – 18h
-              </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <PhoneIcon sx={{ fontSize: '0.9rem', color: '#9CA3AF' }} />
+                <Typography sx={{ fontSize: '0.82rem', color: '#9CA3AF', lineHeight: 1.6 }}>
+                  +212 6XX XXX XXX
+                </Typography>
+              </Box>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <EmailIcon sx={{ fontSize: '0.9rem', color: '#9CA3AF' }} />
+                <Typography sx={{ fontSize: '0.82rem', color: '#9CA3AF', lineHeight: 1.6 }}>
+                  contact@miraitech.ma
+                </Typography>
+              </Box>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <ScheduleIcon sx={{ fontSize: '0.9rem', color: '#9CA3AF' }} />
+                <Typography sx={{ fontSize: '0.82rem', color: '#9CA3AF', lineHeight: 1.6 }}>
+                  Lun-Sam: 9h – 18h
+                </Typography>
+              </Box>
             </Stack>
           </Grid>
         </Grid>
@@ -181,9 +202,9 @@ export function Footer() {
           <Typography sx={{ fontSize: '0.72rem', color: '#6B7280' }}>
             © {new Date().getFullYear()} MiraiTech. Tous droits réservés.
           </Typography>
-          {/* Payment icons */}
+          {/* Payment badges */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-            {['💳 Visa', '💳 MC', '💰 COD'].map((pm) => (
+            {['Visa', 'Mastercard', 'COD'].map((pm) => (
               <Box key={pm} sx={{ px: 1.5, py: 0.5, border: '1px solid rgba(255,255,255,0.07)', borderRadius: '6px', fontSize: '0.65rem', color: '#6B7280', fontWeight: 600, letterSpacing: '0.04em' }}>
                 {pm}
               </Box>

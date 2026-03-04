@@ -1,4 +1,4 @@
-﻿import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
@@ -12,6 +12,8 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import ElectricScooterIcon from '@mui/icons-material/ElectricScooter';
+import { motion } from 'framer-motion';
+import CountUp from 'react-countup';
 
 import { useFeaturedProducts, useProducts } from '../../catalog/api/products';
 import { useCategories } from '../../catalog/api/categories';
@@ -19,9 +21,12 @@ import { ProductCard } from '../../catalog/components/ProductCard';
 import { HeroSection } from '../components/HeroSection';
 import { TrustBadgesSection } from '../components/TrustBadgesSection';
 import { TestimonialsSection } from '../components/TestimonialsSection';
+import { WhyChooseUsSection } from '../components/WhyChooseUsSection';
+import { AnimatedSection } from '@/shared/components/AnimatedSection';
+import type { Product } from '../../catalog/types';
 
 /* ════════════════════════════════════════════════════════════════════
-   SECTION HEADER — matches screenshot exactly
+   SECTION HEADER
    ════════════════════════════════════════════════════════════════════ */
 interface SectionHeaderProps {
   subLabel: string;
@@ -152,12 +157,18 @@ function CategoriesStrip() {
 }
 
 /* ════════════════════════════════════════════════════════════════════
-   FEATURED SECTION — Single row of best sellers
+   PRODUCT CAROUSEL — Shared for Featured & Nouveautés
    ════════════════════════════════════════════════════════════════════ */
-function FeaturedSection() {
+interface ProductCarouselProps {
+  subLabel: string;
+  title: string;
+  linkTo: string;
+  products: Product[];
+  isLoading: boolean;
+}
+
+function ProductCarouselSection({ subLabel, title, linkTo, products, isLoading }: ProductCarouselProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const { data, isLoading } = useFeaturedProducts();
-  const products = data?.data ?? [];
 
   if (!isLoading && products.length === 0) return null;
 
@@ -166,37 +177,68 @@ function FeaturedSection() {
   };
 
   return (
-    <Box component="section" sx={{ bgcolor: '#0B0B0E', pt: { xs: 4, md: 6 }, pb: 4 }}>
-      <Container maxWidth="xl">
-        <SectionHeader
-          subLabel="SÉLECTION"
-          title="NOS MEILLEURES VENTES"
-          linkText="Tout voir &gt;"
-          linkTo="/products"
-          onPrev={() => scroll('left')}
-          onNext={() => scroll('right')}
-        />
-        {isLoading ? (
-          <Box sx={{ display: 'flex', gap: 3, pb: 2 }}>
-            {Array.from({ length: 4 }).map((_, i) => (
-              <Box key={i} sx={{ flexShrink: 0, width: { xs: 260, sm: 280, md: 300 } }}>
-                <Skeleton variant="rectangular" height={280} sx={{ borderRadius: '16px', mb: 2 }} />
-                <Skeleton height={24} sx={{ mb: 1 }} />
-                <Skeleton height={20} width="60%" />
-              </Box>
-            ))}
-          </Box>
-        ) : (
-          <Box ref={scrollRef} sx={{ display: 'flex', gap: 3, overflowX: 'auto', scrollbarWidth: 'none', '&::-webkit-scrollbar': { display: 'none' }, pb: 2 }}>
-            {products.map((product) => (
-              <Box key={product.id} sx={{ flexShrink: 0, width: { xs: 260, sm: 280, md: 300 } }}>
-                <ProductCard product={product} />
-              </Box>
-            ))}
-          </Box>
-        )}
-      </Container>
-    </Box>
+    <AnimatedSection>
+      <Box component="section" sx={{ bgcolor: '#0B0B0E', pt: { xs: 4, md: 6 }, pb: 4 }}>
+        <Container maxWidth="xl">
+          <SectionHeader
+            subLabel={subLabel}
+            title={title}
+            linkText="Tout voir >"
+            linkTo={linkTo}
+            onPrev={() => scroll('left')}
+            onNext={() => scroll('right')}
+          />
+          {isLoading ? (
+            <Box sx={{ display: 'flex', gap: 3, pb: 2 }}>
+              {Array.from({ length: 4 }).map((_, i) => (
+                <Box key={i} sx={{ flexShrink: 0, width: { xs: 280, sm: 300, md: 320 } }}>
+                  <Skeleton variant="rectangular" height={280} sx={{ borderRadius: '16px', mb: 2 }} />
+                  <Skeleton height={24} sx={{ mb: 1 }} />
+                  <Skeleton height={20} width="60%" />
+                </Box>
+              ))}
+            </Box>
+          ) : (
+            <Box
+              ref={scrollRef}
+              sx={{
+                display: 'flex', gap: 3, overflowX: 'auto',
+                scrollSnapType: 'x mandatory',
+                scrollbarWidth: 'none', '&::-webkit-scrollbar': { display: 'none' },
+                pb: 2,
+                // Fade edges
+                maskImage: 'linear-gradient(to right, transparent, black 2%, black 98%, transparent)',
+                WebkitMaskImage: 'linear-gradient(to right, transparent, black 2%, black 98%, transparent)',
+              }}
+            >
+              {products.map((product) => (
+                <Box key={product.id} sx={{ flexShrink: 0, width: { xs: 280, sm: 300, md: 320 }, scrollSnapAlign: 'start' }}>
+                  <ProductCard product={product} />
+                </Box>
+              ))}
+            </Box>
+          )}
+        </Container>
+      </Box>
+    </AnimatedSection>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   FEATURED SECTION
+   ════════════════════════════════════════════════════════════════════ */
+function FeaturedSection() {
+  const { data, isLoading } = useFeaturedProducts();
+  const products = data?.data ?? [];
+
+  return (
+    <ProductCarouselSection
+      subLabel="SÉLECTION"
+      title="NOS MEILLEURES VENTES"
+      linkTo="/products"
+      products={products}
+      isLoading={isLoading}
+    />
   );
 }
 
@@ -204,175 +246,240 @@ function FeaturedSection() {
    NOUVEAUTÉS SECTION
    ════════════════════════════════════════════════════════════════════ */
 function NouveauteSection() {
-  const scrollRef = useRef<HTMLDivElement>(null);
   const { data, isLoading } = useProducts({ 'filter[is_new]': '1', per_page: 8 });
   const products = data?.data ?? [];
 
-  if (!isLoading && products.length === 0) return null;
+  return (
+    <ProductCarouselSection
+      subLabel="NOUVELLE COLLECTION"
+      title="NOS DERNIERS MODÈLES"
+      linkTo="/products?filter[is_new]=1"
+      products={products}
+      isLoading={isLoading}
+    />
+  );
+}
 
-  const scroll = (dir: 'left' | 'right') => {
-    scrollRef.current?.scrollBy({ left: dir === 'left' ? -350 : 350, behavior: 'smooth' });
+/* ════════════════════════════════════════════════════════════════════
+   PROMO BANNER SECTION — with countdown timer
+   ════════════════════════════════════════════════════════════════════ */
+function useCountdown() {
+  // Countdown to end of current month as the promo deadline
+  const getTarget = () => {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59).getTime();
   };
 
+  const [timeLeft, setTimeLeft] = useState(() => {
+    const diff = getTarget() - Date.now();
+    return diff > 0 ? diff : 0;
+  });
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const diff = getTarget() - Date.now();
+      setTimeLeft(diff > 0 ? diff : 0);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((timeLeft / (1000 * 60 * 60)) % 24);
+  const minutes = Math.floor((timeLeft / (1000 * 60)) % 60);
+  const seconds = Math.floor((timeLeft / 1000) % 60);
+
+  return { days, hours, minutes, seconds };
+}
+
+function CountdownBox({ value, label }: { value: number; label: string }) {
   return (
-    <Box component="section" sx={{ bgcolor: '#0B0B0E', pt: 2, pb: 6 }}>
-      <Container maxWidth="xl">
-        <SectionHeader
-          subLabel="NOUVELLE COLLECTION"
-          title="NOS DÉNIERS MODÈLES"
-          linkText="Tout voir &gt;"
-          linkTo="/products?filter[is_new]=1"
-          onPrev={() => scroll('left')}
-          onNext={() => scroll('right')}
-        />
-        {isLoading ? (
-          <Box sx={{ display: 'flex', gap: 3, pb: 2 }}>
-            {Array.from({ length: 4 }).map((_, i) => (
-              <Box key={i} sx={{ flexShrink: 0, width: { xs: 260, sm: 280, md: 300 } }}>
-                <Skeleton variant="rectangular" height={280} sx={{ borderRadius: '16px', mb: 2 }} />
-              </Box>
-            ))}
-          </Box>
-        ) : (
-          <Box ref={scrollRef} sx={{ display: 'flex', gap: 3, overflowX: 'auto', scrollbarWidth: 'none', '&::-webkit-scrollbar': { display: 'none' }, pb: 2 }}>
-            {products.map((product) => (
-              <Box key={product.id} sx={{ flexShrink: 0, width: { xs: 260, sm: 280, md: 300 } }}>
-                <ProductCard product={product} />
-              </Box>
-            ))}
-          </Box>
-        )}
-      </Container>
+    <Box sx={{ textAlign: 'center', minWidth: 52 }}>
+      <Box sx={{
+        bgcolor: 'rgba(230,57,70,0.12)',
+        border: '1px solid rgba(230,57,70,0.25)',
+        borderRadius: '10px',
+        px: 1.5, py: 0.75,
+        mb: 0.5,
+      }}>
+        <Typography sx={{
+          fontFamily: '"Orbitron", sans-serif',
+          fontWeight: 800, fontSize: '1.2rem', color: '#F5F7FA',
+          lineHeight: 1,
+        }}>
+          {String(value).padStart(2, '0')}
+        </Typography>
+      </Box>
+      <Typography sx={{ fontSize: '0.6rem', color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+        {label}
+      </Typography>
     </Box>
   );
 }
 
-/* ════════════════════════════════════════════════════════════════════
-   PROMO BANNER SECTION — Exact match from screenshot 2
-   ════════════════════════════════════════════════════════════════════ */
 function PromoSection() {
+  const countdown = useCountdown();
+
   return (
-    <Box component="section" sx={{ bgcolor: '#0B0B0E', pt: 4, pb: 8 }}>
-      <Container maxWidth="lg">
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: { xs: 'column', md: 'row' },
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: 4,
-            p: { xs: 4, md: 6 },
-            borderRadius: '16px',
-            border: '1px solid rgba(255,107,53,0.15)',
-            background: 'linear-gradient(135deg, rgba(16,16,20,0.8) 0%, rgba(20,10,12,0.9) 100%)',
-            boxShadow: '0 20px 40px rgba(230,57,70,0.05)',
-            position: 'relative',
-            overflow: 'hidden',
-          }}
-        >
-          {/* Subtle red glow blob */}
-          <Box sx={{ position: 'absolute', right: -100, top: -100, width: 300, height: 300, background: 'radial-gradient(circle, rgba(230,57,70,0.15) 0%, transparent 70%)', borderRadius: '50%', pointerEvents: 'none' }} />
+    <AnimatedSection>
+      <Box component="section" sx={{ bgcolor: '#0B0B0E', pt: 4, pb: 8 }}>
+        <Container maxWidth="lg">
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: { xs: 'column', md: 'row' },
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: 4,
+              p: { xs: 4, md: 6 },
+              borderRadius: '16px',
+              border: '1px solid rgba(255,107,53,0.15)',
+              background: 'linear-gradient(135deg, rgba(16,16,20,0.8) 0%, rgba(20,10,12,0.9) 100%)',
+              boxShadow: '0 20px 40px rgba(230,57,70,0.05)',
+              position: 'relative',
+              overflow: 'hidden',
+            }}
+          >
+            {/* Subtle red glow blob */}
+            <Box sx={{ position: 'absolute', right: -100, top: -100, width: 300, height: 300, background: 'radial-gradient(circle, rgba(230,57,70,0.15) 0%, transparent 70%)', borderRadius: '50%', pointerEvents: 'none' }} />
 
-          <Box sx={{ flex: 1, zIndex: 1 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
-              <AccessTimeIcon sx={{ fontSize: '1rem', color: '#E63946' }} />
-              <Typography sx={{ fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.15em', color: '#E63946', textTransform: 'uppercase' }}>
-                OFFRE LIMITÉE
+            <Box sx={{ flex: 1, zIndex: 1 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
+                <AccessTimeIcon sx={{ fontSize: '1rem', color: '#E63946' }} />
+                <Typography sx={{ fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.15em', color: '#E63946', textTransform: 'uppercase' }}>
+                  OFFRE LIMITÉE
+                </Typography>
+              </Box>
+              <Typography
+                sx={{
+                  fontWeight: 900,
+                  fontSize: { xs: '2.5rem', md: '3.5rem' },
+                  lineHeight: 1,
+                  mb: 2,
+                  color: '#F5F7FA',
+                  fontFamily: '"Orbitron", sans-serif',
+                  textTransform: 'uppercase',
+                }}
+              >
+                JUSQU'À <Box component="span" sx={{ color: '#00C2FF' }}>
+                  -<CountUp end={30} duration={2} />%
+                </Box>
               </Typography>
-            </Box>
-            <Typography
-              sx={{
-                fontWeight: 900,
-                fontSize: { xs: '2.5rem', md: '3.5rem' },
-                lineHeight: 1,
-                mb: 2,
-                color: '#F5F7FA',
-                fontFamily: '"Orbitron", sans-serif',
-                textTransform: 'uppercase',
-              }}
-            >
-              JUSQU'À <Box component="span" sx={{ color: '#00C2FF' }}>-30%</Box>
-            </Typography>
-            <Typography sx={{ fontSize: '0.95rem', color: '#9CA3AF', maxWidth: 450, lineHeight: 1.6 }}>
-              Profitez de nos offres exceptionnelles sur une sélection de trottinettes électriques. Stock limité !
-            </Typography>
-          </Box>
+              <Typography sx={{ fontSize: '0.95rem', color: '#9CA3AF', maxWidth: 450, lineHeight: 1.6, mb: 3 }}>
+                Ne manquez pas ces prix exceptionnels sur nos trottinettes les plus populaires. Une fois le stock écoulé, les prix remontent.
+              </Typography>
 
-          <Box sx={{ flexShrink: 0, zIndex: 1 }}>
-            <Button
-              component={Link}
-              to="/products?filter[is_on_sale]=1"
-              variant="contained"
-              endIcon={<ArrowForwardIcon />}
-              sx={{
-                px: 4, py: 1.75, fontSize: '0.9rem',
-                background: 'linear-gradient(135deg, #E63946 0%, #C62828 100%)',
-                color: '#fff', fontWeight: 800,
-                boxShadow: '0 8px 24px rgba(230,57,70,0.4)',
-                '&:hover': {
-                  background: 'linear-gradient(135deg, #FF4D5A 0%, #E63946 100%)',
-                  transform: 'translateY(-2px)',
-                  boxShadow: '0 12px 32px rgba(230,57,70,0.5)',
-                }
-              }}
-            >
-              VOIR LES PROMOS
-            </Button>
+              {/* Countdown timer */}
+              <Box sx={{ display: 'flex', gap: 1, mb: { xs: 2, md: 0 } }}>
+                <CountdownBox value={countdown.days} label="Jours" />
+                <Typography sx={{ color: '#E63946', fontWeight: 700, fontSize: '1.2rem', alignSelf: 'flex-start', mt: 1 }}>:</Typography>
+                <CountdownBox value={countdown.hours} label="Heures" />
+                <Typography sx={{ color: '#E63946', fontWeight: 700, fontSize: '1.2rem', alignSelf: 'flex-start', mt: 1 }}>:</Typography>
+                <CountdownBox value={countdown.minutes} label="Min" />
+                <Typography sx={{ color: '#E63946', fontWeight: 700, fontSize: '1.2rem', alignSelf: 'flex-start', mt: 1 }}>:</Typography>
+                <CountdownBox value={countdown.seconds} label="Sec" />
+              </Box>
+            </Box>
+
+            <Box sx={{ flexShrink: 0, zIndex: 1 }}>
+              <Button
+                component={Link}
+                to="/products?filter[is_on_sale]=1"
+                variant="contained"
+                endIcon={<ArrowForwardIcon />}
+                sx={{
+                  px: 4, py: 1.75, fontSize: '0.9rem',
+                  background: 'linear-gradient(135deg, #E63946 0%, #C62828 100%)',
+                  color: '#fff', fontWeight: 800,
+                  boxShadow: '0 8px 24px rgba(230,57,70,0.4)',
+                  '&:hover': {
+                    background: 'linear-gradient(135deg, #FF4D5A 0%, #E63946 100%)',
+                    transform: 'translateY(-2px)',
+                    boxShadow: '0 12px 32px rgba(230,57,70,0.5)',
+                  }
+                }}
+              >
+                VOIR LES PROMOS
+              </Button>
+            </Box>
           </Box>
-        </Box>
-      </Container>
-    </Box>
+        </Container>
+      </Box>
+    </AnimatedSection>
   );
 }
 
 /* ════════════════════════════════════════════════════════════════════
-   FOOTER CTA — Exact match from screenshot 2
+   FOOTER CTA — with dot grid background and pulse-glow
    ════════════════════════════════════════════════════════════════════ */
 function FooterCTA() {
   return (
-    <Box component="section" sx={{ bgcolor: '#0B0B0E', pt: { xs: 8, md: 12 }, pb: { xs: 8, md: 12 }, textAlign: 'center', position: 'relative' }}>
-      <Container maxWidth="md">
-        <Typography sx={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.2)', mb: 2, fontFamily: '"Noto Serif JP", serif', letterSpacing: '0.4em' }}>
-          未来テック
-        </Typography>
-        <Typography
-          sx={{
-            fontWeight: 800,
-            fontSize: { xs: '2rem', md: '3.5rem' },
-            color: '#F5F7FA',
-            letterSpacing: '0.02em',
-            lineHeight: 1.1,
-            mb: 3,
-            textTransform: 'uppercase',
-            fontFamily: '"Orbitron", sans-serif'
-          }}
-        >
-          PRÊT À ROULER <Box component="span" sx={{ color: '#00C2FF', textShadow: '0 0 30px rgba(0,194,255,0.4)' }}>VERS L'AVENIR ?</Box>
-        </Typography>
-        <Typography sx={{ fontSize: '1rem', color: '#9CA3AF', maxWidth: 600, mx: 'auto', mb: 5, lineHeight: 1.6 }}>
-          Rejoignez des milliers de citadins qui ont choisi MiraiTech pour leur mobilité quotidienne.
-        </Typography>
-        <Button
-          component={Link}
-          to="/products"
-          variant="contained"
-          size="large"
-          sx={{
-            px: 5, py: 1.75, fontSize: '0.95rem',
-            background: 'linear-gradient(135deg, #00C2FF 0%, #0099CC 100%)',
-            color: '#0B0B0E', fontWeight: 800,
-            boxShadow: '0 8px 24px rgba(0,194,255,0.4)',
-            '&:hover': {
-              background: 'linear-gradient(135deg, #33CFFF 0%, #00C2FF 100%)',
-              transform: 'translateY(-2px)',
-              boxShadow: '0 12px 32px rgba(0,194,255,0.5)',
-            }
-          }}
-        >
-          EXPLORER NOTRE CATALOGUE
-        </Button>
-      </Container>
-    </Box>
+    <AnimatedSection>
+      <Box component="section" sx={{
+        bgcolor: '#0B0B0E', pt: { xs: 8, md: 12 }, pb: { xs: 8, md: 12 },
+        textAlign: 'center', position: 'relative', overflow: 'hidden',
+      }}>
+        {/* Dot grid pattern */}
+        <Box sx={{
+          position: 'absolute', inset: 0, pointerEvents: 'none',
+          backgroundImage: 'radial-gradient(rgba(0,194,255,0.08) 1px, transparent 1px)',
+          backgroundSize: '24px 24px',
+          maskImage: 'radial-gradient(ellipse 50% 60% at 50% 50%, black 30%, transparent 100%)',
+          WebkitMaskImage: 'radial-gradient(ellipse 50% 60% at 50% 50%, black 30%, transparent 100%)',
+        }} />
+
+        <Container maxWidth="md" sx={{ position: 'relative', zIndex: 1 }}>
+          <Typography sx={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.2)', mb: 2, fontFamily: '"Noto Serif JP", serif', letterSpacing: '0.4em' }}>
+            未来テック
+          </Typography>
+          <Typography
+            sx={{
+              fontWeight: 800,
+              fontSize: { xs: '2rem', md: '3.5rem' },
+              color: '#F5F7FA',
+              letterSpacing: '0.02em',
+              lineHeight: 1.1,
+              mb: 3,
+              textTransform: 'uppercase',
+              fontFamily: '"Orbitron", sans-serif'
+            }}
+          >
+            REJOIGNEZ <Box component="span" sx={{ color: '#00C2FF', textShadow: '0 0 30px rgba(0,194,255,0.4)' }}>500+ PROPRIÉTAIRES</Box>
+          </Typography>
+          <Typography sx={{ fontSize: '1rem', color: '#9CA3AF', maxWidth: 600, mx: 'auto', mb: 2, lineHeight: 1.6 }}>
+            Garantie 2 ans, livraison express, retour 30 jours. Zéro risque, que du plaisir.
+          </Typography>
+          <Typography sx={{ fontSize: '0.78rem', color: '#F0B429', fontWeight: 600, mb: 5 }}>
+            Livraison gratuite dès 2000 MAD — Offre en cours
+          </Typography>
+          <motion.div
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            style={{ display: 'inline-block' }}
+          >
+            <Button
+              component={Link}
+              to="/products"
+              variant="contained"
+              size="large"
+              sx={{
+                px: 5, py: 1.75, fontSize: '0.95rem',
+                background: 'linear-gradient(135deg, #00C2FF 0%, #0099CC 100%)',
+                color: '#0B0B0E', fontWeight: 800,
+                boxShadow: '0 8px 24px rgba(0,194,255,0.4)',
+                animation: 'pulse-glow 3s ease-in-out infinite',
+                '&:hover': {
+                  background: 'linear-gradient(135deg, #33CFFF 0%, #00C2FF 100%)',
+                  transform: 'translateY(-2px)',
+                  boxShadow: '0 12px 32px rgba(0,194,255,0.5)',
+                }
+              }}
+            >
+              TROUVER MON MODÈLE
+            </Button>
+          </motion.div>
+        </Container>
+      </Box>
+    </AnimatedSection>
   );
 }
 
@@ -387,6 +494,7 @@ export function HomePage() {
       <TrustBadgesSection />
       <FeaturedSection />
       <NouveauteSection />
+      <WhyChooseUsSection />
       <PromoSection />
       <TestimonialsSection />
       <FooterCTA />

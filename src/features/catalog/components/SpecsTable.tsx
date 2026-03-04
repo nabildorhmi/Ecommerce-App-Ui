@@ -9,6 +9,10 @@ import BoltIcon from '@mui/icons-material/Bolt';
 import SpeedIcon from '@mui/icons-material/Speed';
 import BatteryChargingFullIcon from '@mui/icons-material/BatteryChargingFull';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
+import TireRepairIcon from '@mui/icons-material/TireRepair';
+import StraightenIcon from '@mui/icons-material/Straighten';
+import ColorLensIcon from '@mui/icons-material/ColorLens';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 interface SpecsTableProps {
   attributes: Record<string, string | number> | null | undefined;
@@ -25,7 +29,10 @@ function getSpecIcon(key: string): React.ReactNode | null {
   if (lk.includes('speed') || lk.includes('vitesse')) return <SpeedIcon sx={{ fontSize: '0.9rem', color: '#00C2FF' }} />;
   if (lk.includes('battery') || lk.includes('batterie') || lk.includes('range') || lk.includes('autonomie')) return <BatteryChargingFullIcon sx={{ fontSize: '0.9rem', color: '#00C853' }} />;
   if (lk.includes('weight') || lk.includes('poids')) return <FitnessCenterIcon sx={{ fontSize: '0.9rem', color: '#9CA3AF' }} />;
-  return null;
+  if (lk.includes('tire') || lk.includes('pneu') || lk.includes('roue')) return <TireRepairIcon sx={{ fontSize: '0.9rem', color: '#FF6B35' }} />;
+  if (lk.includes('dimension') || lk.includes('taille') || lk.includes('size')) return <StraightenIcon sx={{ fontSize: '0.9rem', color: '#9B59B6' }} />;
+  if (lk.includes('color') || lk.includes('couleur')) return <ColorLensIcon sx={{ fontSize: '0.9rem', color: '#E63946' }} />;
+  return <SettingsIcon sx={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.2)' }} />;
 }
 
 /**

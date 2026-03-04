@@ -78,14 +78,17 @@ export function FilterBar({ isMobileOpen }: FilterBarProps = {}) {
     if (isMobileOpen) isMobileOpen();
   };
 
-  const hasActiveFilters =
-    !!filters['filter[search]'] ||
-    !!filters['filter[category_id]'] ||
-    !!filters['filter[min_price]'] ||
-    !!filters['filter[max_price]'] ||
-    !!filters['filter[in_stock]'] ||
-    !!filters['filter[is_new]'] ||
-    !!filters['filter[is_on_sale]'];
+  const activeFilterCount = [
+    filters['filter[search]'],
+    filters['filter[category_id]'],
+    filters['filter[min_price]'],
+    filters['filter[max_price]'],
+    filters['filter[in_stock]'],
+    filters['filter[is_new]'],
+    filters['filter[is_on_sale]'],
+  ].filter(Boolean).length;
+
+  const hasActiveFilters = activeFilterCount > 0;
 
   return (
     <Box
@@ -115,8 +118,18 @@ export function FilterBar({ isMobileOpen }: FilterBarProps = {}) {
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <TuneIcon sx={{ fontSize: '1.2rem', color: '#00C2FF' }} />
           <Typography sx={{ fontWeight: 800, fontSize: '0.85rem', letterSpacing: '0.15em', color: '#F5F7FA', textTransform: 'uppercase', fontFamily: '"Orbitron", sans-serif' }}>
-            {"Filtres"}
+            Filtres
           </Typography>
+          {activeFilterCount > 0 && (
+            <Box sx={{
+              bgcolor: '#00C2FF', color: '#0B0B0E',
+              borderRadius: '50%', width: 20, height: 20,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: '0.65rem', fontWeight: 800,
+            }}>
+              {activeFilterCount}
+            </Box>
+          )}
         </Box>
         {hasActiveFilters && (
           <Button

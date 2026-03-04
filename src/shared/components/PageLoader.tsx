@@ -1,9 +1,10 @@
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import CircularProgress from '@mui/material/CircularProgress';
+import miraiLogo from '@/assets/miraiTech-Logo.png';
 
 /**
- * MiraiTech branded page loader with glowing spinner and pulsing text.
+ * MiraiTech branded page loader with logo, glowing spinner, and full-height layout.
  */
 export function PageLoader() {
   return (
@@ -13,20 +14,33 @@ export function PageLoader() {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        minHeight: '60vh',
+        minHeight: '100vh',
         gap: 3,
         position: 'relative',
+        bgcolor: '#0B0B0E',
       }}
     >
       {/* Glow ring backdrop */}
       <Box
         sx={{
           position: 'absolute',
-          width: 120,
-          height: 120,
+          width: 160,
+          height: 160,
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(0,194,255,0.12) 0%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(0,194,255,0.1) 0%, transparent 70%)',
           animation: 'pulse-glow 2s ease-in-out infinite',
+        }}
+      />
+
+      {/* Logo */}
+      <Box
+        component="img"
+        src={miraiLogo}
+        alt="MiraiTech"
+        sx={{
+          height: 36, width: 'auto',
+          opacity: 0.8,
+          mb: -1,
         }}
       />
 
@@ -54,18 +68,6 @@ export function PageLoader() {
 
       {/* Brand text */}
       <Box sx={{ textAlign: 'center' }}>
-        <Typography
-          sx={{
-            fontSize: '0.68rem',
-            fontWeight: 700,
-            letterSpacing: '0.25em',
-            color: 'rgba(0,194,255,0.7)',
-            textTransform: 'uppercase',
-            animation: 'pulse-dot 2s ease-in-out infinite',
-          }}
-        >
-          MIRAÏTECH
-        </Typography>
         <Typography
           sx={{
             fontFamily: '"Noto Serif JP", serif',

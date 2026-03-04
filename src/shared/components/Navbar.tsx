@@ -210,7 +210,7 @@ export function Navbar() {
                   '&:hover': { color: '#FF6B35', backgroundColor: 'rgba(255,107,53,0.15)', borderColor: 'rgba(255,107,53,0.5)' },
                 }}
               >
-                {location.search.includes('is_on_sale') ? '✦ PROMOS' : 'PROMOS'}
+                {location.search.includes('is_on_sale') ? '● PROMOS' : 'PROMOS'}
               </Button>
 
               <Button
@@ -244,7 +244,7 @@ export function Navbar() {
                   '&:hover': { color: '#00C853', backgroundColor: 'rgba(0,200,83,0.15)', borderColor: 'rgba(0,200,83,0.5)' },
                 }}
               >
-                {location.search.includes('is_new') ? '✦ NOUVEAUTÉS' : 'NOUVEAUTÉS'}
+                {location.search.includes('is_new') ? '● NOUVEAUTÉS' : 'NOUVEAUTÉS'}
               </Button>
 
               {categories.length > 0 && (
@@ -339,7 +339,8 @@ export function Navbar() {
                       sx={{
                         fontSize: '0.8rem',
                         color: 'text.primary',
-                        width: 160,
+                        width: searchFocused ? 240 : 160,
+                        transition: 'width 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
                         '& input::placeholder': { color: 'text.secondary', opacity: 1 },
                       }}
                     />
@@ -555,9 +556,9 @@ export function Navbar() {
         }}
       >
         <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Typography sx={{ fontWeight: 800, letterSpacing: '0.12em', color: '#00C2FF', fontSize: '0.9rem' }}>
-            MENU
-          </Typography>
+          <Box component={Link} to="/" onClick={() => setMobileOpen(false)} sx={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+            <Box component="img" src={miraiLogo} alt="MiraiTech" sx={{ height: 28, width: 'auto' }} />
+          </Box>
           <IconButton size="small" onClick={() => setMobileOpen(false)} sx={{ color: 'text.secondary' }}>
             <CloseIcon fontSize="small" />
           </IconButton>
@@ -633,7 +634,7 @@ export function Navbar() {
               mb: 0.5,
             }}
           >
-            {location.search.includes('is_on_sale') ? '✦ PROMOS' : 'PROMOS'}
+            {location.search.includes('is_on_sale') ? '● PROMOS' : 'PROMOS'}
           </Button>
           <Button
             component={Link} to="/products?filter[is_new]=1"
@@ -654,7 +655,7 @@ export function Navbar() {
               mb: 0.5,
             }}
           >
-            {location.search.includes('is_new') ? '✦ NOUVEAUTÉS' : 'NOUVEAUTÉS'}
+            {location.search.includes('is_new') ? '● NOUVEAUTÉS' : 'NOUVEAUTÉS'}
           </Button>
           <Divider sx={{ borderColor: 'divider', my: 0.5 }} />
           <Typography sx={{ fontSize: '0.68rem', color: 'text.secondary', letterSpacing: '0.1em', fontWeight: 700, px: 1, pb: 0.5, textTransform: 'uppercase' }}>

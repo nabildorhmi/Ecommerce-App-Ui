@@ -15,6 +15,9 @@ import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import CloseIcon from '@mui/icons-material/Close';
+import SearchOffIcon from '@mui/icons-material/SearchOff';
+import { motion } from 'framer-motion';
+import { staggerContainer, fadeInUp } from '@/shared/animations/variants';
 import { useProducts } from '../api/products';
 import { useCategories } from '../api/categories';
 import { useCatalogFilters } from '../hooks/useCatalogFilters';
@@ -53,7 +56,7 @@ export function CatalogPage() {
   const categories = categoriesData?.data ?? [];
 
   // Active chips mapping
-  const activeChips = [];
+  const activeChips: { key: string; label: string }[] = [];
   if (filters['filter[search]']) activeChips.push({ key: 'filter[search]', label: `Recherche: ${filters['filter[search]']}` });
   if (filters['filter[min_price]']) activeChips.push({ key: 'filter[min_price]', label: `Min: ${parseInt(filters['filter[min_price]'], 10) / 100} MAD` });
   if (filters['filter[max_price]']) activeChips.push({ key: 'filter[max_price]', label: `Max: ${parseInt(filters['filter[max_price]'], 10) / 100} MAD` });
@@ -227,23 +230,37 @@ export function CatalogPage() {
                   color: 'text.secondary',
                 }}
               >
-                <Typography sx={{ fontSize: '3rem', fontWeight: 900, color: 'divider', mb: 2 }}>
-                  空
+                <SearchOffIcon sx={{ fontSize: '3rem', color: 'divider', mb: 2 }} />
+                <Typography sx={{ fontSize: '1.1rem', fontWeight: 600, color: 'text.secondary', mb: 1 }}>
+                  Aucun produit trouvé
                 </Typography>
-                <Typography sx={{ color: 'text.secondary', mb: 1 }}>
-                  {"Aucun produit trouvé"}
+                <Typography sx={{ color: 'text.secondary', mb: 3, fontSize: '0.85rem' }}>
+                  Essayez de modifier vos filtres ou explorez notre catalogue complet.
                 </Typography>
+                {activeChips.length > 0 && (
+                  <Button
+                    variant="outlined"
+                    onClick={() => {
+                      activeChips.forEach(chip => setFilter(chip.key as any, ''));
+                    }}
+                    sx={{ color: '#00C2FF', borderColor: 'rgba(0,194,255,0.3)' }}
+                  >
+                    Effacer les filtres
+                  </Button>
+                )}
               </Box>
             ) : (
-              <Grid container rowSpacing={1} columnSpacing={1}>
-                {products.map((product) => (
-                  <Grid key={product.id} size={{ xs: 6, sm: 4, md: 3, lg: 3 }}>
-                    <Box sx={{ maxWidth: 240, mx: 'auto' }}>
-                      <ProductCard product={product} />
-                    </Box>
-                  </Grid>
-                ))}
-              </Grid>
+              <motion.div variants={staggerContainer} initial="hidden" animate="visible">
+                <Grid container rowSpacing={2} columnSpacing={2}>
+                  {products.map((product) => (
+                    <Grid key={product.id} size={{ xs: 6, sm: 4, md: 3, lg: 3 }}>
+                      <motion.div variants={fadeInUp}>
+                        <ProductCard product={product} />
+                      </motion.div>
+                    </Grid>
+                  ))}
+                </Grid>
+              </motion.div>
             )}
 
             {/* Pagination */}

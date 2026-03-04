@@ -11,6 +11,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useNavigate } from 'react-router';
 import { useCartStore } from '../store';
 import { CartItem } from './CartItem';
@@ -112,7 +113,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <LocalShippingOutlinedIcon sx={{ fontSize: '0.9rem', color: '#00C853' }} />
               <Typography sx={{ fontSize: '0.72rem', color: '#00C853', fontWeight: 700 }}>
-                🎉 Livraison gratuite débloquée !
+                Livraison gratuite débloquée !
               </Typography>
             </Box>
           )}
@@ -136,9 +137,29 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
           </Stack>
         ) : (
           <Box>
+          <AnimatePresence mode="popLayout">
             {items.map((item) => (
-              <CartItem key={item.productId} item={item} />
+              <motion.div
+                key={`${item.productId}-${item.variantId ?? 'default'}`}
+                layout
+                initial={{ opacity: 0, x: 40 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -40, height: 0, marginBottom: 0 }}
+                transition={{ duration: 0.25 }}
+              >
+                <CartItem item={item} />
+                {/* Scarcity indicator for low-stock items */}
+                {item.stockQuantity <= 5 && item.stockQuantity > 0 && (
+                  <Typography sx={{
+                    fontSize: '0.65rem', color: '#F0B429', fontWeight: 600,
+                    px: 1, pb: 0.5, mt: -0.5,
+                  }}>
+                    Seulement {item.stockQuantity} restant{item.stockQuantity > 1 ? 's' : ''} en stock
+                  </Typography>
+                )}
+              </motion.div>
             ))}
+          </AnimatePresence>
           </Box>
         )}
       </Box>
@@ -177,7 +198,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
                 transition: 'all 0.3s ease',
               }}
             >
-              Passer la commande
+              Commander — {formatCurrency(subtotalCentimes)}
             </Button>
 
             {/* Trust signal */}

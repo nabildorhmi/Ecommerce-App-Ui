@@ -30,6 +30,9 @@
   --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
   --glass-blur: blur(16px);
 
+  /* Easing — Apple-like: fast start, smooth deceleration */
+  --mirai-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+
   /* Spacing scale */
   --section-gap: clamp(48px, 6vw, 96px);
 
@@ -38,6 +41,10 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 html,

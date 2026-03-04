@@ -4,8 +4,10 @@ import Typography from '@mui/material/Typography';
 import AssignmentReturnIcon from '@mui/icons-material/AssignmentReturn';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
-import PhoneOutlinedIcon from '@mui/icons-material/PhoneOutlined';
+import StorefrontIcon from '@mui/icons-material/Storefront';
 import SupportAgentOutlinedIcon from '@mui/icons-material/SupportAgentOutlined';
+import { motion } from 'framer-motion';
+import { staggerContainer, fadeInUp } from '@/shared/animations/variants';
 
 // Format WhatsApp number for display: 212600000000 -> +212 6 00 00 00 00
 const WHATSAPP_NUMBER = import.meta.env.VITE_WHATSAPP_NUMBER ?? '212600000000';
@@ -43,7 +45,7 @@ const SIGNALS = [
     desc: formatPhoneDisplay(WHATSAPP_NUMBER),
   },
   {
-    icon: <PhoneOutlinedIcon sx={{ fontSize: '1.3rem' }} />,
+    icon: <StorefrontIcon sx={{ fontSize: '1.3rem' }} />,
     color: '#9B59B6',
     label: 'Boutique Officielle',
     desc: 'Produits authentiques certifiés',
@@ -86,11 +88,22 @@ export function TrustSignals() {
         信頼 — NOS ENGAGEMENTS
       </Typography>
 
-      <Grid container spacing={2}>
+      <Grid container spacing={2} component={motion.div} variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true }}>
         {SIGNALS.map(({ icon, color, label, desc }) => (
-          <Grid key={label} size={{ xs: 12, sm: 6, md: 4 }}>
+          <Grid key={label} size={{ xs: 12, sm: 6, md: 4 }} component={motion.div} variants={fadeInUp}>
             <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
-              <Box sx={{ color, flexShrink: 0, mt: 0.1 }}>{icon}</Box>
+              <Box sx={{
+                width: 36, height: 36,
+                borderRadius: '50%',
+                bgcolor: `${color}12`,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color,
+                flexShrink: 0,
+              }}>
+                {icon}
+              </Box>
               <Box>
                 <Typography sx={{ fontSize: '0.82rem', fontWeight: 700, color: 'text.primary', lineHeight: 1.3 }}>{label}</Typography>
                 <Typography sx={{ fontSize: '0.72rem', color: 'text.secondary', mt: 0.25 }}>{desc}</Typography>
