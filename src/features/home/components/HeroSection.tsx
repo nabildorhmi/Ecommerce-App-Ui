@@ -225,13 +225,13 @@ export function HeroSection() {
                                 endIcon={<ArrowForwardIcon />}
                                 sx={{
                                     px: 3.5, py: 1.5, fontSize: '0.88rem',
-                                    background: `linear-gradient(135deg, ${CYAN}, #0099CC)`,
+                                    bgcolor: CYAN,
                                     color: '#0c0c14', fontWeight: 800,
-                                    boxShadow: `0 8px 28px rgba(0,194,255,0.2), inset 0 1px 0 rgba(255,255,255,0.3)`,
+                                    boxShadow: `0 4px 14px rgba(0,194,255,0.25)`,
                                     '&:hover': {
-                                        background: `linear-gradient(135deg, #33CFFF, ${CYAN})`,
+                                        bgcolor: '#33CFFF',
                                         transform: 'translateY(-2px)',
-                                        boxShadow: `0 14px 36px rgba(0,194,255,0.3)`,
+                                        boxShadow: `0 6px 20px rgba(0,194,255,0.35)`,
                                     },
                                     transition: 'all 0.3s ease',
                                 }}

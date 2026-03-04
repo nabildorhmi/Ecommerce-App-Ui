@@ -60,53 +60,37 @@ export function TrustSignals() {
     <Box
       sx={{
         mt: 4,
-        py: 3.5,
-        px: { xs: 2, md: 3.5 },
-        borderRadius: '20px',
+        py: 3,
+        px: { xs: 2, md: 3 },
+        borderRadius: '14px',
         border: '1px solid rgba(255,255,255,0.06)',
-        background: 'rgba(19,19,27,0.5)',
-        backdropFilter: 'blur(16px)',
-        position: 'relative',
-        overflow: 'hidden',
-        '&::before': {
-          content: '""',
-          position: 'absolute',
-          top: 0, left: 0, right: 0,
-          height: 1,
-          background: 'linear-gradient(90deg, transparent, rgba(0,194,255,0.3), transparent)',
-        },
+        bgcolor: 'rgba(19,22,35,0.4)',
       }}
     >
       <Typography
         sx={{
           fontSize: '0.62rem', fontWeight: 700, letterSpacing: '0.2em',
-          color: 'text.secondary', textTransform: 'uppercase', mb: 2.5,
-          display: 'flex', alignItems: 'center', gap: 1,
+          color: 'text.secondary', textTransform: 'uppercase', mb: 2,
         }}
       >
-        <Box component="span" sx={{ display: 'inline-block', width: 16, height: 1, bgcolor: 'primary.main', opacity: 0.5 }} />
-        信頼 — NOS ENGAGEMENTS
+        NOS ENGAGEMENTS
       </Typography>
 
       <Grid container spacing={2} component={motion.div} variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true }}>
         {SIGNALS.map(({ icon, color, label, desc }) => (
           <Grid key={label} size={{ xs: 12, sm: 6, md: 4 }} component={motion.div} variants={fadeInUp}>
-            <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25 }}>
               <Box sx={{
-                width: 36, height: 36,
-                borderRadius: '50%',
-                bgcolor: `${color}12`,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
                 color,
                 flexShrink: 0,
+                display: 'flex',
+                alignItems: 'center',
               }}>
                 {icon}
               </Box>
               <Box>
-                <Typography sx={{ fontSize: '0.82rem', fontWeight: 700, color: 'text.primary', lineHeight: 1.3 }}>{label}</Typography>
-                <Typography sx={{ fontSize: '0.72rem', color: 'text.secondary', mt: 0.25 }}>{desc}</Typography>
+                <Typography sx={{ fontSize: '0.78rem', fontWeight: 700, color: 'text.primary', lineHeight: 1.3 }}>{label}</Typography>
+                <Typography sx={{ fontSize: '0.68rem', color: 'text.secondary', mt: 0.15 }}>{desc}</Typography>
               </Box>
             </Box>
           </Grid>

@@ -77,19 +77,10 @@ export function CatalogPage() {
       <Box
         sx={{
           borderBottom: '1px solid rgba(0,194,255,0.1)',
-          background: 'linear-gradient(135deg, rgba(0,194,255,0.04) 0%, transparent 50%, rgba(199,64,77,0.02) 100%)',
+          bgcolor: 'rgba(0,194,255,0.02)',
           py: 1.5,
           position: 'relative',
           overflow: 'hidden',
-          '&::after': {
-            content: '""',
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            width: '100%',
-            height: 1,
-            background: 'linear-gradient(90deg, transparent, rgba(0,194,255,0.3), transparent)',
-          },
         }}
       >
         <Container maxWidth="xl" sx={{ position: 'relative' }}>

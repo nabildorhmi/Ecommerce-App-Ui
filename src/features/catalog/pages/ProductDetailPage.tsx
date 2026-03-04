@@ -326,7 +326,7 @@ export function ProductDetailPage() {
                   left: 0,
                   right: 0,
                   height: 2,
-                  background: 'linear-gradient(90deg, #00C2FF, #0099CC, transparent)',
+                  background: 'linear-gradient(90deg, #00C2FF, transparent)',
                 },
               }}
             >
@@ -543,10 +543,10 @@ export function ProductDetailPage() {
                       letterSpacing: '0.06em',
                       textTransform: 'uppercase',
                       borderRadius: { xs: '10px', md: '12px' },
-                      background: isAddDisabled ? undefined : 'linear-gradient(45deg, #00C2FF, #0099CC)',
+                      bgcolor: isAddDisabled ? undefined : '#00C2FF',
                       boxShadow: isAddDisabled
                         ? 'none'
-                        : '0 0 18px rgba(0,194,255,0.2)',
+                        : '0 4px 14px rgba(0,194,255,0.25)',
                       transition: 'all 0.3s',
                       '&:hover': { transform: isAddDisabled ? 'none' : 'translateY(-2px)' },
                     }}
@@ -611,7 +611,7 @@ export function ProductDetailPage() {
           startIcon={<ShoppingCartIcon />}
           sx={{
             flex: 1, maxWidth: 220, py: 1.2, fontSize: '0.8rem',
-            background: isAddDisabled ? undefined : 'linear-gradient(45deg, #00C2FF, #0099CC)',
+            bgcolor: isAddDisabled ? undefined : '#00C2FF',
           }}
         >
           Ajouter

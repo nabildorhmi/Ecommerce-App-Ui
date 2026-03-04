@@ -329,13 +329,13 @@ function PromoSection() {
                 endIcon={<ArrowForwardIcon />}
                 sx={{
                   px: 4, py: 1.75, fontSize: '0.9rem',
-                  background: 'linear-gradient(135deg, #C7404D 0%, #C62828 100%)',
+                  bgcolor: '#C7404D',
                   color: '#fff', fontWeight: 800,
-                  boxShadow: '0 8px 24px rgba(199,64,77,0.4)',
+                  boxShadow: '0 4px 14px rgba(199,64,77,0.3)',
                   '&:hover': {
-                    background: 'linear-gradient(135deg, #FF4D5A 0%, #C7404D 100%)',
+                    bgcolor: '#D44E5A',
                     transform: 'translateY(-2px)',
-                    boxShadow: '0 12px 32px rgba(199,64,77,0.5)',
+                    boxShadow: '0 6px 20px rgba(199,64,77,0.4)',
                   }
                 }}
               >
@@ -404,14 +404,14 @@ function FooterCTA() {
               size="large"
               sx={{
                 px: 5, py: 1.75, fontSize: '0.95rem',
-                background: 'linear-gradient(135deg, #00C2FF 0%, #0099CC 100%)',
+                bgcolor: '#00C2FF',
                 color: '#0c0c14', fontWeight: 800,
-                boxShadow: '0 8px 24px rgba(0,194,255,0.4)',
+                boxShadow: '0 4px 14px rgba(0,194,255,0.25)',
                 animation: 'pulse-glow 3s ease-in-out infinite',
                 '&:hover': {
-                  background: 'linear-gradient(135deg, #33CFFF 0%, #00C2FF 100%)',
+                  bgcolor: '#33CFFF',
                   transform: 'translateY(-2px)',
-                  boxShadow: '0 12px 32px rgba(0,194,255,0.5)',
+                  boxShadow: '0 6px 20px rgba(0,194,255,0.35)',
                 }
               }}
             >

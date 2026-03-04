@@ -87,7 +87,7 @@ a {
 
 /* Gradient text */
 .mirai-gradient-text {
-  background: linear-gradient(135deg, #00C2FF, #0099CC, #C7404D);
+  background: linear-gradient(135deg, #00C2FF, #C7404D);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

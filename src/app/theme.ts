@@ -139,18 +139,17 @@ export function createMiraiTheme(mode: PaletteMode = 'dark', direction: 'ltr' | 
             transition: 'all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
           },
           containedPrimary: {
-            background: `linear-gradient(135deg, ${MIRAI_CYAN} 0%, ${MIRAI_CYAN_DK} 100%)`,
+            backgroundColor: MIRAI_CYAN,
             color: MIRAI_BLACK,
-            boxShadow: `0 8px 24px rgba(0,194,255,0.15), inset 0 1px 0 rgba(255,255,255,0.3)`,
-            textShadow: '0 1px 2px rgba(255,255,255,0.2)',
+            boxShadow: `0 4px 14px rgba(0,194,255,0.25)`,
             '&:hover': {
-              background: `linear-gradient(135deg, #33CFFF 0%, ${MIRAI_CYAN} 100%)`,
-              boxShadow: `0 12px 32px rgba(0,194,255,0.25), inset 0 1px 0 rgba(255,255,255,0.4)`,
+              backgroundColor: '#33CFFF',
+              boxShadow: `0 6px 20px rgba(0,194,255,0.35)`,
               transform: 'translateY(-2px)',
             },
             '&:active': {
               transform: 'translateY(1px)',
-              boxShadow: `0 4px 12px rgba(0,194,255,0.15)`,
+              boxShadow: `0 2px 8px rgba(0,194,255,0.15)`,
             },
           },
           outlinedPrimary: {

@@ -208,7 +208,7 @@ export function CheckoutPage() {
               <Box key={step} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5 }}>
                 <Box sx={{
                   width: 32, height: 32, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  background: step === 1 ? 'linear-gradient(135deg, #00C2FF, #0099CC)' : 'rgba(255,255,255,0.07)',
+                  bgcolor: step === 1 ? '#00C2FF' : 'rgba(255,255,255,0.07)',
                   border: step <= 2 ? '1px solid rgba(0,194,255,0.3)' : '1px solid rgba(255,255,255,0.08)',
                   boxShadow: step === 1 ? '0 0 12px rgba(0,194,255,0.3)' : 'none',
                 }}>
@@ -253,7 +253,7 @@ export function CheckoutPage() {
                   left: 0,
                   right: 0,
                   height: 2,
-                  background: 'linear-gradient(90deg, #00C2FF, #0099CC, transparent)',
+                  background: 'linear-gradient(90deg, #00C2FF, transparent)',
                 },
               }}
             >
@@ -520,9 +520,9 @@ export function CheckoutPage() {
                   fontWeight: 700,
                   fontSize: '1rem',
                   letterSpacing: '0.06em',
-                  background: 'linear-gradient(135deg, #00C2FF, #0099CC)',
-                  boxShadow: '0 8px 28px rgba(0,194,255,0.35)',
-                  '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 12px 36px rgba(0,194,255,0.5)' },
+                  bgcolor: '#00C2FF',
+                  boxShadow: '0 4px 14px rgba(0,194,255,0.25)',
+                  '&:hover': { bgcolor: '#33CFFF', transform: 'translateY(-2px)', boxShadow: '0 6px 20px rgba(0,194,255,0.35)' },
                   transition: 'all 0.3s ease',
                 }}
               >

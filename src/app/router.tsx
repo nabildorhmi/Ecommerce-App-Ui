@@ -40,7 +40,7 @@ function RouteErrorPage() {
         style={{
           marginTop: '8px',
           padding: '12px 28px',
-          background: 'linear-gradient(45deg, #00C2FF, #0099CC)',
+          background: '#00C2FF',
           color: '#0c0c14',
           border: 'none',
           borderRadius: '10px',

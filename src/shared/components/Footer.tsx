@@ -56,7 +56,7 @@ export function Footer() {
       }}
     >
       {/* Gradient top border */}
-      <Box sx={{ height: 1, background: 'linear-gradient(90deg, transparent 0%, #C7404D 20%, #00C2FF 50%, #0099CC 80%, transparent 100%)', mb: 0, position: 'relative', zIndex: 1, boxShadow: '0 0 12px rgba(0,194,255,0.3)' }} />
+      <Box sx={{ height: 1, background: 'linear-gradient(90deg, transparent 0%, #C7404D 30%, #00C2FF 70%, transparent 100%)', mb: 0, position: 'relative', zIndex: 1, boxShadow: '0 0 8px rgba(0,194,255,0.2)' }} />
 
       {/* Trust badges strip */}
       <Box sx={{ borderBottom: '1px solid rgba(255,255,255,0.05)', py: 3, position: 'relative', zIndex: 1, mb: 5 }}>

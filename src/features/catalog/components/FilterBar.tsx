@@ -109,7 +109,7 @@ export function FilterBar({ isMobileOpen }: FilterBarProps = {}) {
           left: 0,
           right: 0,
           height: 2,
-          background: 'linear-gradient(90deg, #00C2FF, transparent)',
+          background: '#00C2FF',
         },
       }}
     >

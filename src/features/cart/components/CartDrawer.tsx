@@ -62,13 +62,6 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           px: 2.5, py: 2,
           borderBottom: '1px solid rgba(0,194,255,0.08)',
-          background: 'linear-gradient(180deg, rgba(0,194,255,0.04) 0%, transparent 100%)',
-          position: 'relative',
-          '&::after': {
-            content: '""', position: 'absolute', bottom: 0, left: 0, width: '100%', height: 1,
-            background: 'linear-gradient(90deg, transparent, rgba(0,194,255,0.3), transparent)',
-            pointerEvents: 'none',
-          },
         }}
       >
         <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1.25 }}>
@@ -106,7 +99,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
               <LinearProgress
                 variant="determinate"
                 value={progressPct}
-                sx={{ height: 5, borderRadius: 4, bgcolor: 'rgba(0,194,255,0.1)', '& .MuiLinearProgress-bar': { background: 'linear-gradient(90deg, #00C2FF, #0099CC)' } }}
+                sx={{ height: 5, borderRadius: 4, bgcolor: 'rgba(0,194,255,0.1)', '& .MuiLinearProgress-bar': { bgcolor: '#00C2FF' } }}
               />
             </Box>
           ) : (
@@ -166,7 +159,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
 
       {/* Footer */}
       {items.length > 0 && (
-        <Box sx={{ borderTop: '1px solid rgba(0,194,255,0.08)', background: 'linear-gradient(0deg, rgba(0,194,255,0.04) 0%, transparent 100%)', px: 2.5, py: 2.5 }}>
+        <Box sx={{ borderTop: '1px solid rgba(0,194,255,0.08)', px: 2.5, py: 2.5 }}>
           <Stack spacing={1.75}>
             {/* Subtotal */}
             <Stack direction="row" justifyContent="space-between" alignItems="center">
@@ -192,9 +185,9 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
               disabled={items.length === 0}
               sx={{
                 py: 1.75, borderRadius: '12px', fontWeight: 700, fontSize: '0.9rem',
-                background: 'linear-gradient(135deg, #00C2FF, #0099CC)',
-                boxShadow: '0 8px 24px rgba(0,194,255,0.35)',
-                '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 12px 32px rgba(0,194,255,0.5)' },
+                bgcolor: '#00C2FF',
+                boxShadow: '0 4px 14px rgba(0,194,255,0.25)',
+                '&:hover': { bgcolor: '#33CFFF', transform: 'translateY(-2px)', boxShadow: '0 6px 20px rgba(0,194,255,0.35)' },
                 transition: 'all 0.3s ease',
               }}
             >
