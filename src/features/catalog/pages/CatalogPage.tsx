@@ -250,7 +250,12 @@ export function CatalogPage() {
                 )}
               </Box>
             ) : (
-              <motion.div variants={staggerContainer} initial="hidden" animate="visible">
+              <motion.div
+                key={products.map(p => p.id).join(',')}
+                variants={staggerContainer}
+                initial="hidden"
+                animate="visible"
+              >
                 <Grid container rowSpacing={2} columnSpacing={2}>
                   {products.map((product) => (
                     <Grid key={product.id} size={{ xs: 6, sm: 4, md: 3, lg: 3 }}>

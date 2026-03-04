@@ -52,6 +52,7 @@ const schema = z.object({
   description: z.string().default(''),
   price: z.number({ error: 'Prix invalide' }).min(0),
   promo_price: z.union([z.number().min(0), z.literal('')]).optional(),
+  discount_percentage: z.union([z.number().int().min(0).max(100), z.literal('')]).optional(),
   category_id: z.number({ error: 'Categorie requise' }).nullable(),
   is_active: z.boolean(),
   is_featured: z.boolean(),
@@ -279,6 +280,7 @@ export function ProductForm({ product, onSuccess }: ProductFormProps) {
     description: product?.description ?? '',
     price: product ? product.price / 100 : 0,
     promo_price: product ? (product.promo_price !== null ? product.promo_price / 100 : '') : '',
+    discount_percentage: product ? (product.discount_percentage !== null ? product.discount_percentage : '') : '',
     category_id: product?.category_id ?? product?.category?.id ?? null,
     is_active: product?.is_active ?? true,
     is_featured: product?.is_featured ?? false,
@@ -344,7 +346,7 @@ export function ProductForm({ product, onSuccess }: ProductFormProps) {
       slug: values.slug,
       description: values.description ?? '',
       price: values.price,
-      promo_price: values.promo_price !== '' && values.promo_price != null ? values.promo_price : null,
+      discount_percentage: values.discount_percentage !== '' && values.discount_percentage != null ? values.discount_percentage : null,
       category_id: values.category_id,
       is_active: values.is_active,
       is_featured: values.is_featured,
@@ -400,15 +402,15 @@ export function ProductForm({ product, onSuccess }: ProductFormProps) {
             required
           />
           <TextField
-            label="Prix promo (MAD)"
+            label="Remise (%)"
             size="small"
             type="number"
-            inputProps={{ step: '0.01', min: '0' }}
-            {...register('promo_price', {
+            inputProps={{ step: '1', min: '0', max: '100' }}
+            {...register('discount_percentage', {
               setValueAs: (v) => (v === '' || v == null ? '' : Number(v))
             })}
-            error={Boolean(errors.promo_price)}
-            helperText={errors.promo_price?.message}
+            error={Boolean(errors.discount_percentage)}
+            helperText={errors.discount_percentage?.message ?? 'Ex: 30 pour -30%'}
           />
           <Controller
             name="category_id"

@@ -38,6 +38,8 @@ import PeopleIcon from '@mui/icons-material/People';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import TuneIcon from '@mui/icons-material/Tune';
 import ViewCarouselIcon from '@mui/icons-material/ViewCarousel';
+import LocalOfferIcon from '@mui/icons-material/LocalOffer';
+import FiberNewIcon from '@mui/icons-material/FiberNew';
 import { useAuthStore } from '@/features/auth/store';
 import { CartBadge } from '@/features/cart/components/CartBadge';
 import { CartDrawer } from '@/features/cart/components/CartDrawer';
@@ -45,8 +47,45 @@ import { useCategories } from '@/features/catalog/api/categories';
 import { apiClient } from '@/shared/api/client';
 import miraiLogo from '@/assets/miraiTech-Logo.png';
 
+/* ── Shared menu paper styles ── */
+const menuPaperSx = {
+  mt: 1,
+  minWidth: 220,
+  backgroundColor: 'rgba(16, 16, 22, 0.92)',
+  backdropFilter: 'blur(24px)',
+  WebkitBackdropFilter: 'blur(24px)',
+  border: '1px solid rgba(255,255,255,0.06)',
+  boxShadow: '0 20px 48px rgba(0,0,0,0.55), 0 0 0 1px rgba(0,194,255,0.04)',
+  borderRadius: 2,
+  overflow: 'hidden',
+  '&::before': {
+    content: '""',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: '1px',
+    background: 'linear-gradient(90deg, transparent, rgba(0,194,255,0.3), transparent)',
+  },
+};
+
+const menuItemSx = {
+  fontSize: '0.84rem',
+  fontWeight: 500,
+  py: 1,
+  px: 2,
+  borderLeft: '2px solid transparent',
+  color: '#B0B8C4',
+  transition: 'all 0.2s ease',
+  '&:hover': {
+    backgroundColor: 'rgba(0,194,255,0.06)',
+    color: '#00C2FF',
+    borderLeftColor: '#00C2FF',
+  },
+};
+
 /**
- * MiraiTech Navbar — sticky, transparent/dark blur, dynamic categories.
+ * MiraiTech Navbar — neo-zen glass header with refined navigation.
  */
 export function Navbar() {
   const navigate = useNavigate();
@@ -124,6 +163,8 @@ export function Navbar() {
   };
 
   const isActive = (path: string) => location.pathname.startsWith(path);
+  const isPromoActive = location.search.includes('is_on_sale');
+  const isNewActive = location.search.includes('is_new');
 
   return (
     <>
@@ -131,14 +172,23 @@ export function Navbar() {
         position="sticky"
         elevation={0}
         sx={{
-          background: 'var(--glass-bg)',
-          backdropFilter: 'var(--glass-blur)',
-          WebkitBackdropFilter: 'var(--glass-blur)',
-          borderBottom: '1px solid var(--glass-border)',
+          background: 'rgba(10, 10, 16, 0.88)',
+          backdropFilter: 'blur(28px)',
+          WebkitBackdropFilter: 'blur(28px)',
+          borderBottom: '1px solid rgba(255,255,255,0.04)',
+          '&::after': {
+            content: '""',
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: '1px',
+            background: 'linear-gradient(90deg, transparent 5%, rgba(0,194,255,0.15) 50%, transparent 95%)',
+          },
         }}
       >
         <Container maxWidth="xl">
-          <Toolbar disableGutters sx={{ minHeight: { xs: 60, md: 68 } }}>
+          <Toolbar disableGutters sx={{ minHeight: { xs: 56, md: 64 }, gap: 1 }}>
             {/* ── Brand Logo ── */}
             <Box
               component={Link}
@@ -147,142 +197,124 @@ export function Navbar() {
                 display: 'flex',
                 alignItems: 'center',
                 textDecoration: 'none',
-                mr: { md: 4 },
+                mr: { md: 3 },
                 flexShrink: 0,
+                transition: 'opacity 0.2s',
+                '&:hover': { opacity: 0.85 },
               }}
             >
               <Box
                 component="img"
                 src={miraiLogo}
                 alt="MiraiTech"
-                sx={{ height: { xs: 25, md: 35 }, width: 'auto', display: 'block' }}
+                sx={{ height: { xs: 24, md: 32 }, width: 'auto', display: 'block' }}
               />
             </Box>
 
+            {/* ── Thin separator ── */}
+            <Box sx={{ display: { xs: 'none', md: 'block' }, width: '1px', height: 24, bgcolor: 'rgba(255,255,255,0.06)', mr: 1 }} />
+
             {/* ── Desktop Category Nav ── */}
-            <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 0.25, flex: 1 }}>
+            <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 0.5, flex: 1 }}>
               <Button
                 component={Link}
                 to="/products"
                 sx={{
-                  color: isActive('/products') && !location.search.includes('category_id') ? '#00C2FF' : '#8A919D',
+                  color: isActive('/products') && !location.search.includes('category_id') && !isPromoActive && !isNewActive ? '#00C2FF' : '#8A919D',
                   fontWeight: 600,
-                  fontSize: '0.75rem',
-                  letterSpacing: '0.08em',
+                  fontSize: '0.72rem',
+                  letterSpacing: '0.1em',
                   px: 1.5,
-                  py: 0.75,
-                  borderRadius: '4px',
+                  py: 0.6,
+                  borderRadius: '8px',
                   minWidth: 'auto',
+                  transition: 'all 0.25s ease',
                   '&:hover': { color: '#E8ECF2', backgroundColor: 'rgba(255,255,255,0.04)' },
                 }}
               >
-                TOUS LES PRODUITS
+                Catalogue
               </Button>
 
+              {/* Promo pill */}
               <Button
                 component={Link}
                 to="/products?filter[is_on_sale]=1"
+                startIcon={<LocalOfferIcon sx={{ fontSize: '0.85rem !important' }} />}
                 sx={{
-                  color: '#D97A50',
+                  color: isPromoActive ? '#fff' : '#D97A50',
                   fontWeight: 700,
-                  fontSize: '0.75rem',
+                  fontSize: '0.68rem',
                   letterSpacing: '0.08em',
                   px: 1.5,
-                  py: 0.75,
-                  borderRadius: '6px',
+                  py: 0.5,
+                  borderRadius: '20px',
                   minWidth: 'auto',
-                  border: location.search.includes('is_on_sale') ? '2px solid #D97A50' : '1px solid rgba(217,122,80,0.3)',
-                  backgroundColor: location.search.includes('is_on_sale') ? 'rgba(217,122,80,0.2)' : 'rgba(217,122,80,0.06)',
-                  animation: location.search.includes('is_on_sale') ? 'none' : 'promo-glow 2.5s ease-in-out infinite',
-                  textShadow: '0 0 8px rgba(217,122,80,0.4)',
-                  boxShadow: location.search.includes('is_on_sale') ? '0 0 12px rgba(217,122,80,0.4), inset 0 0 8px rgba(217,122,80,0.1)' : 'none',
-                  position: 'relative',
-                  '&::after': location.search.includes('is_on_sale') ? {
-                    content: '""',
-                    position: 'absolute',
-                    bottom: 0,
-                    left: '20%',
-                    right: '20%',
-                    height: '2px',
-                    backgroundColor: '#D97A50',
-                    borderRadius: '2px',
-                  } : {},
-                  '&:hover': { color: '#D97A50', backgroundColor: 'rgba(217,122,80,0.15)', borderColor: 'rgba(217,122,80,0.5)' },
+                  border: '1px solid',
+                  borderColor: isPromoActive ? '#D97A50' : 'rgba(217,122,80,0.25)',
+                  backgroundColor: isPromoActive ? 'rgba(217,122,80,0.2)' : 'transparent',
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    backgroundColor: 'rgba(217,122,80,0.12)',
+                    borderColor: 'rgba(217,122,80,0.5)',
+                  },
                 }}
               >
-                {location.search.includes('is_on_sale') ? '● PROMOS' : 'PROMOS'}
+                Promos
               </Button>
 
+              {/* Nouveautés pill */}
               <Button
                 component={Link}
                 to="/products?filter[is_new]=1"
+                startIcon={<FiberNewIcon sx={{ fontSize: '0.95rem !important' }} />}
                 sx={{
-                  color: '#2EAD5F',
+                  color: isNewActive ? '#fff' : '#2EAD5F',
                   fontWeight: 700,
-                  fontSize: '0.75rem',
+                  fontSize: '0.68rem',
                   letterSpacing: '0.08em',
                   px: 1.5,
-                  py: 0.75,
-                  borderRadius: '6px',
+                  py: 0.5,
+                  borderRadius: '20px',
                   minWidth: 'auto',
-                  border: location.search.includes('is_new') ? '2px solid #2EAD5F' : '1px solid rgba(46,173,95,0.3)',
-                  backgroundColor: location.search.includes('is_new') ? 'rgba(46,173,95,0.2)' : 'rgba(46,173,95,0.06)',
-                  animation: location.search.includes('is_new') ? 'none' : 'nouveaute-glow 2.5s ease-in-out infinite',
-                  textShadow: '0 0 8px rgba(46,173,95,0.4)',
-                  boxShadow: location.search.includes('is_new') ? '0 0 12px rgba(46,173,95,0.4), inset 0 0 8px rgba(46,173,95,0.1)' : 'none',
-                  position: 'relative',
-                  '&::after': location.search.includes('is_new') ? {
-                    content: '""',
-                    position: 'absolute',
-                    bottom: 0,
-                    left: '20%',
-                    right: '20%',
-                    height: '2px',
-                    backgroundColor: '#2EAD5F',
-                    borderRadius: '2px',
-                  } : {},
-                  '&:hover': { color: '#2EAD5F', backgroundColor: 'rgba(46,173,95,0.15)', borderColor: 'rgba(46,173,95,0.5)' },
+                  border: '1px solid',
+                  borderColor: isNewActive ? '#2EAD5F' : 'rgba(46,173,95,0.25)',
+                  backgroundColor: isNewActive ? 'rgba(46,173,95,0.2)' : 'transparent',
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    backgroundColor: 'rgba(46,173,95,0.12)',
+                    borderColor: 'rgba(46,173,95,0.5)',
+                  },
                 }}
               >
-                {location.search.includes('is_new') ? '● NOUVEAUTÉS' : 'NOUVEAUTÉS'}
+                Nouveautés
               </Button>
 
               {categories.length > 0 && (
                 <>
                   <Button
-                    endIcon={<KeyboardArrowDownIcon sx={{ fontSize: '0.9rem !important' }} />}
+                    endIcon={<KeyboardArrowDownIcon sx={{ fontSize: '0.85rem !important', transition: 'transform 0.2s', transform: catMenuAnchor ? 'rotate(180deg)' : 'rotate(0)' }} />}
                     onClick={(e) => setCatMenuAnchor(e.currentTarget)}
                     sx={{
                       color: '#8A919D',
                       fontWeight: 600,
-                      fontSize: '0.75rem',
-                      letterSpacing: '0.08em',
+                      fontSize: '0.72rem',
+                      letterSpacing: '0.1em',
                       px: 1.5,
-                      py: 0.75,
-                      borderRadius: '4px',
+                      py: 0.6,
+                      borderRadius: '8px',
                       minWidth: 'auto',
+                      transition: 'all 0.25s ease',
                       '&:hover': { color: '#E8ECF2', backgroundColor: 'rgba(255,255,255,0.04)' },
                     }}
                   >
-                    CATÉGORIES
+                    Catégories
                   </Button>
                   <Menu
                     anchorEl={catMenuAnchor}
                     open={Boolean(catMenuAnchor)}
                     onClose={closeCatMenu}
                     disableScrollLock
-                    PaperProps={{
-                      sx: {
-                        mt: 1,
-                        minWidth: 220,
-                        backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(22, 22, 28, 0.6)' : 'background.paper',
-                        backdropFilter: (theme) => theme.palette.mode === 'dark' ? 'blur(16px)' : 'none',
-                        border: '1px solid',
-                        borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'divider',
-                        boxShadow: '0 16px 40px rgba(0,0,0,0.6)',
-                        borderRadius: 2,
-                      },
-                    }}
+                    PaperProps={{ sx: menuPaperSx }}
                   >
                     {categories.map((cat) => (
                       <MenuItem
@@ -290,18 +322,7 @@ export function Navbar() {
                         component={Link}
                         to={`/products?filter[category_id]=${cat.id}`}
                         onClick={closeCatMenu}
-                        sx={{
-                          fontSize: '0.85rem',
-                          fontWeight: 500,
-                          color: 'text.primary',
-                          py: 1,
-                          borderLeft: '2px solid transparent',
-                          '&:hover': {
-                            backgroundColor: 'rgba(0,194,255,0.08)',
-                            color: '#00C2FF',
-                            borderLeftColor: '#00C2FF',
-                          },
-                        }}
+                        sx={menuItemSx}
                       >
                         {cat.name}
                       </MenuItem>
@@ -310,7 +331,7 @@ export function Navbar() {
                 </>
               )}
 
-              {/* Desktop search */}
+              {/* ── Desktop search ── */}
               <ClickAwayListener onClickAway={() => setSearchFocused(false)}>
                 <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center', position: 'relative' }}>
                   <Box
@@ -320,17 +341,17 @@ export function Navbar() {
                     sx={{
                       display: 'flex',
                       alignItems: 'center',
-                      bgcolor: 'rgba(255,255,255,0.06)',
-                      borderRadius: '6px',
+                      bgcolor: searchFocused ? 'rgba(0,194,255,0.04)' : 'rgba(255,255,255,0.04)',
+                      borderRadius: '24px',
                       border: '1px solid',
-                      borderColor: 'divider',
+                      borderColor: searchFocused ? 'rgba(0,194,255,0.25)' : 'rgba(255,255,255,0.06)',
                       px: 1.5,
-                      py: 0.25,
-                      transition: 'border-color 0.2s',
-                      '&:focus-within': { borderColor: 'primary.main' },
+                      py: 0.35,
+                      transition: 'all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+                      boxShadow: searchFocused ? '0 0 20px rgba(0,194,255,0.06)' : 'none',
                     }}
                   >
-                    <SearchIcon sx={{ fontSize: '1rem', color: 'text.secondary', mr: 1 }} />
+                    <SearchIcon sx={{ fontSize: '0.95rem', color: searchFocused ? '#00C2FF' : '#8A919D', mr: 1, transition: 'color 0.2s' }} />
                     <InputBase
                       placeholder="Rechercher..."
                       value={searchQuery}
@@ -339,29 +360,29 @@ export function Navbar() {
                       sx={{
                         fontSize: '0.8rem',
                         color: 'text.primary',
-                        width: searchFocused ? 240 : 160,
+                        width: searchFocused ? 220 : 140,
                         transition: 'width 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-                        '& input::placeholder': { color: 'text.secondary', opacity: 1 },
+                        '& input::placeholder': { color: '#8A919D', opacity: 1 },
                       }}
                     />
                   </Box>
                   <Popper
                     open={suggestionsOpen}
                     anchorEl={searchAnchorEl}
-                    placement="bottom-start"
-                    style={{ zIndex: 1300, minWidth: 240 }}
+                    placement="bottom-end"
+                    style={{ zIndex: 1300, minWidth: 280 }}
                   >
                     <Paper
-                      elevation={8}
+                      elevation={0}
                       sx={{
-                        mt: 0.5,
-                        border: '1px solid',
-                        borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'divider',
-                        backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(22, 22, 28, 0.8)' : 'background.paper',
-                        backdropFilter: (theme) => theme.palette.mode === 'dark' ? 'blur(20px)' : 'none',
+                        mt: 1,
+                        border: '1px solid rgba(255,255,255,0.06)',
+                        backgroundColor: 'rgba(16, 16, 22, 0.95)',
+                        backdropFilter: 'blur(24px)',
                         overflow: 'hidden',
-                        minWidth: 240,
+                        minWidth: 280,
                         borderRadius: 2,
+                        boxShadow: '0 16px 48px rgba(0,0,0,0.5)',
                       }}
                     >
                       <List dense disablePadding>
@@ -373,18 +394,19 @@ export function Navbar() {
                               py: 0.75,
                               px: 1.5,
                               gap: 1.5,
-                              '&:hover': { backgroundColor: 'rgba(0,194,255,0.08)' },
+                              transition: 'background 0.15s',
+                              '&:hover': { backgroundColor: 'rgba(0,194,255,0.06)' },
                             }}
                           >
                             <Avatar
                               src={product.images?.[0]?.thumbnail}
                               alt={product.name}
                               variant="rounded"
-                              sx={{ width: 36, height: 36, flexShrink: 0, bgcolor: 'rgba(255,255,255,0.06)' }}
+                              sx={{ width: 36, height: 36, flexShrink: 0, bgcolor: 'rgba(255,255,255,0.04)', borderRadius: '8px' }}
                             />
                             <ListItemText
                               primary={product.name}
-                              primaryTypographyProps={{ fontSize: '0.83rem', fontWeight: 500, noWrap: true }}
+                              primaryTypographyProps={{ fontSize: '0.83rem', fontWeight: 500, noWrap: true, color: '#E8ECF2' }}
                             />
                           </ListItemButton>
                         ))}
@@ -396,7 +418,7 @@ export function Navbar() {
             </Box>
 
             {/* ── Right Actions ── */}
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.25, ml: 'auto' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, ml: 'auto' }}>
               <CartBadge onToggle={() => setDrawerOpen(true)} />
 
               {user ? (
@@ -407,7 +429,11 @@ export function Navbar() {
                         onClick={(e) => setAdminMenuAnchor(e.currentTarget)}
                         aria-label="Administration"
                         size="small"
-                        sx={{ color: 'text.secondary', '&:hover': { color: '#00C2FF' } }}
+                        sx={{
+                          color: '#8A919D',
+                          transition: 'all 0.2s',
+                          '&:hover': { color: '#00C2FF', backgroundColor: 'rgba(0,194,255,0.06)' },
+                        }}
                       >
                         <Badge variant="dot" color="error" invisible={pendingCount === 0}>
                           <AdminPanelSettingsIcon sx={{ fontSize: '1.1rem' }} />
@@ -418,18 +444,7 @@ export function Navbar() {
                         open={Boolean(adminMenuAnchor)}
                         onClose={closeAdminMenu}
                         disableScrollLock
-                        PaperProps={{
-                          sx: {
-                            mt: 1,
-                            minWidth: 200,
-                            backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(22, 22, 28, 0.8)' : 'background.paper',
-                            backdropFilter: (theme) => theme.palette.mode === 'dark' ? 'blur(20px)' : 'none',
-                            border: '1px solid',
-                            borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'divider',
-                            boxShadow: '0 16px 40px rgba(0,0,0,0.6)',
-                            borderRadius: 2,
-                          },
-                        }}
+                        PaperProps={{ sx: menuPaperSx }}
                       >
                         {(() => {
                           const menuItems = [
@@ -442,7 +457,6 @@ export function Navbar() {
                             { to: '/admin/hero-banners', icon: <ViewCarouselIcon fontSize="small" />, label: 'Hero Banners' },
                           ];
 
-                          // Add Utilisateurs menu item only for global_admin
                           if (user.role === 'global_admin') {
                             menuItems.push({ to: '/admin/users', icon: <PeopleIcon fontSize="small" />, label: 'Utilisateurs' });
                           }
@@ -453,16 +467,10 @@ export function Navbar() {
                               component={Link}
                               to={to}
                               onClick={closeAdminMenu}
-                              sx={{
-                                fontSize: '0.85rem',
-                                py: 1,
-                                borderLeft: '2px solid transparent',
-                                color: 'text.primary',
-                                '&:hover': { backgroundColor: 'rgba(0,194,255,0.08)', color: '#00C2FF', borderLeftColor: '#00C2FF' },
-                              }}
+                              sx={menuItemSx}
                             >
                               <ListItemIcon sx={{ color: '#00C2FF', minWidth: 32 }}>{icon}</ListItemIcon>
-                              <ListItemText primaryTypographyProps={{ fontSize: '0.85rem' }}>{label}</ListItemText>
+                              <ListItemText primaryTypographyProps={{ fontSize: '0.84rem' }}>{label}</ListItemText>
                             </MenuItem>
                           ));
                         })()}
@@ -473,7 +481,11 @@ export function Navbar() {
                   <IconButton
                     onClick={(e) => setUserMenuAnchor(e.currentTarget)}
                     size="small"
-                    sx={{ color: 'text.secondary', '&:hover': { color: '#00C2FF' } }}
+                    sx={{
+                      color: '#8A919D',
+                      transition: 'all 0.2s',
+                      '&:hover': { color: '#00C2FF', backgroundColor: 'rgba(0,194,255,0.06)' },
+                    }}
                   >
                     <AccountCircleIcon sx={{ fontSize: '1.1rem' }} />
                   </IconButton>
@@ -482,36 +494,31 @@ export function Navbar() {
                     open={Boolean(userMenuAnchor)}
                     onClose={closeUserMenu}
                     disableScrollLock
-                    PaperProps={{
-                      sx: {
-                        mt: 1,
-                        minWidth: 190,
-                        backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(22, 22, 28, 0.8)' : 'background.paper',
-                        backdropFilter: (theme) => theme.palette.mode === 'dark' ? 'blur(20px)' : 'none',
-                        border: '1px solid',
-                        borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'divider',
-                        boxShadow: '0 16px 40px rgba(0,0,0,0.6)',
-                        borderRadius: 2,
-                      },
-                    }}
+                    PaperProps={{ sx: { ...menuPaperSx, minWidth: 200 } }}
                   >
-                    <MenuItem component={Link} to="/profile" onClick={closeUserMenu}
-                      sx={{ fontSize: '0.85rem', py: 1, borderLeft: '2px solid transparent', color: 'text.primary', '&:hover': { color: '#00C2FF', backgroundColor: 'rgba(0,194,255,0.08)', borderLeftColor: '#00C2FF' } }}>
+                    <Box sx={{ px: 2, py: 1.25, borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                      <Typography sx={{ fontSize: '0.78rem', fontWeight: 700, color: '#E8ECF2', letterSpacing: '0.02em' }}>
+                        {user.name}
+                      </Typography>
+                      <Typography sx={{ fontSize: '0.68rem', color: '#8A919D', mt: 0.25 }}>
+                        {user.email}
+                      </Typography>
+                    </Box>
+                    <MenuItem component={Link} to="/profile" onClick={closeUserMenu} sx={menuItemSx}>
                       <ListItemIcon sx={{ color: '#00C2FF', minWidth: 32 }}><PersonOutlineIcon fontSize="small" /></ListItemIcon>
-                      <ListItemText primaryTypographyProps={{ fontSize: '0.85rem' }}>Mon compte</ListItemText>
+                      <ListItemText primaryTypographyProps={{ fontSize: '0.84rem' }}>Mon compte</ListItemText>
                     </MenuItem>
-                    <MenuItem component={Link} to="/orders" onClick={closeUserMenu}
-                      sx={{ fontSize: '0.85rem', py: 1, borderLeft: '2px solid transparent', color: 'text.primary', '&:hover': { color: '#00C2FF', backgroundColor: 'rgba(0,194,255,0.08)', borderLeftColor: '#00C2FF' } }}>
+                    <MenuItem component={Link} to="/orders" onClick={closeUserMenu} sx={menuItemSx}>
                       <ListItemIcon sx={{ color: '#00C2FF', minWidth: 32 }}><ReceiptLongIcon fontSize="small" /></ListItemIcon>
-                      <ListItemText primaryTypographyProps={{ fontSize: '0.85rem' }}>Mes commandes</ListItemText>
+                      <ListItemText primaryTypographyProps={{ fontSize: '0.84rem' }}>Mes commandes</ListItemText>
                     </MenuItem>
-                    <Divider sx={{ borderColor: 'divider', my: 0.5 }} />
+                    <Divider sx={{ borderColor: 'rgba(255,255,255,0.04)', my: 0.5 }} />
                     <MenuItem
                       onClick={() => { closeUserMenu(); handleLogout(); }}
-                      sx={{ fontSize: '0.85rem', py: 1, color: '#C7404D', '&:hover': { backgroundColor: 'rgba(199,64,77,0.08)' } }}
+                      sx={{ ...menuItemSx, color: '#C7404D', '&:hover': { backgroundColor: 'rgba(199,64,77,0.06)', color: '#C7404D', borderLeftColor: '#C7404D' } }}
                     >
                       <ListItemIcon sx={{ color: '#C7404D', minWidth: 32 }}><LogoutIcon fontSize="small" /></ListItemIcon>
-                      <ListItemText primaryTypographyProps={{ fontSize: '0.85rem', color: '#C7404D' }}>Déconnexion</ListItemText>
+                      <ListItemText primaryTypographyProps={{ fontSize: '0.84rem', color: '#C7404D' }}>Déconnexion</ListItemText>
                     </MenuItem>
                   </Menu>
                 </>
@@ -519,9 +526,24 @@ export function Navbar() {
                 <Button
                   component={Link}
                   to="/login"
-                  variant="outlined"
                   size="small"
-                  sx={{ ml: 0.5, fontSize: '0.72rem', letterSpacing: '0.08em', py: 0.5, px: 1.5 }}
+                  sx={{
+                    ml: 0.5,
+                    fontSize: '0.7rem',
+                    fontWeight: 700,
+                    letterSpacing: '0.1em',
+                    py: 0.5,
+                    px: 2,
+                    borderRadius: '20px',
+                    color: '#00C2FF',
+                    border: '1px solid rgba(0,194,255,0.3)',
+                    backgroundColor: 'rgba(0,194,255,0.04)',
+                    transition: 'all 0.25s ease',
+                    '&:hover': {
+                      backgroundColor: 'rgba(0,194,255,0.1)',
+                      borderColor: '#00C2FF',
+                    },
+                  }}
                 >
                   Connexion
                 </Button>
@@ -529,7 +551,13 @@ export function Navbar() {
 
               {/* Mobile hamburger */}
               <IconButton
-                sx={{ display: { md: 'none' }, color: 'text.secondary', ml: 0.25 }}
+                sx={{
+                  display: { md: 'none' },
+                  color: '#8A919D',
+                  ml: 0.25,
+                  transition: 'color 0.2s',
+                  '&:hover': { color: '#E8ECF2' },
+                }}
                 onClick={() => setMobileOpen(true)}
                 size="small"
               >
@@ -547,59 +575,72 @@ export function Navbar() {
         onClose={() => setMobileOpen(false)}
         PaperProps={{
           sx: {
-            width: 280,
-            backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(11, 11, 14, 0.65)' : 'background.paper',
-            backdropFilter: (theme) => theme.palette.mode === 'dark' ? 'blur(24px)' : 'none',
-            borderLeft: '1px solid',
-            borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'divider',
+            width: 300,
+            backgroundColor: 'rgba(10, 10, 16, 0.96)',
+            backdropFilter: 'blur(32px)',
+            WebkitBackdropFilter: 'blur(32px)',
+            borderLeft: '1px solid rgba(255,255,255,0.04)',
+            backgroundImage: 'none',
           },
         }}
       >
+        {/* Drawer header */}
         <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Box component={Link} to="/" onClick={() => setMobileOpen(false)} sx={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
-            <Box component="img" src={miraiLogo} alt="MiraiTech" sx={{ height: 28, width: 'auto' }} />
+            <Box component="img" src={miraiLogo} alt="MiraiTech" sx={{ height: 26, width: 'auto' }} />
           </Box>
-          <IconButton size="small" onClick={() => setMobileOpen(false)} sx={{ color: 'text.secondary' }}>
+          <IconButton size="small" onClick={() => setMobileOpen(false)} sx={{ color: '#8A919D', '&:hover': { color: '#E8ECF2' } }}>
             <CloseIcon fontSize="small" />
           </IconButton>
         </Box>
-        <Divider sx={{ borderColor: 'divider' }} />
+
+        <Box sx={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(0,194,255,0.2), transparent)' }} />
+
         <Stack sx={{ p: 2, gap: 0.5 }}>
           {/* Mobile search */}
           <Box
             component="form"
             onSubmit={(e: React.FormEvent) => { e.preventDefault(); handleSearch(); }}
-            sx={{ display: 'flex', alignItems: 'center', bgcolor: 'action.hover', borderRadius: '6px', px: 1.5, py: 0.5, mb: suggestions.length > 0 && searchQuery.trim().length > 1 ? 0 : 1 }}
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              bgcolor: 'rgba(255,255,255,0.04)',
+              borderRadius: '12px',
+              border: '1px solid rgba(255,255,255,0.06)',
+              px: 1.5,
+              py: 0.6,
+              mb: suggestions.length > 0 && searchQuery.trim().length > 1 ? 0 : 1.5,
+            }}
           >
-            <SearchIcon sx={{ fontSize: '1rem', color: 'text.secondary', mr: 1 }} />
+            <SearchIcon sx={{ fontSize: '0.95rem', color: '#8A919D', mr: 1 }} />
             <InputBase
               placeholder="Rechercher..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              sx={{ fontSize: '0.85rem', color: 'text.primary', flex: 1 }}
+              sx={{ fontSize: '0.85rem', color: '#E8ECF2', flex: 1, '& input::placeholder': { color: '#8A919D', opacity: 1 } }}
             />
           </Box>
           {suggestions.length > 0 && searchQuery.trim().length > 1 && (
             <Paper
-              variant="outlined"
-              sx={{ mb: 1, borderColor: 'divider', backgroundColor: 'background.paper', overflow: 'hidden' }}
+              elevation={0}
+              sx={{ mb: 1.5, borderColor: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.06)', backgroundColor: 'rgba(19,19,27,0.9)', overflow: 'hidden', borderRadius: '10px' }}
             >
               <List dense disablePadding>
                 {suggestions.map((product) => (
                   <ListItemButton
                     key={product.id}
                     onClick={() => handleSuggestionClick(product.slug)}
-                    sx={{ py: 0.75, px: 1.5, gap: 1.5, '&:hover': { backgroundColor: 'rgba(0,194,255,0.08)' } }}
+                    sx={{ py: 0.75, px: 1.5, gap: 1.5, '&:hover': { backgroundColor: 'rgba(0,194,255,0.06)' } }}
                   >
                     <Avatar
                       src={product.images?.[0]?.thumbnail}
                       alt={product.name}
                       variant="rounded"
-                      sx={{ width: 32, height: 32, flexShrink: 0, bgcolor: 'rgba(255,255,255,0.06)' }}
+                      sx={{ width: 32, height: 32, flexShrink: 0, bgcolor: 'rgba(255,255,255,0.04)', borderRadius: '6px' }}
                     />
                     <ListItemText
                       primary={product.name}
-                      primaryTypographyProps={{ fontSize: '0.83rem', fontWeight: 500 }}
+                      primaryTypographyProps={{ fontSize: '0.83rem', fontWeight: 500, color: '#E8ECF2' }}
                     />
                   </ListItemButton>
                 ))}
@@ -607,58 +648,74 @@ export function Navbar() {
             </Paper>
           )}
 
+          {/* Navigation links */}
           <Button
             component={Link} to="/products"
             onClick={() => setMobileOpen(false)}
             fullWidth
-            sx={{ justifyContent: 'flex-start', color: 'text.primary', fontSize: '0.85rem', fontWeight: 700, letterSpacing: '0.06em' }}
-          >
-            TOUS LES PRODUITS
-          </Button>
-          <Button
-            component={Link} to="/products?filter[is_on_sale]=1"
-            onClick={() => setMobileOpen(false)}
-            fullWidth
             sx={{
               justifyContent: 'flex-start',
-              color: '#D97A50',
-              fontSize: '0.85rem',
-              fontWeight: 700,
+              color: '#E8ECF2',
+              fontSize: '0.84rem',
+              fontWeight: 600,
               letterSpacing: '0.06em',
-              borderRadius: '6px',
-              border: location.search.includes('is_on_sale') ? '2px solid #D97A50' : '1px solid rgba(217,122,80,0.25)',
-              backgroundColor: location.search.includes('is_on_sale') ? 'rgba(217,122,80,0.2)' : 'rgba(217,122,80,0.05)',
-              animation: location.search.includes('is_on_sale') ? 'none' : 'promo-glow 2.5s ease-in-out infinite',
-              textShadow: '0 0 8px rgba(217,122,80,0.3)',
-              boxShadow: location.search.includes('is_on_sale') ? '0 0 12px rgba(217,122,80,0.3)' : 'none',
-              mb: 0.5,
+              py: 1,
+              borderRadius: '8px',
+              '&:hover': { backgroundColor: 'rgba(255,255,255,0.04)' },
             }}
           >
-            {location.search.includes('is_on_sale') ? '● PROMOS' : 'PROMOS'}
+            Catalogue
           </Button>
-          <Button
-            component={Link} to="/products?filter[is_new]=1"
-            onClick={() => setMobileOpen(false)}
-            fullWidth
-            sx={{
-              justifyContent: 'flex-start',
-              color: '#2EAD5F',
-              fontSize: '0.85rem',
-              fontWeight: 700,
-              letterSpacing: '0.06em',
-              borderRadius: '6px',
-              border: location.search.includes('is_new') ? '2px solid #2EAD5F' : '1px solid rgba(46,173,95,0.25)',
-              backgroundColor: location.search.includes('is_new') ? 'rgba(46,173,95,0.2)' : 'rgba(46,173,95,0.05)',
-              animation: location.search.includes('is_new') ? 'none' : 'nouveaute-glow 2.5s ease-in-out infinite',
-              textShadow: '0 0 8px rgba(46,173,95,0.3)',
-              boxShadow: location.search.includes('is_new') ? '0 0 12px rgba(46,173,95,0.3)' : 'none',
-              mb: 0.5,
-            }}
-          >
-            {location.search.includes('is_new') ? '● NOUVEAUTÉS' : 'NOUVEAUTÉS'}
-          </Button>
-          <Divider sx={{ borderColor: 'divider', my: 0.5 }} />
-          <Typography sx={{ fontSize: '0.68rem', color: 'text.secondary', letterSpacing: '0.1em', fontWeight: 700, px: 1, pb: 0.5, textTransform: 'uppercase' }}>
+
+          {/* Promo + Nouveautés row */}
+          <Box sx={{ display: 'flex', gap: 1, mb: 0.5 }}>
+            <Button
+              component={Link}
+              to="/products?filter[is_on_sale]=1"
+              onClick={() => setMobileOpen(false)}
+              startIcon={<LocalOfferIcon sx={{ fontSize: '0.85rem !important' }} />}
+              sx={{
+                flex: 1,
+                color: isPromoActive ? '#fff' : '#D97A50',
+                fontSize: '0.75rem',
+                fontWeight: 700,
+                letterSpacing: '0.06em',
+                borderRadius: '10px',
+                border: '1px solid',
+                borderColor: isPromoActive ? '#D97A50' : 'rgba(217,122,80,0.25)',
+                backgroundColor: isPromoActive ? 'rgba(217,122,80,0.2)' : 'rgba(217,122,80,0.04)',
+                py: 0.8,
+                '&:hover': { backgroundColor: 'rgba(217,122,80,0.12)' },
+              }}
+            >
+              Promos
+            </Button>
+            <Button
+              component={Link}
+              to="/products?filter[is_new]=1"
+              onClick={() => setMobileOpen(false)}
+              startIcon={<FiberNewIcon sx={{ fontSize: '0.95rem !important' }} />}
+              sx={{
+                flex: 1,
+                color: isNewActive ? '#fff' : '#2EAD5F',
+                fontSize: '0.75rem',
+                fontWeight: 700,
+                letterSpacing: '0.06em',
+                borderRadius: '10px',
+                border: '1px solid',
+                borderColor: isNewActive ? '#2EAD5F' : 'rgba(46,173,95,0.25)',
+                backgroundColor: isNewActive ? 'rgba(46,173,95,0.2)' : 'rgba(46,173,95,0.04)',
+                py: 0.8,
+                '&:hover': { backgroundColor: 'rgba(46,173,95,0.12)' },
+              }}
+            >
+              Nouveautés
+            </Button>
+          </Box>
+
+          <Box sx={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent)', my: 0.5 }} />
+
+          <Typography sx={{ fontSize: '0.62rem', color: '#8A919D', letterSpacing: '0.15em', fontWeight: 700, px: 1, pt: 0.5, pb: 0.5, textTransform: 'uppercase' }}>
             Catégories
           </Typography>
           {categories.map((cat) => (
@@ -668,7 +725,16 @@ export function Navbar() {
               to={`/products?filter[category_id]=${cat.id}`}
               onClick={() => setMobileOpen(false)}
               fullWidth
-              sx={{ justifyContent: 'flex-start', color: 'text.secondary', fontSize: '0.82rem', fontWeight: 500, pl: 2 }}
+              sx={{
+                justifyContent: 'flex-start',
+                color: '#B0B8C4',
+                fontSize: '0.82rem',
+                fontWeight: 500,
+                pl: 2,
+                borderRadius: '6px',
+                transition: 'all 0.2s',
+                '&:hover': { color: '#00C2FF', backgroundColor: 'rgba(0,194,255,0.04)' },
+              }}
             >
               {cat.name}
             </Button>
@@ -681,4 +747,3 @@ export function Navbar() {
     </>
   );
 }
-
