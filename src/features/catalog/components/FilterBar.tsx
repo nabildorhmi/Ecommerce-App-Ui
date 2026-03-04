@@ -117,12 +117,12 @@ export function FilterBar({ isMobileOpen }: FilterBarProps = {}) {
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <TuneIcon sx={{ fontSize: '1.2rem', color: '#00C2FF' }} />
-          <Typography sx={{ fontWeight: 800, fontSize: '0.85rem', letterSpacing: '0.15em', color: '#F5F7FA', textTransform: 'uppercase', fontFamily: '"Orbitron", sans-serif' }}>
+          <Typography sx={{ fontWeight: 800, fontSize: '0.85rem', letterSpacing: '0.15em', color: '#E8ECF2', textTransform: 'uppercase', fontFamily: '"Orbitron", sans-serif' }}>
             Filtres
           </Typography>
           {activeFilterCount > 0 && (
             <Box sx={{
-              bgcolor: '#00C2FF', color: '#0B0B0E',
+              bgcolor: '#00C2FF', color: '#0c0c14',
               borderRadius: '50%', width: 20, height: 20,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               fontSize: '0.65rem', fontWeight: 800,
@@ -137,10 +137,10 @@ export function FilterBar({ isMobileOpen }: FilterBarProps = {}) {
             onClick={handleClear}
             sx={{
               fontSize: '0.65rem',
-              color: '#E63946',
+              color: '#C7404D',
               minWidth: 'auto',
               p: '2px 6px',
-              '&:hover': { backgroundColor: 'rgba(230,57,70,0.08)' },
+              '&:hover': { backgroundColor: 'rgba(199,64,77,0.08)' },
             }}
           >
             {"Effacer"}
@@ -174,7 +174,7 @@ export function FilterBar({ isMobileOpen }: FilterBarProps = {}) {
                 '&:hover fieldset': { borderColor: 'rgba(0,194,255,0.2)' },
                 '&.Mui-focused fieldset': { borderColor: '#00C2FF' },
               },
-              '& input': { fontSize: '0.82rem', color: '#F5F7FA' },
+              '& input': { fontSize: '0.82rem', color: '#E8ECF2' },
             }}
           />
         </Box>
@@ -191,7 +191,7 @@ export function FilterBar({ isMobileOpen }: FilterBarProps = {}) {
               displayEmpty
               sx={{
                 fontSize: '0.82rem',
-                color: '#F5F7FA',
+                color: '#E8ECF2',
                 bgcolor: 'rgba(255,255,255,0.02)',
                 '& .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(255,255,255,0.05)' },
                 '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(0,194,255,0.2)' },
@@ -231,7 +231,7 @@ export function FilterBar({ isMobileOpen }: FilterBarProps = {}) {
                   '&:hover fieldset': { borderColor: 'rgba(0,194,255,0.2)' },
                   '&.Mui-focused fieldset': { borderColor: '#00C2FF' },
                 },
-                '& input': { fontSize: '0.82rem', color: '#F5F7FA' },
+                '& input': { fontSize: '0.82rem', color: '#E8ECF2' },
               }}
             />
             <TextField
@@ -248,7 +248,7 @@ export function FilterBar({ isMobileOpen }: FilterBarProps = {}) {
                   '&:hover fieldset': { borderColor: 'rgba(0,194,255,0.2)' },
                   '&.Mui-focused fieldset': { borderColor: '#00C2FF' },
                 },
-                '& input': { fontSize: '0.82rem', color: '#F5F7FA' },
+                '& input': { fontSize: '0.82rem', color: '#E8ECF2' },
               }}
             />
           </Stack>
@@ -270,7 +270,7 @@ export function FilterBar({ isMobileOpen }: FilterBarProps = {}) {
             />
           }
           label={
-            <Typography sx={{ fontSize: '0.78rem', color: '#F5F7FA', fontWeight: 600 }}>
+            <Typography sx={{ fontSize: '0.78rem', color: '#E8ECF2', fontWeight: 600 }}>
               {"En stock uniquement"}
             </Typography>
           }
@@ -285,13 +285,13 @@ export function FilterBar({ isMobileOpen }: FilterBarProps = {}) {
               onChange={(e) => setFilter('filter[is_on_sale]', e.target.checked ? '1' : '')}
               size="small"
               sx={{
-                '& .MuiSwitch-switchBase.Mui-checked': { color: '#E63946' },
-                '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': { backgroundColor: '#E63946' },
+                '& .MuiSwitch-switchBase.Mui-checked': { color: '#C7404D' },
+                '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': { backgroundColor: '#C7404D' },
               }}
             />
           }
           label={
-            <Typography sx={{ fontSize: '0.78rem', color: '#F5F7FA', fontWeight: 600 }}>
+            <Typography sx={{ fontSize: '0.78rem', color: '#E8ECF2', fontWeight: 600 }}>
               {"Promotions"}
             </Typography>
           }
@@ -306,13 +306,13 @@ export function FilterBar({ isMobileOpen }: FilterBarProps = {}) {
               onChange={(e) => setFilter('filter[is_new]', e.target.checked ? '1' : '')}
               size="small"
               sx={{
-                '& .MuiSwitch-switchBase.Mui-checked': { color: '#00C853' },
-                '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': { backgroundColor: '#00C853' },
+                '& .MuiSwitch-switchBase.Mui-checked': { color: '#2EAD5F' },
+                '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': { backgroundColor: '#2EAD5F' },
               }}
             />
           }
           label={
-            <Typography sx={{ fontSize: '0.78rem', color: '#F5F7FA', fontWeight: 600 }}>
+            <Typography sx={{ fontSize: '0.78rem', color: '#E8ECF2', fontWeight: 600 }}>
               {"Nouveautés"}
             </Typography>
           }

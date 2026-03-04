@@ -39,7 +39,7 @@ export function Footer() {
     <Box
       component="footer"
       sx={{
-        backgroundColor: '#0B0B0E',
+        backgroundColor: '#0c0c14',
         mt: 'auto',
         pt: 0,
         pb: 3,
@@ -56,7 +56,7 @@ export function Footer() {
       }}
     >
       {/* Gradient top border */}
-      <Box sx={{ height: 1, background: 'linear-gradient(90deg, transparent 0%, #E63946 20%, #00C2FF 50%, #0099CC 80%, transparent 100%)', mb: 0, position: 'relative', zIndex: 1, boxShadow: '0 0 12px rgba(0,194,255,0.3)' }} />
+      <Box sx={{ height: 1, background: 'linear-gradient(90deg, transparent 0%, #C7404D 20%, #00C2FF 50%, #0099CC 80%, transparent 100%)', mb: 0, position: 'relative', zIndex: 1, boxShadow: '0 0 12px rgba(0,194,255,0.3)' }} />
 
       {/* Trust badges strip */}
       <Box sx={{ borderBottom: '1px solid rgba(255,255,255,0.05)', py: 3, position: 'relative', zIndex: 1, mb: 5 }}>
@@ -66,9 +66,9 @@ export function Footer() {
               <Box key={label} className="mirai-trust-badge" sx={{ flexDirection: 'column', alignItems: 'flex-start', gap: 0.5, cursor: 'default' }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 0.5 }}>
                   {icon}
-                  <Typography sx={{ fontSize: '0.78rem', fontWeight: 700, color: '#F5F7FA', letterSpacing: '0.02em' }}>{label}</Typography>
+                  <Typography sx={{ fontSize: '0.78rem', fontWeight: 700, color: '#E8ECF2', letterSpacing: '0.02em' }}>{label}</Typography>
                 </Box>
-                <Typography sx={{ fontSize: '0.68rem', color: '#9CA3AF', ml: 0.5 }}>{sub}</Typography>
+                <Typography sx={{ fontSize: '0.68rem', color: '#8A919D', ml: 0.5 }}>{sub}</Typography>
               </Box>
             ))}
           </Box>
@@ -87,12 +87,12 @@ export function Footer() {
                 sx={{ height: 35, width: 'auto' }}
               />
             </Box>
-            <Typography variant="body2" sx={{ color: '#9CA3AF', lineHeight: 1.8, maxWidth: 300, mb: 2 }}>
+            <Typography variant="body2" sx={{ color: '#8A919D', lineHeight: 1.8, maxWidth: 300, mb: 2 }}>
               500+ clients satisfaits au Maroc. Trottinettes électriques premium avec garantie 2 ans et SAV local.
             </Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
-              <LocationOnIcon sx={{ fontSize: '0.9rem', color: '#9CA3AF' }} />
-              <Typography variant="body2" sx={{ color: '#9CA3AF', fontSize: '0.82rem', lineHeight: 1.7, maxWidth: 300 }}>
+              <LocationOnIcon sx={{ fontSize: '0.9rem', color: '#8A919D' }} />
+              <Typography variant="body2" sx={{ color: '#8A919D', fontSize: '0.82rem', lineHeight: 1.7, maxWidth: 300 }}>
                 123 Bd Mohammed V, Casablanca, Maroc
               </Typography>
             </Box>
@@ -108,7 +108,7 @@ export function Footer() {
                   sx={{
                     width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center',
                     borderRadius: '8px', border: '1px solid rgba(255,255,255,0.08)',
-                    color: '#9CA3AF',
+                    color: '#8A919D',
                     textDecoration: 'none', transition: 'all 0.3s ease',
                     '&:hover': { borderColor: 'rgba(0,194,255,0.4)', color: '#00C2FF', background: 'rgba(0,194,255,0.06)', boxShadow: '0 0 12px rgba(0,194,255,0.15)' },
                   }}
@@ -138,11 +138,11 @@ export function Footer() {
               Produits
             </Typography>
             <Stack spacing={1.25}>
-              <Box component={Link} to="/products" sx={{ fontSize: '0.82rem', color: '#9CA3AF', textDecoration: 'none', transition: 'all 0.25s ease', '&:hover': { color: '#00C2FF', transform: 'translateX(4px)', display: 'inline-block' } }}>
+              <Box component={Link} to="/products" sx={{ fontSize: '0.82rem', color: '#8A919D', textDecoration: 'none', transition: 'all 0.25s ease', '&:hover': { color: '#00C2FF', transform: 'translateX(4px)', display: 'inline-block' } }}>
                 Tous les produits
               </Box>
               {categories.map((cat) => (
-                <Box key={cat.id} component={Link} to={`/products?filter[category_id]=${cat.id}`} sx={{ fontSize: '0.82rem', color: '#9CA3AF', textDecoration: 'none', transition: 'all 0.25s ease', '&:hover': { color: '#00C2FF', transform: 'translateX(4px)', display: 'inline-block' } }}>
+                <Box key={cat.id} component={Link} to={`/products?filter[category_id]=${cat.id}`} sx={{ fontSize: '0.82rem', color: '#8A919D', textDecoration: 'none', transition: 'all 0.25s ease', '&:hover': { color: '#00C2FF', transform: 'translateX(4px)', display: 'inline-block' } }}>
                   {cat.name}
                 </Box>
               ))}
@@ -161,7 +161,7 @@ export function Footer() {
                 { to: '/cgv', label: 'CGV' },
                 { to: '/mentions-legales', label: 'Mentions légales' },
               ].map(({ to, label }) => (
-                <Box key={to} component={Link} to={to} sx={{ fontSize: '0.82rem', color: '#9CA3AF', textDecoration: 'none', transition: 'all 0.25s ease', '&:hover': { color: '#00C2FF', transform: 'translateX(4px)', display: 'inline-block' } }}>
+                <Box key={to} component={Link} to={to} sx={{ fontSize: '0.82rem', color: '#8A919D', textDecoration: 'none', transition: 'all 0.25s ease', '&:hover': { color: '#00C2FF', transform: 'translateX(4px)', display: 'inline-block' } }}>
                   {label}
                 </Box>
               ))}
@@ -175,20 +175,20 @@ export function Footer() {
             </Typography>
             <Stack spacing={1.25}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <PhoneIcon sx={{ fontSize: '0.9rem', color: '#9CA3AF' }} />
-                <Typography sx={{ fontSize: '0.82rem', color: '#9CA3AF', lineHeight: 1.6 }}>
+                <PhoneIcon sx={{ fontSize: '0.9rem', color: '#8A919D' }} />
+                <Typography sx={{ fontSize: '0.82rem', color: '#8A919D', lineHeight: 1.6 }}>
                   +212 6XX XXX XXX
                 </Typography>
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <EmailIcon sx={{ fontSize: '0.9rem', color: '#9CA3AF' }} />
-                <Typography sx={{ fontSize: '0.82rem', color: '#9CA3AF', lineHeight: 1.6 }}>
+                <EmailIcon sx={{ fontSize: '0.9rem', color: '#8A919D' }} />
+                <Typography sx={{ fontSize: '0.82rem', color: '#8A919D', lineHeight: 1.6 }}>
                   contact@miraitech.ma
                 </Typography>
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <ScheduleIcon sx={{ fontSize: '0.9rem', color: '#9CA3AF' }} />
-                <Typography sx={{ fontSize: '0.82rem', color: '#9CA3AF', lineHeight: 1.6 }}>
+                <ScheduleIcon sx={{ fontSize: '0.9rem', color: '#8A919D' }} />
+                <Typography sx={{ fontSize: '0.82rem', color: '#8A919D', lineHeight: 1.6 }}>
                   Lun-Sam: 9h – 18h
                 </Typography>
               </Box>

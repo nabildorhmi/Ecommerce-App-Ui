@@ -58,7 +58,7 @@ function SectionHeader({ subLabel, title, linkText, linkTo, onPrev, onNext }: Se
           sx={{
             fontWeight: 800,
             fontSize: { xs: '1.6rem', md: '2.2rem' },
-            color: '#F5F7FA',
+            color: '#E8ECF2',
             letterSpacing: '0.02em',
             lineHeight: 1,
             textTransform: 'uppercase',
@@ -79,7 +79,7 @@ function SectionHeader({ subLabel, title, linkText, linkTo, onPrev, onNext }: Se
               fontSize: '0.85rem',
               fontWeight: 600,
               textTransform: 'none',
-              '&:hover': { background: 'transparent', color: '#F5F7FA' },
+              '&:hover': { background: 'transparent', color: '#E8ECF2' },
               p: 0,
               minWidth: 'auto',
               display: { xs: 'none', sm: 'inline-flex' }
@@ -114,13 +114,13 @@ function CategoriesStrip() {
 
   return (
     <Box component="section" sx={{
-      bgcolor: '#0B0B0E',
+      bgcolor: '#0c0c14',
       borderBottom: '1px solid rgba(255,255,255,0.05)',
       background: 'linear-gradient(to right, rgba(0,194,255,0.02), transparent 30%, transparent 70%, rgba(0,194,255,0.02))',
     }}>
       <Container maxWidth="xl">
         <Box sx={{ py: 2, display: 'flex', alignItems: 'center', gap: 1.5, overflowX: 'auto', scrollbarWidth: 'none', '&::-webkit-scrollbar': { display: 'none' } }}>
-          <Typography sx={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.14em', color: '#9CA3AF', textTransform: 'uppercase', whiteSpace: 'nowrap', mr: 2, flexShrink: 0, fontFamily: '"Orbitron", sans-serif' }}>
+          <Typography sx={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.14em', color: '#8A919D', textTransform: 'uppercase', whiteSpace: 'nowrap', mr: 2, flexShrink: 0, fontFamily: '"Orbitron", sans-serif' }}>
             NOS MODÈLES
           </Typography>
           <Box sx={{ width: 1, height: 24, bgcolor: 'rgba(255,255,255,0.1)', flexShrink: 0, mr: 1 }} />
@@ -135,7 +135,7 @@ function CategoriesStrip() {
               clickable
               sx={{
                 fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.06em',
-                color: '#9CA3AF', backgroundColor: 'transparent',
+                color: '#8A919D', backgroundColor: 'transparent',
                 border: '1px solid rgba(255,255,255,0.08)',
                 borderRadius: '20px', px: 1, height: 34, flexShrink: 0,
                 transition: 'all 0.3s ease',
@@ -178,7 +178,7 @@ function ProductCarouselSection({ subLabel, title, linkTo, products, isLoading }
 
   return (
     <AnimatedSection>
-      <Box component="section" sx={{ bgcolor: '#0B0B0E', pt: { xs: 4, md: 6 }, pb: 4 }}>
+      <Box component="section" sx={{ bgcolor: '#0c0c14', pt: { xs: 4, md: 6 }, pb: 4 }}>
         <Container maxWidth="xl">
           <SectionHeader
             subLabel={subLabel}
@@ -295,21 +295,21 @@ function CountdownBox({ value, label }: { value: number; label: string }) {
   return (
     <Box sx={{ textAlign: 'center', minWidth: 52 }}>
       <Box sx={{
-        bgcolor: 'rgba(230,57,70,0.12)',
-        border: '1px solid rgba(230,57,70,0.25)',
+        bgcolor: 'rgba(199,64,77,0.12)',
+        border: '1px solid rgba(199,64,77,0.25)',
         borderRadius: '10px',
         px: 1.5, py: 0.75,
         mb: 0.5,
       }}>
         <Typography sx={{
           fontFamily: '"Orbitron", sans-serif',
-          fontWeight: 800, fontSize: '1.2rem', color: '#F5F7FA',
+          fontWeight: 800, fontSize: '1.2rem', color: '#E8ECF2',
           lineHeight: 1,
         }}>
           {String(value).padStart(2, '0')}
         </Typography>
       </Box>
-      <Typography sx={{ fontSize: '0.6rem', color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+      <Typography sx={{ fontSize: '0.6rem', color: '#8A919D', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
         {label}
       </Typography>
     </Box>
@@ -321,7 +321,7 @@ function PromoSection() {
 
   return (
     <AnimatedSection>
-      <Box component="section" sx={{ bgcolor: '#0B0B0E', pt: 4, pb: 8 }}>
+      <Box component="section" sx={{ bgcolor: '#0c0c14', pt: 4, pb: 8 }}>
         <Container maxWidth="lg">
           <Box
             sx={{
@@ -332,20 +332,20 @@ function PromoSection() {
               gap: 4,
               p: { xs: 4, md: 6 },
               borderRadius: '16px',
-              border: '1px solid rgba(255,107,53,0.15)',
+              border: '1px solid rgba(217,122,80,0.15)',
               background: 'linear-gradient(135deg, rgba(16,16,20,0.8) 0%, rgba(20,10,12,0.9) 100%)',
-              boxShadow: '0 20px 40px rgba(230,57,70,0.05)',
+              boxShadow: '0 20px 40px rgba(199,64,77,0.05)',
               position: 'relative',
               overflow: 'hidden',
             }}
           >
             {/* Subtle red glow blob */}
-            <Box sx={{ position: 'absolute', right: -100, top: -100, width: 300, height: 300, background: 'radial-gradient(circle, rgba(230,57,70,0.15) 0%, transparent 70%)', borderRadius: '50%', pointerEvents: 'none' }} />
+            <Box sx={{ position: 'absolute', right: -100, top: -100, width: 300, height: 300, background: 'radial-gradient(circle, rgba(199,64,77,0.15) 0%, transparent 70%)', borderRadius: '50%', pointerEvents: 'none' }} />
 
             <Box sx={{ flex: 1, zIndex: 1 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
-                <AccessTimeIcon sx={{ fontSize: '1rem', color: '#E63946' }} />
-                <Typography sx={{ fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.15em', color: '#E63946', textTransform: 'uppercase' }}>
+                <AccessTimeIcon sx={{ fontSize: '1rem', color: '#C7404D' }} />
+                <Typography sx={{ fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.15em', color: '#C7404D', textTransform: 'uppercase' }}>
                   OFFRE LIMITÉE
                 </Typography>
               </Box>
@@ -355,7 +355,7 @@ function PromoSection() {
                   fontSize: { xs: '2.5rem', md: '3.5rem' },
                   lineHeight: 1,
                   mb: 2,
-                  color: '#F5F7FA',
+                  color: '#E8ECF2',
                   fontFamily: '"Orbitron", sans-serif',
                   textTransform: 'uppercase',
                 }}
@@ -364,18 +364,18 @@ function PromoSection() {
                   -<CountUp end={30} duration={2} />%
                 </Box>
               </Typography>
-              <Typography sx={{ fontSize: '0.95rem', color: '#9CA3AF', maxWidth: 450, lineHeight: 1.6, mb: 3 }}>
+              <Typography sx={{ fontSize: '0.95rem', color: '#8A919D', maxWidth: 450, lineHeight: 1.6, mb: 3 }}>
                 Ne manquez pas ces prix exceptionnels sur nos trottinettes les plus populaires. Une fois le stock écoulé, les prix remontent.
               </Typography>
 
               {/* Countdown timer */}
               <Box sx={{ display: 'flex', gap: 1, mb: { xs: 2, md: 0 } }}>
                 <CountdownBox value={countdown.days} label="Jours" />
-                <Typography sx={{ color: '#E63946', fontWeight: 700, fontSize: '1.2rem', alignSelf: 'flex-start', mt: 1 }}>:</Typography>
+                <Typography sx={{ color: '#C7404D', fontWeight: 700, fontSize: '1.2rem', alignSelf: 'flex-start', mt: 1 }}>:</Typography>
                 <CountdownBox value={countdown.hours} label="Heures" />
-                <Typography sx={{ color: '#E63946', fontWeight: 700, fontSize: '1.2rem', alignSelf: 'flex-start', mt: 1 }}>:</Typography>
+                <Typography sx={{ color: '#C7404D', fontWeight: 700, fontSize: '1.2rem', alignSelf: 'flex-start', mt: 1 }}>:</Typography>
                 <CountdownBox value={countdown.minutes} label="Min" />
-                <Typography sx={{ color: '#E63946', fontWeight: 700, fontSize: '1.2rem', alignSelf: 'flex-start', mt: 1 }}>:</Typography>
+                <Typography sx={{ color: '#C7404D', fontWeight: 700, fontSize: '1.2rem', alignSelf: 'flex-start', mt: 1 }}>:</Typography>
                 <CountdownBox value={countdown.seconds} label="Sec" />
               </Box>
             </Box>
@@ -388,13 +388,13 @@ function PromoSection() {
                 endIcon={<ArrowForwardIcon />}
                 sx={{
                   px: 4, py: 1.75, fontSize: '0.9rem',
-                  background: 'linear-gradient(135deg, #E63946 0%, #C62828 100%)',
+                  background: 'linear-gradient(135deg, #C7404D 0%, #C62828 100%)',
                   color: '#fff', fontWeight: 800,
-                  boxShadow: '0 8px 24px rgba(230,57,70,0.4)',
+                  boxShadow: '0 8px 24px rgba(199,64,77,0.4)',
                   '&:hover': {
-                    background: 'linear-gradient(135deg, #FF4D5A 0%, #E63946 100%)',
+                    background: 'linear-gradient(135deg, #FF4D5A 0%, #C7404D 100%)',
                     transform: 'translateY(-2px)',
-                    boxShadow: '0 12px 32px rgba(230,57,70,0.5)',
+                    boxShadow: '0 12px 32px rgba(199,64,77,0.5)',
                   }
                 }}
               >
@@ -415,7 +415,7 @@ function FooterCTA() {
   return (
     <AnimatedSection>
       <Box component="section" sx={{
-        bgcolor: '#0B0B0E', pt: { xs: 8, md: 12 }, pb: { xs: 8, md: 12 },
+        bgcolor: '#0c0c14', pt: { xs: 8, md: 12 }, pb: { xs: 8, md: 12 },
         textAlign: 'center', position: 'relative', overflow: 'hidden',
       }}>
         {/* Dot grid pattern */}
@@ -435,7 +435,7 @@ function FooterCTA() {
             sx={{
               fontWeight: 800,
               fontSize: { xs: '2rem', md: '3.5rem' },
-              color: '#F5F7FA',
+              color: '#E8ECF2',
               letterSpacing: '0.02em',
               lineHeight: 1.1,
               mb: 3,
@@ -443,12 +443,12 @@ function FooterCTA() {
               fontFamily: '"Orbitron", sans-serif'
             }}
           >
-            REJOIGNEZ <Box component="span" sx={{ color: '#00C2FF', textShadow: '0 0 30px rgba(0,194,255,0.4)' }}>500+ PROPRIÉTAIRES</Box>
+            REJOIGNEZ <Box component="span" sx={{ color: '#00C2FF', textShadow: '0 0 16px rgba(0,194,255,0.2)' }}>500+ PROPRIÉTAIRES</Box>
           </Typography>
-          <Typography sx={{ fontSize: '1rem', color: '#9CA3AF', maxWidth: 600, mx: 'auto', mb: 2, lineHeight: 1.6 }}>
+          <Typography sx={{ fontSize: '1rem', color: '#8A919D', maxWidth: 600, mx: 'auto', mb: 2, lineHeight: 1.6 }}>
             Garantie 2 ans, livraison express, retour 30 jours. Zéro risque, que du plaisir.
           </Typography>
-          <Typography sx={{ fontSize: '0.78rem', color: '#F0B429', fontWeight: 600, mb: 5 }}>
+          <Typography sx={{ fontSize: '0.78rem', color: '#D4A43A', fontWeight: 600, mb: 5 }}>
             Livraison gratuite dès 2000 MAD — Offre en cours
           </Typography>
           <motion.div
@@ -464,7 +464,7 @@ function FooterCTA() {
               sx={{
                 px: 5, py: 1.75, fontSize: '0.95rem',
                 background: 'linear-gradient(135deg, #00C2FF 0%, #0099CC 100%)',
-                color: '#0B0B0E', fontWeight: 800,
+                color: '#0c0c14', fontWeight: 800,
                 boxShadow: '0 8px 24px rgba(0,194,255,0.4)',
                 animation: 'pulse-glow 3s ease-in-out infinite',
                 '&:hover': {
@@ -488,7 +488,7 @@ function FooterCTA() {
    ════════════════════════════════════════════════════════════════════ */
 export function HomePage() {
   return (
-    <Box sx={{ bgcolor: '#0B0B0E', minHeight: '100vh' }}>
+    <Box sx={{ bgcolor: '#0c0c14', minHeight: '100vh' }}>
       <HeroSection />
       <CategoriesStrip />
       <TrustBadgesSection />

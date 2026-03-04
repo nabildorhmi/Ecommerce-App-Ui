@@ -17,7 +17,7 @@ export function PageLoader() {
         minHeight: '100vh',
         gap: 3,
         position: 'relative',
-        bgcolor: '#0B0B0E',
+        bgcolor: '#0c0c14',
       }}
     >
       {/* Glow ring backdrop */}

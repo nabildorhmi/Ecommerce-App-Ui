@@ -53,7 +53,7 @@ const TESTIMONIALS = [
     },
 ];
 
-const AVATAR_COLORS = ['#00C2FF', '#F0B429', '#00C853', '#FF6B35', '#9B59B6', '#E63946'];
+const AVATAR_COLORS = ['#00C2FF', '#D4A43A', '#2EAD5F', '#D97A50', '#9B59B6', '#C7404D'];
 
 function StarRating({ rating }: { rating: number }) {
     return (
@@ -63,7 +63,7 @@ function StarRating({ rating }: { rating: number }) {
                     key={i}
                     sx={{
                         fontSize: '1rem',
-                        color: i < rating ? '#F0B429' : 'rgba(255,255,255,0.12)',
+                        color: i < rating ? '#D4A43A' : 'rgba(255,255,255,0.12)',
                     }}
                 />
             ))}
@@ -79,7 +79,7 @@ export function TestimonialsSection() {
             <Box
                 component="section"
                 sx={{
-                    bgcolor: '#0B0B0E',
+                    bgcolor: '#0c0c14',
                     py: { xs: 6, md: 10 },
                 }}
             >
@@ -95,21 +95,21 @@ export function TestimonialsSection() {
                         >
                             TÉMOIGNAGES CLIENTS
                         </Typography>
-                        <Typography sx={{ fontWeight: 800, fontSize: { xs: '1.8rem', md: '2.4rem' }, color: '#F5F7FA', textTransform: 'uppercase', fontFamily: '"Orbitron", sans-serif', mb: 2 }}>
+                        <Typography sx={{ fontWeight: 800, fontSize: { xs: '1.8rem', md: '2.4rem' }, color: '#E8ECF2', textTransform: 'uppercase', fontFamily: '"Orbitron", sans-serif', mb: 2 }}>
                             500+ CLIENTS SATISFAITS
                         </Typography>
                         {/* Aggregate rating */}
                         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1, mb: 1 }}>
                             <Box sx={{ display: 'flex', gap: 0.3 }}>
                                 {Array.from({ length: 5 }).map((_, i) => (
-                                    <StarIcon key={i} sx={{ fontSize: '1.2rem', color: '#F0B429' }} />
+                                    <StarIcon key={i} sx={{ fontSize: '1.2rem', color: '#D4A43A' }} />
                                 ))}
                             </Box>
-                            <Typography sx={{ fontSize: '1rem', fontWeight: 800, color: '#F0B429', fontFamily: '"Orbitron", sans-serif' }}>
+                            <Typography sx={{ fontSize: '1rem', fontWeight: 800, color: '#D4A43A', fontFamily: '"Orbitron", sans-serif' }}>
                                 4.8/5
                             </Typography>
                         </Box>
-                        <Typography sx={{ fontSize: '0.82rem', color: '#9CA3AF' }}>
+                        <Typography sx={{ fontSize: '0.82rem', color: '#8A919D' }}>
                             Basé sur 500+ avis vérifiés à travers le Maroc
                         </Typography>
                     </Box>
@@ -156,12 +156,12 @@ export function TestimonialsSection() {
                                 >
                                     <StarRating rating={rating} />
 
-                                    <Typography sx={{ fontSize: '0.92rem', color: '#F5F7FA', lineHeight: 1.6, mb: 3, flexGrow: 1 }}>
+                                    <Typography sx={{ fontSize: '0.92rem', color: '#E8ECF2', lineHeight: 1.6, mb: 3, flexGrow: 1 }}>
                                         {text}
                                     </Typography>
 
                                     {/* Purchase reference */}
-                                    <Typography sx={{ fontSize: '0.7rem', color: '#9CA3AF', mb: 2, fontStyle: 'italic' }}>
+                                    <Typography sx={{ fontSize: '0.7rem', color: '#8A919D', mb: 2, fontStyle: 'italic' }}>
                                         A acheté : {product}
                                     </Typography>
 
@@ -187,12 +187,12 @@ export function TestimonialsSection() {
                                         </Box>
                                         <Box>
                                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                                                <Typography sx={{ fontSize: '0.9rem', fontWeight: 700, color: '#F5F7FA', fontFamily: '"Orbitron", sans-serif' }}>
+                                                <Typography sx={{ fontSize: '0.9rem', fontWeight: 700, color: '#E8ECF2', fontFamily: '"Orbitron", sans-serif' }}>
                                                     {name}
                                                 </Typography>
                                                 <VerifiedIcon sx={{ fontSize: '0.85rem', color: '#00C2FF' }} />
                                             </Box>
-                                            <Typography sx={{ fontSize: '0.75rem', color: '#9CA3AF' }}>{city}</Typography>
+                                            <Typography sx={{ fontSize: '0.75rem', color: '#8A919D' }}>{city}</Typography>
                                         </Box>
                                     </Box>
                                 </Box>

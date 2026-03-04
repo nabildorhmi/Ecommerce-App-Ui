@@ -34,7 +34,7 @@ export function HeroSection() {
                 position: 'relative',
                 width: '100%',
                 minHeight: { xs: '85vh', md: '88vh' },
-                bgcolor: '#0B0B0E',
+                bgcolor: '#0c0c14',
                 overflow: 'hidden',
                 display: 'flex',
                 alignItems: 'center',
@@ -63,8 +63,8 @@ export function HeroSection() {
                             position: 'absolute',
                             inset: 0,
                             background: {
-                                xs: 'linear-gradient(to top, rgba(11,11,14,0.95) 0%, rgba(11,11,14,0.6) 60%, rgba(11,11,14,0.4) 100%)',
-                                md: 'linear-gradient(to right, rgba(11,11,14,1) 0%, rgba(11,11,14,0.65) 30%, rgba(11,11,14,0.15) 70%, rgba(11,11,14,0.4) 100%)',
+                                xs: 'linear-gradient(to top, rgba(12,12,20,0.95) 0%, rgba(12,12,20,0.6) 60%, rgba(12,12,20,0.4) 100%)',
+                                md: 'linear-gradient(to right, rgba(12,12,20,1) 0%, rgba(12,12,20,0.65) 30%, rgba(12,12,20,0.15) 70%, rgba(12,12,20,0.4) 100%)',
                             },
                             zIndex: 1,
                         },
@@ -161,7 +161,7 @@ export function HeroSection() {
                                 lineHeight: 1.05,
                                 letterSpacing: '-0.02em',
                                 textTransform: 'uppercase',
-                                color: '#F5F7FA',
+                                color: '#E8ECF2',
                                 mb: 2.5,
                             }}
                         >
@@ -170,7 +170,7 @@ export function HeroSection() {
                                 component="span"
                                 sx={{
                                     color: CYAN,
-                                    textShadow: `0 0 30px rgba(0,194,255,0.4), 0 0 60px rgba(0,194,255,0.15)`,
+                                    textShadow: `0 0 16px rgba(0,194,255,0.2), 0 0 32px rgba(0,194,255,0.08)`,
                                 }}
                             >
                                 VITE
@@ -181,7 +181,7 @@ export function HeroSection() {
                                 component="span"
                                 sx={{
                                     color: CYAN,
-                                    textShadow: `0 0 30px rgba(0,194,255,0.4), 0 0 60px rgba(0,194,255,0.15)`,
+                                    textShadow: `0 0 16px rgba(0,194,255,0.2), 0 0 32px rgba(0,194,255,0.08)`,
                                 }}
                             >
                                 LIBRE
@@ -225,12 +225,12 @@ export function HeroSection() {
                                 sx={{
                                     px: 3.5, py: 1.5, fontSize: '0.88rem',
                                     background: `linear-gradient(135deg, ${CYAN}, #0099CC)`,
-                                    color: '#0B0B0E', fontWeight: 800,
-                                    boxShadow: `0 8px 28px rgba(0,194,255,0.4), inset 0 1px 0 rgba(255,255,255,0.4)`,
+                                    color: '#0c0c14', fontWeight: 800,
+                                    boxShadow: `0 8px 28px rgba(0,194,255,0.2), inset 0 1px 0 rgba(255,255,255,0.3)`,
                                     '&:hover': {
                                         background: `linear-gradient(135deg, #33CFFF, ${CYAN})`,
                                         transform: 'translateY(-2px)',
-                                        boxShadow: `0 14px 36px rgba(0,194,255,0.55)`,
+                                        boxShadow: `0 14px 36px rgba(0,194,255,0.3)`,
                                     },
                                     transition: 'all 0.3s ease',
                                 }}
@@ -244,11 +244,11 @@ export function HeroSection() {
                                 size="large"
                                 sx={{
                                     px: 3.5, py: 1.5, fontSize: '0.88rem',
-                                    borderColor: 'rgba(255,107,53,0.5)',
-                                    color: '#FF6B35',
+                                    borderColor: 'rgba(217,122,80,0.5)',
+                                    color: '#D97A50',
                                     '&:hover': {
-                                        borderColor: '#FF6B35',
-                                        bgcolor: 'rgba(255,107,53,0.08)',
+                                        borderColor: '#D97A50',
+                                        bgcolor: 'rgba(217,122,80,0.08)',
                                         transform: 'translateY(-2px)',
                                     },
                                     transition: 'all 0.3s ease',
@@ -272,7 +272,7 @@ export function HeroSection() {
                                 'Retour 30 jours',
                             ].map((item) => (
                                 <Box key={item} sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-                                    <Box sx={{ width: 5, height: 5, borderRadius: '50%', bgcolor: '#00C853', boxShadow: '0 0 6px #00C853' }} />
+                                    <Box sx={{ width: 5, height: 5, borderRadius: '50%', bgcolor: '#2EAD5F', boxShadow: '0 0 6px #2EAD5F' }} />
                                     <Typography sx={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.4)', fontWeight: 500, letterSpacing: '0.02em' }}>
                                         {item}
                                     </Typography>
@@ -299,7 +299,7 @@ export function HeroSection() {
                                         sx={{
                                             fontWeight: 900, fontSize: { xs: '1.4rem', md: '1.75rem' },
                                             color: CYAN, lineHeight: 1,
-                                            textShadow: `0 0 20px rgba(0,194,255,0.35)`,
+                                            textShadow: `0 0 12px rgba(0,194,255,0.18)`,
                                             letterSpacing: '-0.02em',
                                             fontFamily: '"Orbitron", sans-serif',
                                         }}

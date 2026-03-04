@@ -190,8 +190,8 @@ export function AdminDashboardPage() {
         {[
           { title: 'Commandes totales', value: data.kpis.total_orders, color: '#00C2FF' },
           { title: "Chiffre d'affaires", value: data.kpis.total_revenue, isCurrency: true, color: '#0099CC' },
-          { title: 'Panier moyen', value: data.kpis.average_order_value, isCurrency: true, color: '#E63946' },
-          { title: 'Nouveaux clients', value: data.kpis.new_customers, color: '#9CA3AF' },
+          { title: 'Panier moyen', value: data.kpis.average_order_value, isCurrency: true, color: '#C7404D' },
+          { title: 'Nouveaux clients', value: data.kpis.new_customers, color: '#8A919D' },
         ].map((kpi, i) => (
           <motion.div
             key={kpi.title}
@@ -288,7 +288,7 @@ export function AdminDashboardPage() {
               <XAxis type="number" />
               <YAxis type="category" dataKey="product_name" width={150} />
               <Tooltip />
-              <Bar dataKey="total_quantity" fill="#E63946" name="Quantité" radius={[0, 4, 4, 0]} />
+              <Bar dataKey="total_quantity" fill="#C7404D" name="Quantité" radius={[0, 4, 4, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </Paper>

@@ -25,13 +25,13 @@ function formatKey(key: string): string {
 // Map common spec keywords to icons
 function getSpecIcon(key: string): React.ReactNode | null {
   const lk = key.toLowerCase();
-  if (lk.includes('power') || lk.includes('motor') || lk.includes('watt')) return <BoltIcon sx={{ fontSize: '0.9rem', color: '#F0B429' }} />;
+  if (lk.includes('power') || lk.includes('motor') || lk.includes('watt')) return <BoltIcon sx={{ fontSize: '0.9rem', color: '#D4A43A' }} />;
   if (lk.includes('speed') || lk.includes('vitesse')) return <SpeedIcon sx={{ fontSize: '0.9rem', color: '#00C2FF' }} />;
-  if (lk.includes('battery') || lk.includes('batterie') || lk.includes('range') || lk.includes('autonomie')) return <BatteryChargingFullIcon sx={{ fontSize: '0.9rem', color: '#00C853' }} />;
-  if (lk.includes('weight') || lk.includes('poids')) return <FitnessCenterIcon sx={{ fontSize: '0.9rem', color: '#9CA3AF' }} />;
-  if (lk.includes('tire') || lk.includes('pneu') || lk.includes('roue')) return <TireRepairIcon sx={{ fontSize: '0.9rem', color: '#FF6B35' }} />;
+  if (lk.includes('battery') || lk.includes('batterie') || lk.includes('range') || lk.includes('autonomie')) return <BatteryChargingFullIcon sx={{ fontSize: '0.9rem', color: '#2EAD5F' }} />;
+  if (lk.includes('weight') || lk.includes('poids')) return <FitnessCenterIcon sx={{ fontSize: '0.9rem', color: '#8A919D' }} />;
+  if (lk.includes('tire') || lk.includes('pneu') || lk.includes('roue')) return <TireRepairIcon sx={{ fontSize: '0.9rem', color: '#D97A50' }} />;
   if (lk.includes('dimension') || lk.includes('taille') || lk.includes('size')) return <StraightenIcon sx={{ fontSize: '0.9rem', color: '#9B59B6' }} />;
-  if (lk.includes('color') || lk.includes('couleur')) return <ColorLensIcon sx={{ fontSize: '0.9rem', color: '#E63946' }} />;
+  if (lk.includes('color') || lk.includes('couleur')) return <ColorLensIcon sx={{ fontSize: '0.9rem', color: '#C7404D' }} />;
   return <SettingsIcon sx={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.2)' }} />;
 }
 
@@ -58,7 +58,7 @@ export function SpecsTable({ attributes }: SpecsTableProps) {
         borderRadius: '16px',
         border: '1px solid rgba(255,255,255,0.07)',
         overflow: 'hidden',
-        background: 'rgba(17,17,22,0.5)',
+        background: 'rgba(19,19,27,0.5)',
         backdropFilter: 'blur(12px)',
       }}
     >

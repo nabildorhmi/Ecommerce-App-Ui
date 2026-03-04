@@ -212,7 +212,7 @@ export function CheckoutPage() {
                   border: step <= 2 ? '1px solid rgba(0,194,255,0.3)' : '1px solid rgba(255,255,255,0.08)',
                   boxShadow: step === 1 ? '0 0 12px rgba(0,194,255,0.3)' : 'none',
                 }}>
-                  <Typography sx={{ fontSize: '0.75rem', fontWeight: 800, color: step === 1 ? '#0B0B0E' : 'text.disabled' }}>{step}</Typography>
+                  <Typography sx={{ fontSize: '0.75rem', fontWeight: 800, color: step === 1 ? '#0c0c14' : 'text.disabled' }}>{step}</Typography>
                 </Box>
                 <Typography sx={{ fontSize: '0.6rem', fontWeight: step === 1 ? 700 : 500, color: step === 1 ? '#00C2FF' : 'text.disabled', letterSpacing: '0.05em', whiteSpace: 'nowrap' }}>{label}</Typography>
               </Box>
@@ -225,8 +225,8 @@ export function CheckoutPage() {
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 3, mb: 3, px: 2, py: 1.5, borderRadius: '12px', background: 'rgba(0,194,255,0.04)', border: '1px solid rgba(0,194,255,0.1)', flexWrap: 'wrap' }}>
           {[
             { icon: <LockOutlinedIcon sx={{ fontSize: '0.9rem', color: '#00C2FF' }} />, label: 'Paiement sécurisé' },
-            { icon: <LocalShippingOutlinedIcon sx={{ fontSize: '0.9rem', color: '#00C853' }} />, label: 'Livraison express' },
-            { icon: <VerifiedUserOutlinedIcon sx={{ fontSize: '0.9rem', color: '#F0B429' }} />, label: 'Garantie 2 ans' },
+            { icon: <LocalShippingOutlinedIcon sx={{ fontSize: '0.9rem', color: '#2EAD5F' }} />, label: 'Livraison express' },
+            { icon: <VerifiedUserOutlinedIcon sx={{ fontSize: '0.9rem', color: '#D4A43A' }} />, label: 'Garantie 2 ans' },
           ].map(({ icon, label }) => (
             <Box key={label} sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
               {icon}
@@ -540,8 +540,8 @@ export function CheckoutPage() {
               {/* Delivery estimate */}
               {user && !editingDelivery && (
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }}>
-                  <LocalShippingOutlinedIcon sx={{ fontSize: '0.85rem', color: '#00C853' }} />
-                  <Typography sx={{ fontSize: '0.72rem', color: '#00C853', fontWeight: 600 }}>
+                  <LocalShippingOutlinedIcon sx={{ fontSize: '0.85rem', color: '#2EAD5F' }} />
+                  <Typography sx={{ fontSize: '0.72rem', color: '#2EAD5F', fontWeight: 600 }}>
                     Livraison estimée sous 2-5 jours ouvrés
                   </Typography>
                 </Box>

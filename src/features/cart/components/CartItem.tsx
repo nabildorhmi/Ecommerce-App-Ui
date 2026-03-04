@@ -113,7 +113,7 @@ export function CartItem({ item }: CartItemProps) {
         size="small"
         onClick={handleRemove}
         aria-label="Supprimer"
-        sx={{ color: 'text.disabled', '&:hover': { color: '#E63946', bgcolor: 'rgba(230,57,70,0.08)' }, flexShrink: 0 }}
+        sx={{ color: 'text.disabled', '&:hover': { color: '#C7404D', bgcolor: 'rgba(199,64,77,0.08)' }, flexShrink: 0 }}
       >
         <DeleteOutlineIcon sx={{ fontSize: '1rem' }} />
       </IconButton>

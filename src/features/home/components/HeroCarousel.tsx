@@ -136,7 +136,7 @@ export function HeroCarousel() {
           mx: 'auto',
           aspectRatio: { xs: '16/9', md: '21/9' },
           borderRadius: 3,
-          bgcolor: '#0B0B0E',
+          bgcolor: '#0c0c14',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -234,8 +234,8 @@ export function HeroCarousel() {
                 position: 'absolute',
                 inset: 0,
                 background: `
-                  linear-gradient(to top, rgba(11,11,14,0.88) 0%, rgba(11,11,14,0.25) 45%, transparent 100%),
-                  linear-gradient(to right, rgba(11,11,14,0.3) 0%, transparent 20%, transparent 80%, rgba(11,11,14,0.3) 100%)
+                  linear-gradient(to top, rgba(12,12,20,0.88) 0%, rgba(12,12,20,0.25) 45%, transparent 100%),
+                  linear-gradient(to right, rgba(12,12,20,0.3) 0%, transparent 20%, transparent 80%, rgba(12,12,20,0.3) 100%)
                 `,
                 zIndex: 1,
               }}
@@ -257,7 +257,7 @@ export function HeroCarousel() {
               sx={{
                 position: 'absolute',
                 inset: 0,
-                background: 'radial-gradient(ellipse at center, transparent 50%, rgba(11,11,14,0.35) 100%)',
+                background: 'radial-gradient(ellipse at center, transparent 50%, rgba(12,12,20,0.35) 100%)',
                 pointerEvents: 'none',
                 zIndex: 2,
               }}
@@ -276,7 +276,7 @@ export function HeroCarousel() {
                       sx={{
                         fontSize: { xs: '0.92rem', md: '1.2rem' },
                         fontWeight: 800,
-                        color: '#F5F7FA',
+                        color: '#E8ECF2',
                         letterSpacing: '0.05em',
                         textShadow: `0 2px 12px rgba(0,0,0,0.8), 0 0 20px rgba(0,194,255,0.15)`,
                         mb: 0.5,

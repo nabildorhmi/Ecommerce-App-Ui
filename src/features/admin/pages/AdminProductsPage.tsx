@@ -220,7 +220,7 @@ export function AdminProductsPage() {
       <TableContainer component={Paper} elevation={0} sx={{ background: 'transparent', position: 'relative' }}>
         {/* Loading overlay — shown during refetches without hiding filters */}
         {isFetching && (
-          <Box sx={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: 'rgba(11,11,14,0.55)', zIndex: 10, borderRadius: 1, backdropFilter: 'blur(2px)' }}>
+          <Box sx={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: 'rgba(12,12,20,0.55)', zIndex: 10, borderRadius: 1, backdropFilter: 'blur(2px)' }}>
             <CircularProgress size={32} />
           </Box>
         )}
@@ -304,7 +304,7 @@ export function AdminProductsPage() {
                           <Typography sx={{ fontSize: '0.72rem', color: 'text.disabled', textDecoration: 'line-through' }}>
                             {formatPrice(product.price)}
                           </Typography>
-                          <Typography sx={{ fontSize: '0.82rem', color: '#FF6B35', fontWeight: 600 }}>
+                          <Typography sx={{ fontSize: '0.82rem', color: '#D97A50', fontWeight: 600 }}>
                             {formatPrice(product.default_variant.promo_price)}
                           </Typography>
                         </Box>
@@ -343,7 +343,7 @@ export function AdminProductsPage() {
                         size="small"
                         title={product.is_new ? 'Retirer nouveau / Remove new' : 'Marquer nouveau / Mark new'}
                         onClick={() => void handleToggleNew(product)}
-                        sx={{ color: product.is_new ? '#00C853' : 'text.disabled' }}
+                        sx={{ color: product.is_new ? '#2EAD5F' : 'text.disabled' }}
                       >
                         {product.is_new ? <NewReleasesIcon fontSize="small" /> : <NewReleasesOutlinedIcon fontSize="small" />}
                       </IconButton>

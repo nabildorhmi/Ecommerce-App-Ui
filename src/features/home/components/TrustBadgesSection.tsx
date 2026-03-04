@@ -19,19 +19,19 @@ const TRUST_ITEMS = [
     },
     {
         icon: <VerifiedUserOutlinedIcon sx={{ fontSize: '1.3rem' }} />,
-        color: '#00C853',
+        color: '#2EAD5F',
         label: 'Garantie 2 ans',
         desc: "Pièces & main-d'œuvre",
     },
     {
         icon: <SupportAgentOutlinedIcon sx={{ fontSize: '1.3rem' }} />,
-        color: '#F0B429',
+        color: '#D4A43A',
         label: 'SAV réactif',
         desc: 'Réponse en 24h',
     },
     {
         icon: <StarOutlineIcon sx={{ fontSize: '1.3rem' }} />,
-        color: '#FF6B35',
+        color: '#D97A50',
         label: 'Avis 4.8/5',
         desc: '+500 clients satisfaits',
     },
@@ -43,7 +43,7 @@ export function TrustBadgesSection() {
             <Box
                 component="section"
                 sx={{
-                    bgcolor: '#0B0B0E',
+                    bgcolor: '#0c0c14',
                     py: 4,
                     display: 'flex',
                     justifyContent: 'center',
@@ -58,7 +58,7 @@ export function TrustBadgesSection() {
                             p: 3,
                             borderRadius: '16px',
                             border: '1px solid rgba(255,255,255,0.05)',
-                            bgcolor: 'rgba(17,17,22,0.6)',
+                            bgcolor: 'rgba(19,19,27,0.6)',
                             backdropFilter: 'blur(10px)',
                         }}
                     >
@@ -97,10 +97,10 @@ export function TrustBadgesSection() {
                                         {icon}
                                     </Box>
                                     <Box>
-                                        <Typography sx={{ fontWeight: 700, fontSize: { xs: '0.78rem', sm: '0.9rem' }, color: '#F5F7FA', fontFamily: '"Orbitron", sans-serif' }}>
+                                        <Typography sx={{ fontWeight: 700, fontSize: { xs: '0.78rem', sm: '0.9rem' }, color: '#E8ECF2', fontFamily: '"Orbitron", sans-serif' }}>
                                             {label}
                                         </Typography>
-                                        <Typography sx={{ fontSize: '0.72rem', color: '#9CA3AF' }}>
+                                        <Typography sx={{ fontSize: '0.72rem', color: '#8A919D' }}>
                                             {desc}
                                         </Typography>
                                     </Box>

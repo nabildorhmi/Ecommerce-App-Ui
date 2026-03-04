@@ -376,7 +376,7 @@ function VariantCard({
             Prix / Price: {formatCurrency(variant.effective_price)}
           </Typography>
           {variant.is_on_sale && variant.promo_price != null && (
-            <Typography variant="body2" sx={{ color: '#FF6B35', fontWeight: 600 }}>
+            <Typography variant="body2" sx={{ color: '#D97A50', fontWeight: 600 }}>
               Promo: {formatCurrency(variant.promo_price)}
             </Typography>
           )}

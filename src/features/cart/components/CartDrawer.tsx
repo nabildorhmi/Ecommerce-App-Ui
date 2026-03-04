@@ -111,8 +111,8 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
             </Box>
           ) : (
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <LocalShippingOutlinedIcon sx={{ fontSize: '0.9rem', color: '#00C853' }} />
-              <Typography sx={{ fontSize: '0.72rem', color: '#00C853', fontWeight: 700 }}>
+              <LocalShippingOutlinedIcon sx={{ fontSize: '0.9rem', color: '#2EAD5F' }} />
+              <Typography sx={{ fontSize: '0.72rem', color: '#2EAD5F', fontWeight: 700 }}>
                 Livraison gratuite débloquée !
               </Typography>
             </Box>
@@ -151,7 +151,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
                 {/* Scarcity indicator for low-stock items */}
                 {item.stockQuantity <= 5 && item.stockQuantity > 0 && (
                   <Typography sx={{
-                    fontSize: '0.65rem', color: '#F0B429', fontWeight: 600,
+                    fontSize: '0.65rem', color: '#D4A43A', fontWeight: 600,
                     px: 1, pb: 0.5, mt: -0.5,
                   }}>
                     Seulement {item.stockQuantity} restant{item.stockQuantity > 1 ? 's' : ''} en stock
@@ -177,7 +177,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
             </Stack>
             <Stack direction="row" justifyContent="space-between" alignItems="center">
               <Typography variant="body2" color="text.secondary" fontWeight={500}>Livraison</Typography>
-              <Typography variant="body2" fontWeight={700} color={remaining === 0 ? '#00C853' : 'text.primary'}>
+              <Typography variant="body2" fontWeight={700} color={remaining === 0 ? '#2EAD5F' : 'text.primary'}>
                 {remaining === 0 ? 'Gratuit' : 'Calculée à la commande'}
               </Typography>
             </Stack>

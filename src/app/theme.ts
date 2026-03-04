@@ -1,26 +1,26 @@
 import { createTheme } from '@mui/material/styles';
 import type { PaletteMode } from '@mui/material';
 
-// ─── MiraiTech Design Tokens ───────────────────────────────────────────────
-const MIRAI_BLACK = '#0B0B0E';
-const MIRAI_SURFACE = '#111116';
-const MIRAI_BORDER = '#1E1E28';
+// ─── MiraiTech Design Tokens (Neo-Zen palette) ─────────────────────────────
+const MIRAI_BLACK = '#0c0c14';
+const MIRAI_SURFACE = '#13131b';
+const MIRAI_BORDER = '#1d1d27';
 
 // Light palette tokens
 const LIGHT_BG = '#F8FAFB';
 const LIGHT_PAPER = '#FFFFFF';
 const LIGHT_BORDER = '#E5E7EB';
-const LIGHT_TEXT = '#0B0B0E';
+const LIGHT_TEXT = '#0c0c14';
 const LIGHT_SUBTEXT = '#4B5563';
 const MIRAI_CYAN = '#00C2FF';
 const MIRAI_CYAN_DK = '#0099CC';
-const MIRAI_WHITE = '#F5F7FA';
-const MIRAI_GRAY = '#9CA3AF';
-const MIRAI_RED = '#E63946';
+const MIRAI_WHITE = '#E8ECF2';
+const MIRAI_GRAY = '#8A919D';
+const MIRAI_RED = '#C7404D';
 
 /**
  * Creates the MiraiTech MUI theme.
- * AppBar is ALWAYS dark (#0B0B0E) regardless of mode.
+ * AppBar is ALWAYS dark regardless of mode.
  */
 export function createMiraiTheme(mode: PaletteMode = 'dark', direction: 'ltr' | 'rtl' = 'ltr') {
   const isDark = mode === 'dark';
@@ -119,8 +119,8 @@ export function createMiraiTheme(mode: PaletteMode = 'dark', direction: 'ltr' | 
       MuiAppBar: {
         styleOverrides: {
           root: {
-            backgroundColor: 'rgba(11,11,14,0.92)',
-            backdropFilter: 'blur(20px)',
+            backgroundColor: 'rgba(12,12,20,0.92)',
+            backdropFilter: 'blur(24px)',
             border: 'none',
             borderBottom: `1px solid ${MIRAI_BORDER}`,
             boxShadow: 'none',
@@ -141,27 +141,27 @@ export function createMiraiTheme(mode: PaletteMode = 'dark', direction: 'ltr' | 
           containedPrimary: {
             background: `linear-gradient(135deg, ${MIRAI_CYAN} 0%, ${MIRAI_CYAN_DK} 100%)`,
             color: MIRAI_BLACK,
-            boxShadow: `0 8px 24px rgba(0,194,255,0.3), inset 0 1px 0 rgba(255,255,255,0.4)`,
-            textShadow: '0 1px 2px rgba(255,255,255,0.3)',
+            boxShadow: `0 8px 24px rgba(0,194,255,0.15), inset 0 1px 0 rgba(255,255,255,0.3)`,
+            textShadow: '0 1px 2px rgba(255,255,255,0.2)',
             '&:hover': {
               background: `linear-gradient(135deg, #33CFFF 0%, ${MIRAI_CYAN} 100%)`,
-              boxShadow: `0 12px 32px rgba(0,194,255,0.5), inset 0 1px 0 rgba(255,255,255,0.6)`,
+              boxShadow: `0 12px 32px rgba(0,194,255,0.25), inset 0 1px 0 rgba(255,255,255,0.4)`,
               transform: 'translateY(-2px)',
             },
             '&:active': {
               transform: 'translateY(1px)',
-              boxShadow: `0 4px 12px rgba(0,194,255,0.3)`,
+              boxShadow: `0 4px 12px rgba(0,194,255,0.15)`,
             },
           },
           outlinedPrimary: {
-            borderColor: 'rgba(0,194,255,0.5)',
+            borderColor: 'rgba(0,194,255,0.35)',
             color: MIRAI_CYAN,
             backdropFilter: 'blur(4px)',
             backgroundColor: 'rgba(0,194,255,0.02)',
             '&:hover': {
               borderColor: MIRAI_CYAN,
-              backgroundColor: 'rgba(0,194,255,0.1)',
-              boxShadow: `0 0 20px rgba(0,194,255,0.2), inset 0 0 10px rgba(0,194,255,0.1)`,
+              backgroundColor: 'rgba(0,194,255,0.06)',
+              boxShadow: `0 0 20px rgba(0,194,255,0.1), inset 0 0 10px rgba(0,194,255,0.05)`,
               transform: 'translateY(-2px)',
             },
           },
@@ -174,8 +174,8 @@ export function createMiraiTheme(mode: PaletteMode = 'dark', direction: 'ltr' | 
       MuiCard: {
         styleOverrides: {
           root: {
-            backgroundColor: isDark ? 'rgba(22, 22, 28, 0.65)' : LIGHT_PAPER,
-            backdropFilter: isDark ? 'blur(20px)' : 'none',
+            backgroundColor: isDark ? 'rgba(19, 19, 27, 0.55)' : LIGHT_PAPER,
+            backdropFilter: isDark ? 'blur(24px)' : 'none',
             border: `1px solid ${isDark ? 'rgba(255,255,255,0.06)' : LIGHT_BORDER}`,
             backgroundImage: 'linear-gradient(to bottom, rgba(255,255,255,0.02), transparent)',
             boxShadow: isDark ? '0 8px 32px rgba(0,0,0,0.25)' : '0 2px 12px rgba(0,0,0,0.06)',
@@ -189,8 +189,8 @@ export function createMiraiTheme(mode: PaletteMode = 'dark', direction: 'ltr' | 
       MuiPaper: {
         styleOverrides: {
           root: {
-            backgroundColor: isDark ? 'rgba(17, 17, 22, 0.75)' : LIGHT_PAPER,
-            backdropFilter: isDark ? 'blur(20px)' : 'none',
+            backgroundColor: isDark ? 'rgba(19, 19, 27, 0.65)' : LIGHT_PAPER,
+            backdropFilter: isDark ? 'blur(24px)' : 'none',
             border: `1px solid ${isDark ? 'rgba(255,255,255,0.06)' : LIGHT_BORDER}`,
             backgroundImage: 'linear-gradient(to bottom, rgba(255,255,255,0.02), transparent)',
           },
@@ -240,7 +240,7 @@ export function createMiraiTheme(mode: PaletteMode = 'dark', direction: 'ltr' | 
               },
               '&.Mui-focused fieldset': {
                 borderColor: MIRAI_CYAN,
-                boxShadow: `0 0 16px rgba(0,194,255,0.2)`,
+                boxShadow: `0 0 16px rgba(0,194,255,0.1)`,
                 borderWidth: '1px',
               },
               '&.Mui-focused': {
@@ -282,9 +282,9 @@ export function createMiraiTheme(mode: PaletteMode = 'dark', direction: 'ltr' | 
             color: isDark ? '#00C2FF' : '#0077A8',
           },
           standardError: {
-            backgroundColor: `rgba(230,57,70,0.1)`,
-            border: `1px solid rgba(230,57,70,0.3)`,
-            color: isDark ? '#E63946' : '#C62828',
+            backgroundColor: `rgba(199,64,77,0.1)`,
+            border: `1px solid rgba(199,64,77,0.3)`,
+            color: isDark ? '#C7404D' : '#C62828',
           },
           standardSuccess: {
             backgroundColor: `rgba(0,230,118,0.08)`,
@@ -292,9 +292,9 @@ export function createMiraiTheme(mode: PaletteMode = 'dark', direction: 'ltr' | 
             color: isDark ? '#00E676' : '#1B5E20',
           },
           standardWarning: {
-            backgroundColor: `rgba(240,180,41,0.08)`,
-            border: `1px solid rgba(240,180,41,0.25)`,
-            color: isDark ? '#F0B429' : '#7A5500',
+            backgroundColor: `rgba(212,164,58,0.08)`,
+            border: `1px solid rgba(212,164,58,0.25)`,
+            color: isDark ? '#D4A43A' : '#7A5500',
           },
         },
       },
@@ -308,7 +308,7 @@ export function createMiraiTheme(mode: PaletteMode = 'dark', direction: 'ltr' | 
                 backgroundColor: MIRAI_CYAN,
                 color: MIRAI_BLACK,
                 fontWeight: 700,
-                boxShadow: '0 4px 12px rgba(0,194,255,0.35)',
+                boxShadow: '0 4px 12px rgba(0,194,255,0.2)',
               },
               '&:hover': {
                 backgroundColor: 'rgba(0,194,255,0.1)',
@@ -352,8 +352,8 @@ export function createMiraiTheme(mode: PaletteMode = 'dark', direction: 'ltr' | 
       MuiDrawer: {
         styleOverrides: {
           paper: {
-            backgroundColor: isDark ? 'rgba(11,11,14,0.97)' : LIGHT_PAPER,
-            backdropFilter: 'blur(24px)',
+            backgroundColor: isDark ? 'rgba(12,12,20,0.97)' : LIGHT_PAPER,
+            backdropFilter: 'blur(28px)',
             borderLeft: `1px solid ${isDark ? MIRAI_BORDER : LIGHT_BORDER}`,
             backgroundImage: isDark
               ? 'linear-gradient(to bottom, rgba(0,194,255,0.02), transparent 30%)'

@@ -256,7 +256,7 @@ export function ProductDetailPage() {
                         left: 0,
                         right: 0,
                         height: 60,
-                        background: 'linear-gradient(to bottom, transparent, #0B0B0E)',
+                        background: 'linear-gradient(to bottom, transparent, #0c0c14)',
                         pointerEvents: 'none',
                       }}
                     />
@@ -315,8 +315,8 @@ export function ProductDetailPage() {
             <Box
               className="mirai-glass"
               sx={{
-                borderRadius: '20px',
-                p: { xs: 2.5, md: 3.5 },
+                borderRadius: { xs: '14px', md: '20px' },
+                p: { xs: 1.75, md: 3.5 },
                 position: 'relative',
                 overflow: 'hidden',
                 '&::before': {
@@ -330,7 +330,7 @@ export function ProductDetailPage() {
                 },
               }}
             >
-              <Stack spacing={2.5}>
+              <Stack spacing={{ xs: 1.25, md: 2.5 }}>
                 {/* Category chip + NEW badge */}
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
                   {product.category && (
@@ -352,9 +352,9 @@ export function ProductDetailPage() {
                       label="NOUVEAU"
                       size="small"
                       sx={{
-                        backgroundColor: 'rgba(0,200,83,0.15)',
-                        color: '#00C853',
-                        border: '1px solid rgba(0,200,83,0.3)',
+                        backgroundColor: 'rgba(46,173,95,0.15)',
+                        color: '#2EAD5F',
+                        border: '1px solid rgba(46,173,95,0.3)',
                         fontSize: '0.65rem',
                         fontWeight: 700,
                         letterSpacing: '0.08em',
@@ -368,7 +368,7 @@ export function ProductDetailPage() {
                 <Typography
                   component="h1"
                   sx={{
-                    fontSize: { xs: '1.8rem', md: '2.4rem' },
+                    fontSize: { xs: '1.3rem', md: '2.4rem' },
                     fontWeight: 900,
                     lineHeight: 1.1,
                     color: 'text.primary',
@@ -388,9 +388,9 @@ export function ProductDetailPage() {
                         label="PROMO"
                         size="small"
                         sx={{
-                          backgroundColor: 'rgba(255,107,53,0.15)',
-                          color: '#FF6B35',
-                          border: '1px solid rgba(255,107,53,0.3)',
+                          backgroundColor: 'rgba(217,122,80,0.15)',
+                          color: '#D97A50',
+                          border: '1px solid rgba(217,122,80,0.3)',
                           fontSize: '0.6rem',
                           fontWeight: 700,
                           letterSpacing: '0.08em',
@@ -409,14 +409,14 @@ export function ProductDetailPage() {
                       </Typography>
                     </Box>
                     <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1 }}>
-                      <BoltIcon sx={{ fontSize: '1.2rem', color: '#FF6B35', mb: '-2px' }} />
+                      <BoltIcon sx={{ fontSize: '1.2rem', color: '#D97A50', mb: '-2px' }} />
                       <Typography
                         sx={{
-                          fontSize: '2rem',
+                          fontSize: { xs: '1.5rem', md: '2rem' },
                           fontWeight: 800,
-                          color: '#FF6B35',
+                          color: '#D97A50',
                           lineHeight: 1,
-                          textShadow: '0 0 20px rgba(255,107,53,0.4)',
+                          textShadow: '0 0 12px rgba(217,122,80,0.2)',
                         }}
                       >
                         {formatCurrency(displayPromoPrice)}
@@ -428,11 +428,11 @@ export function ProductDetailPage() {
                     <BoltIcon sx={{ fontSize: '1.2rem', color: '#00C2FF', mb: '-2px' }} />
                     <Typography
                       sx={{
-                        fontSize: '2rem',
+                        fontSize: { xs: '1.5rem', md: '2rem' },
                         fontWeight: 800,
                         color: '#00C2FF',
                         lineHeight: 1,
-                        textShadow: '0 0 20px rgba(0,194,255,0.4)',
+                        textShadow: '0 0 12px rgba(0,194,255,0.2)',
                       }}
                     >
                       {formatCurrency(displayPrice)}
@@ -447,17 +447,17 @@ export function ProductDetailPage() {
                       <Box key={type}>
                         <Typography
                           sx={{
-                            fontSize: '0.7rem',
+                            fontSize: { xs: '0.6rem', md: '0.7rem' },
                             fontWeight: 700,
                             letterSpacing: '0.08em',
                             color: 'text.secondary',
                             textTransform: 'uppercase',
-                            mb: 1,
+                            mb: { xs: 0.5, md: 1 },
                           }}
                         >
                           {type}
                         </Typography>
-                        <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                        <Box sx={{ display: 'flex', gap: { xs: 0.5, md: 1 }, flexWrap: 'wrap' }}>
                           {values.map((value) => {
                             const isSelected = selectedVariantValues[type] === value;
                             return (
@@ -477,8 +477,10 @@ export function ProductDetailPage() {
                                     : 'transparent',
                                   color: isSelected ? '#00C2FF' : 'text.secondary',
                                   fontWeight: isSelected ? 700 : 500,
-                                  fontSize: '0.8rem',
+                                  fontSize: { xs: '0.68rem', md: '0.8rem' },
+                                  height: { xs: 26, md: 32 },
                                   cursor: 'pointer',
+                                  '& .MuiChip-label': { px: { xs: 1, md: 1.5 } },
                                   '&:hover': {
                                     backgroundColor: isSelected
                                       ? 'rgba(0,194,255,0.18)'
@@ -496,35 +498,37 @@ export function ProductDetailPage() {
                 )}
 
                 {/* Stock status + urgency */}
-                <StockBadge inStock={displayInStock} />
-                {displayInStock && displayStock <= 5 && displayStock > 0 && (
-                  <Box sx={{
-                    display: 'flex', alignItems: 'center', gap: 1,
-                    bgcolor: 'rgba(240,180,41,0.08)', border: '1px solid rgba(240,180,41,0.2)',
-                    borderRadius: '8px', px: 1.5, py: 0.75,
-                  }}>
-                    <Box sx={{ width: 6, height: 6, borderRadius: '50%', bgcolor: '#F0B429', animation: 'pulse-dot 2s ease infinite' }} />
-                    <Typography sx={{ fontSize: '0.75rem', color: '#F0B429', fontWeight: 700 }}>
-                      Plus que {displayStock} en stock — Commandez vite !
-                    </Typography>
-                  </Box>
-                )}
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
+                  <StockBadge inStock={displayInStock} />
+                  {displayInStock && displayStock <= 5 && displayStock > 0 && (
+                    <Box sx={{
+                      display: 'flex', alignItems: 'center', gap: 0.5,
+                      bgcolor: 'rgba(212,164,58,0.08)', border: '1px solid rgba(212,164,58,0.2)',
+                      borderRadius: '6px', px: 1, py: 0.4,
+                    }}>
+                      <Box sx={{ width: 5, height: 5, borderRadius: '50%', bgcolor: '#D4A43A', animation: 'pulse-dot 2s ease infinite' }} />
+                      <Typography sx={{ fontSize: { xs: '0.65rem', md: '0.75rem' }, color: '#D4A43A', fontWeight: 700 }}>
+                        Plus que {displayStock} — Vite !
+                      </Typography>
+                    </Box>
+                  )}
+                </Box>
 
                 {/* Rating display */}
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-                  <Box sx={{ display: 'flex', gap: 0.2 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                  <Box sx={{ display: 'flex', gap: 0.15 }}>
                     {Array.from({ length: 5 }).map((_, i) => (
-                      <StarIcon key={i} sx={{ fontSize: '0.9rem', color: i < 5 ? '#F0B429' : 'rgba(255,255,255,0.12)' }} />
+                      <StarIcon key={i} sx={{ fontSize: { xs: '0.75rem', md: '0.9rem' }, color: '#D4A43A' }} />
                     ))}
                   </Box>
-                  <Typography sx={{ fontSize: '0.78rem', color: '#F0B429', fontWeight: 700 }}>4.8/5</Typography>
-                  <Typography sx={{ fontSize: '0.72rem', color: 'text.secondary' }}>(500+ avis)</Typography>
+                  <Typography sx={{ fontSize: { xs: '0.68rem', md: '0.78rem' }, color: '#D4A43A', fontWeight: 700 }}>4.8/5</Typography>
+                  <Typography sx={{ fontSize: { xs: '0.62rem', md: '0.72rem' }, color: 'text.secondary' }}>(500+ avis)</Typography>
                 </Box>
 
                 <Divider />
 
                 {/* CTA Actions */}
-                <Stack spacing={1.5} sx={{ pt: 0.5 }}>
+                <Stack spacing={1} sx={{ pt: 0.25 }}>
                   <Button
                     variant="contained"
                     size="large"
@@ -533,16 +537,16 @@ export function ProductDetailPage() {
                     onClick={handleAddToCart}
                     startIcon={<ShoppingCartIcon />}
                     sx={{
-                      py: 1.75,
-                      fontSize: '0.88rem',
+                      py: { xs: 1.25, md: 1.75 },
+                      fontSize: { xs: '0.78rem', md: '0.88rem' },
                       fontWeight: 700,
                       letterSpacing: '0.06em',
                       textTransform: 'uppercase',
-                      borderRadius: '12px',
+                      borderRadius: { xs: '10px', md: '12px' },
                       background: isAddDisabled ? undefined : 'linear-gradient(45deg, #00C2FF, #0099CC)',
                       boxShadow: isAddDisabled
                         ? 'none'
-                        : '0 0 24px rgba(0,194,255,0.35)',
+                        : '0 0 18px rgba(0,194,255,0.2)',
                       transition: 'all 0.3s',
                       '&:hover': { transform: isAddDisabled ? 'none' : 'translateY(-2px)' },
                     }}
@@ -555,7 +559,7 @@ export function ProductDetailPage() {
                   </Button>
 
                   {/* Reassurance micro-copy */}
-                  <Box sx={{ display: 'flex', justifyContent: 'center', gap: { xs: 1.5, md: 2.5 }, flexWrap: 'wrap', pt: 0.5 }}>
+                  <Box sx={{ display: 'flex', justifyContent: 'center', gap: { xs: 1, md: 2.5 }, flexWrap: 'wrap', pt: 0.25 }}>
                     {[
                       { icon: <LocalShippingOutlinedIcon sx={{ fontSize: '0.8rem' }} />, label: 'Livraison 2-5j' },
                       { icon: <UndoIcon sx={{ fontSize: '0.8rem' }} />, label: 'Retour 30j' },
@@ -590,13 +594,13 @@ export function ProductDetailPage() {
       <Box sx={{
         display: { xs: 'flex', md: 'none' },
         position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 10,
-        bgcolor: 'rgba(11,11,14,0.95)', backdropFilter: 'blur(16px)',
+        bgcolor: 'rgba(12,12,20,0.95)', backdropFilter: 'blur(16px)',
         borderTop: '1px solid rgba(0,194,255,0.15)',
         p: 1.5, gap: 2, alignItems: 'center',
         justifyContent: 'space-between',
       }}>
         <Box>
-          <Typography sx={{ fontWeight: 800, color: displayIsOnSale ? '#FF6B35' : '#00C2FF', fontSize: '1.1rem' }}>
+          <Typography sx={{ fontWeight: 800, color: displayIsOnSale ? '#D97A50' : '#00C2FF', fontSize: '1.1rem' }}>
             {formatCurrency(displayIsOnSale && displayPromoPrice ? displayPromoPrice : displayPrice)}
           </Typography>
         </Box>

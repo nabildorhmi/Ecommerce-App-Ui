@@ -281,7 +281,7 @@ export function ProfilePage() {
             left: 0,
             right: 0,
             height: 2,
-            background: 'linear-gradient(90deg, #E63946, #0099CC, transparent)',
+            background: 'linear-gradient(90deg, #C7404D, #0099CC, transparent)',
           },
         }}
       >
@@ -343,7 +343,7 @@ export function ProfilePage() {
               py: 1.5,
               borderRadius: '12px',
               fontWeight: 700,
-              background: 'linear-gradient(45deg, #E63946, #C62828)',
+              background: 'linear-gradient(45deg, #C7404D, #C62828)',
               '&:hover': { transform: 'translateY(-2px)' },
               transition: 'transform 0.2s',
             }}

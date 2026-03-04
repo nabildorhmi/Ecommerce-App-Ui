@@ -21,21 +21,21 @@ const FEATURES = [
     },
     {
         icon: <DesignServicesOutlinedIcon sx={{ fontSize: '2rem' }} />,
-        color: '#F0B429',
+        color: '#D4A43A',
         title: 'Design Qui Se Remarque',
         subLabel: 'デザイン',
         desc: 'Finitions premium, lignes futuristes. Faites tourner les têtes à chaque trajet.',
     },
     {
         icon: <BatteryChargingFullIcon sx={{ fontSize: '2rem' }} />,
-        color: '#00C853',
+        color: '#2EAD5F',
         title: 'Liberté Totale',
         subLabel: 'バッテリー',
         desc: 'Jusqu\'à 80 km d\'autonomie. Allez où vous voulez, quand vous voulez, sans limite.',
     },
     {
         icon: <BuildOutlinedIcon sx={{ fontSize: '2rem' }} />,
-        color: '#FF6B35',
+        color: '#D97A50',
         title: 'Zéro Souci',
         subLabel: 'サービス',
         desc: 'Garantie 2 ans, SAV réactif, pièces disponibles. On s\'occupe de tout.',
@@ -109,7 +109,7 @@ export function WhyChooseUsSection() {
                                     animate={statsInView ? { opacity: 1, y: 0 } : {}}
                                     transition={{ duration: 0.5, delay: i * 0.1 }}
                                 >
-                                    <Box sx={{ p: 1.75, borderRadius: '14px', border: '1px solid rgba(255,255,255,0.07)', background: 'rgba(17,17,22,0.5)' }}>
+                                    <Box sx={{ p: 1.75, borderRadius: '14px', border: '1px solid rgba(255,255,255,0.07)', background: 'rgba(19,19,27,0.5)' }}>
                                         <Typography sx={{ fontWeight: 800, fontSize: '1.5rem', color: '#00C2FF', letterSpacing: '-0.02em', lineHeight: 1, fontFamily: '"Orbitron", sans-serif' }}>
                                             {statsInView ? <CountUp end={value} duration={2} suffix={suffix} /> : `0${suffix}`}
                                         </Typography>

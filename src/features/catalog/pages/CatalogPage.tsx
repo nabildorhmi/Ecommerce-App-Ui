@@ -77,7 +77,7 @@ export function CatalogPage() {
       <Box
         sx={{
           borderBottom: '1px solid rgba(0,194,255,0.1)',
-          background: 'linear-gradient(135deg, rgba(0,194,255,0.04) 0%, transparent 50%, rgba(230,57,70,0.02) 100%)',
+          background: 'linear-gradient(135deg, rgba(0,194,255,0.04) 0%, transparent 50%, rgba(199,64,77,0.02) 100%)',
           py: 1.5,
           position: 'relative',
           overflow: 'hidden',

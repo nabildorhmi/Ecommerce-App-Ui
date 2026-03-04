@@ -95,14 +95,14 @@ export function LoginPage() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: 'radial-gradient(circle at 50% 50%, rgba(0,194,255,0.05) 0%, rgba(11,11,14,1) 70%)',
+        background: 'radial-gradient(circle at 50% 50%, rgba(0,194,255,0.05) 0%, rgba(12,12,20,1) 70%)',
         backgroundSize: '200% 200%',
         overflow: 'hidden'
       }}
     >
       {/* Decorative floating blurs */}
       <Box sx={{ position: 'absolute', top: '10%', left: '20%', width: 300, height: 300, background: 'rgba(0,194,255,0.05)', filter: 'blur(80px)', borderRadius: '50%' }} />
-      <Box sx={{ position: 'absolute', bottom: '10%', right: '20%', width: 400, height: 400, background: 'rgba(230,57,70,0.03)', filter: 'blur(100px)', borderRadius: '50%' }} />
+      <Box sx={{ position: 'absolute', bottom: '10%', right: '20%', width: 400, height: 400, background: 'rgba(199,64,77,0.03)', filter: 'blur(100px)', borderRadius: '50%' }} />
 
       <PageDecor variant="auth" />
 
@@ -137,7 +137,7 @@ export function LoginPage() {
                 '& .MuiTab-root': {
                   fontWeight: 600, color: 'var(--mirai-gray)', textTransform: 'none', fontSize: '1rem',
                   transition: 'color 0.3s',
-                  '&.Mui-selected': { color: 'var(--mirai-white)', textShadow: '0 0 10px rgba(0,194,255,0.3)' }
+                  '&.Mui-selected': { color: 'var(--mirai-white)', textShadow: '0 0 8px rgba(0,194,255,0.15)' }
                 }
               }}
             >
