@@ -5,18 +5,15 @@ import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Skeleton from '@mui/material/Skeleton';
-import Chip from '@mui/material/Chip';
 import IconButton from '@mui/material/IconButton';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import ElectricScooterIcon from '@mui/icons-material/ElectricScooter';
 import { motion } from 'framer-motion';
 import CountUp from 'react-countup';
 
 import { useFeaturedProducts, useProducts } from '../../catalog/api/products';
-import { useCategories } from '../../catalog/api/categories';
 import { ProductCard } from '../../catalog/components/ProductCard';
 import { HeroSection } from '../components/HeroSection';
 import { TrustBadgesSection } from '../components/TrustBadgesSection';
@@ -104,59 +101,6 @@ function SectionHeader({ subLabel, title, linkText, linkTo, onPrev, onNext }: Se
 }
 
 /* ════════════════════════════════════════════════════════════════════
-   CATEGORIES STRIP
-   ════════════════════════════════════════════════════════════════════ */
-function CategoriesStrip() {
-  const { data } = useCategories();
-  const categories = data?.data ?? [];
-
-  if (categories.length === 0) return null;
-
-  return (
-    <Box component="section" sx={{
-      bgcolor: '#0c0c14',
-      borderBottom: '1px solid rgba(255,255,255,0.05)',
-      background: 'linear-gradient(to right, rgba(0,194,255,0.02), transparent 30%, transparent 70%, rgba(0,194,255,0.02))',
-    }}>
-      <Container maxWidth="xl">
-        <Box sx={{ py: 2, display: 'flex', alignItems: 'center', gap: 1.5, overflowX: 'auto', scrollbarWidth: 'none', '&::-webkit-scrollbar': { display: 'none' } }}>
-          <Typography sx={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.14em', color: '#8A919D', textTransform: 'uppercase', whiteSpace: 'nowrap', mr: 2, flexShrink: 0, fontFamily: '"Orbitron", sans-serif' }}>
-            NOS MODÈLES
-          </Typography>
-          <Box sx={{ width: 1, height: 24, bgcolor: 'rgba(255,255,255,0.1)', flexShrink: 0, mr: 1 }} />
-
-          {categories.map((cat) => (
-            <Chip
-              key={cat.id}
-              component={Link}
-              to={`/products?filter[category_id]=${cat.id}`}
-              label={cat.name}
-              icon={<ElectricScooterIcon sx={{ fontSize: '0.85rem !important' }} />}
-              clickable
-              sx={{
-                fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.06em',
-                color: '#8A919D', backgroundColor: 'transparent',
-                border: '1px solid rgba(255,255,255,0.08)',
-                borderRadius: '20px', px: 1, height: 34, flexShrink: 0,
-                transition: 'all 0.3s ease',
-                '&:hover': { color: '#00C2FF', borderColor: 'rgba(0,194,255,0.4)', backgroundColor: 'rgba(0,194,255,0.06)', boxShadow: '0 0 16px rgba(0,194,255,0.12)' },
-                '& .MuiChip-icon': { color: 'inherit' },
-              }}
-            />
-          ))}
-
-          <Box sx={{ ml: 'auto', flexShrink: 0, pl: 2 }}>
-            <Button component={Link} to="/products" size="small" sx={{ fontSize: '0.75rem', color: '#00C2FF', letterSpacing: '0.08em', fontWeight: 600 }} endIcon={<ArrowForwardIcon fontSize="small" />}>
-              TOUT VOIR
-            </Button>
-          </Box>
-        </Box>
-      </Container>
-    </Box>
-  );
-}
-
-/* ════════════════════════════════════════════════════════════════════
    PRODUCT CAROUSEL — Shared for Featured & Nouveautés
    ════════════════════════════════════════════════════════════════════ */
 interface ProductCarouselProps {
@@ -178,7 +122,7 @@ function ProductCarouselSection({ subLabel, title, linkTo, products, isLoading }
 
   return (
     <AnimatedSection>
-      <Box component="section" sx={{ bgcolor: '#0c0c14', pt: { xs: 4, md: 6 }, pb: 4 }}>
+      <Box component="section" sx={{ bgcolor: '#0c0c14', pt: { xs: 4, md: 6 }, pb: 4, borderTop: '1px solid rgba(255,255,255,0.06)' }}>
         <Container maxWidth="xl">
           <SectionHeader
             subLabel={subLabel}
@@ -206,9 +150,6 @@ function ProductCarouselSection({ subLabel, title, linkTo, products, isLoading }
                 scrollSnapType: 'x mandatory',
                 scrollbarWidth: 'none', '&::-webkit-scrollbar': { display: 'none' },
                 pb: 2,
-                // Fade edges
-                maskImage: 'linear-gradient(to right, transparent, black 2%, black 98%, transparent)',
-                WebkitMaskImage: 'linear-gradient(to right, transparent, black 2%, black 98%, transparent)',
               }}
             >
               {products.map((product) => (
@@ -490,7 +431,6 @@ export function HomePage() {
   return (
     <Box sx={{ bgcolor: '#0c0c14', minHeight: '100vh' }}>
       <HeroSection />
-      <CategoriesStrip />
       <TrustBadgesSection />
       <FeaturedSection />
       <NouveauteSection />

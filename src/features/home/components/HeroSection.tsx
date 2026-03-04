@@ -8,6 +8,7 @@ import CountUp from 'react-countup';
 import heroScooter from '@/assets/hero-scooter.png';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ElectricScooterIcon from '@mui/icons-material/ElectricScooter';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 const CYAN = '#00C2FF';
 const EASE: [number, number, number, number] = [0.25, 0.46, 0.45, 0.94];
@@ -33,55 +34,55 @@ export function HeroSection() {
             sx={{
                 position: 'relative',
                 width: '100%',
-                minHeight: { xs: '85vh', md: '88vh' },
+                minHeight: { xs: '92vh', md: '81vh' },
                 bgcolor: '#0c0c14',
                 overflow: 'hidden',
                 display: 'flex',
                 alignItems: 'center',
             }}
         >
-            {/* ── Full background scooter image with parallax ── */}
+            {/* ── Full-width background image with parallax (lovable style) ── */}
             <motion.div
                 style={{
                     y: bgY,
                     position: 'absolute',
                     top: 0,
+                    left: 0,
                     right: 0,
                     bottom: '-20%',
-                    width: '100%',
                     zIndex: 0,
                 }}
             >
+                {/* Full-bleed image covering entire section */}
                 <Box
+                    component="img"
+                    src={heroScooter}
+                    alt="Scooter électrique MiraiTech"
                     sx={{
-                        position: 'absolute',
-                        top: 0, right: 0, bottom: 0,
-                        width: { xs: '100%', md: '65%' },
-                        ml: 'auto',
-                        '&::after': {
-                            content: '""',
-                            position: 'absolute',
-                            inset: 0,
-                            background: {
-                                xs: 'linear-gradient(to top, rgba(12,12,20,0.95) 0%, rgba(12,12,20,0.6) 60%, rgba(12,12,20,0.4) 100%)',
-                                md: 'linear-gradient(to right, rgba(12,12,20,1) 0%, rgba(12,12,20,0.65) 30%, rgba(12,12,20,0.15) 70%, rgba(12,12,20,0.4) 100%)',
-                            },
-                            zIndex: 1,
-                        },
+                        width: '100%', height: '100%',
+                        objectFit: 'cover',
+                        objectPosition: 'center',
+                        display: 'block',
                     }}
-                >
-                    <Box
-                        component="img"
-                        src={heroScooter}
-                        alt="Scooter électrique MiraiTech"
-                        sx={{
-                            width: '100%', height: '100%',
-                            objectFit: 'cover',
-                            objectPosition: 'center',
-                            display: 'block',
-                        }}
-                    />
-                </Box>
+                />
+                {/* Gradient overlay 1: left-to-right — solid dark on left, 80% dark via middle */}
+                <Box sx={{
+                    position: 'absolute', inset: 0,
+                    background: {
+                        xs: 'linear-gradient(to right, #0c0c14 0%, rgba(12,12,20,0.9) 40%, rgba(12,12,20,0.6) 100%)',
+                        md: 'linear-gradient(to right, #0c0c14 0%, rgba(12,12,20,0.8) 40%, rgba(12,12,20,0.35) 100%)',
+                    },
+                }} />
+                {/* Gradient overlay 2: bottom-to-top — solid dark bottom fading up */}
+                <Box sx={{
+                    position: 'absolute', inset: 0,
+                    background: 'linear-gradient(to top, #0c0c14 0%, rgba(12,12,20,0.4) 40%, transparent 70%)',
+                }} />
+                {/* Overlay 3: overall darkening wash */}
+                <Box sx={{
+                    position: 'absolute', inset: 0,
+                    bgcolor: 'rgba(12,12,20,0.3)',
+                }} />
             </motion.div>
 
             {/* ── Subtle scan-line texture ── */}
@@ -314,6 +315,37 @@ export function HeroSection() {
                         </Box>
                     </motion.div>
                 </Box>
+            </Box>
+            {/* ── Scroll-down indicator ── */}
+            <Box
+                sx={{
+                    position: 'absolute',
+                    bottom: { xs: 24, md: 20 },
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    zIndex: 3,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: 0.5,
+                }}
+            >
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 1.2, duration: 0.6 }}
+                >
+                    <Typography sx={{ fontSize: '0.55rem', color: 'rgba(255,255,255,0.25)', letterSpacing: '0.2em', textTransform: 'uppercase', fontWeight: 500 }}>
+                        Scroll
+                    </Typography>
+                </motion.div>
+                <motion.div
+                    initial={{ opacity: 0, y: -5 }}
+                    animate={{ opacity: [0, 0.6, 0], y: [-5, 8, -5] }}
+                    transition={{ delay: 1.4, duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                >
+                    <KeyboardArrowDownIcon sx={{ fontSize: '1.3rem', color: 'rgba(0,194,255,0.5)' }} />
+                </motion.div>
             </Box>
         </Box>
     );

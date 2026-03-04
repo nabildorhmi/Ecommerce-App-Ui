@@ -12,28 +12,28 @@ import { fadeInUp } from '@/shared/animations/variants';
 
 const TRUST_ITEMS = [
     {
-        icon: <LocalShippingOutlinedIcon sx={{ fontSize: '1.3rem' }} />,
+        icon: <LocalShippingOutlinedIcon sx={{ fontSize: '1.1rem' }} />,
         color: '#00C2FF',
-        label: 'Livraison gratuite',
-        desc: 'Commandes +2000 MAD',
+        label: 'Livraison Rapide',
+        desc: 'Livraison partout au Maroc en 2-5 jours ouvrés.',
     },
     {
-        icon: <VerifiedUserOutlinedIcon sx={{ fontSize: '1.3rem' }} />,
+        icon: <VerifiedUserOutlinedIcon sx={{ fontSize: '1.1rem' }} />,
         color: '#2EAD5F',
-        label: 'Garantie 2 ans',
-        desc: "Pièces & main-d'œuvre",
+        label: 'Garantie 2 Ans',
+        desc: "Protection complète pièces & main-d'œuvre.",
     },
     {
-        icon: <SupportAgentOutlinedIcon sx={{ fontSize: '1.3rem' }} />,
+        icon: <SupportAgentOutlinedIcon sx={{ fontSize: '1.1rem' }} />,
         color: '#D4A43A',
-        label: 'SAV réactif',
-        desc: 'Réponse en 24h',
+        label: 'SAV Réactif',
+        desc: 'Réponse en 24h, assistance technique locale.',
     },
     {
-        icon: <StarOutlineIcon sx={{ fontSize: '1.3rem' }} />,
+        icon: <StarOutlineIcon sx={{ fontSize: '1.1rem' }} />,
         color: '#D97A50',
         label: 'Avis 4.8/5',
-        desc: '+500 clients satisfaits',
+        desc: '+500 clients satisfaits à travers le Maroc.',
     },
 ];
 
@@ -44,22 +44,16 @@ export function TrustBadgesSection() {
                 component="section"
                 sx={{
                     bgcolor: '#0c0c14',
-                    py: 4,
-                    display: 'flex',
-                    justifyContent: 'center',
+                    py: { xs: 2, md: 3 },
+                    borderTop: '1px solid rgba(255,255,255,0.06)',
                 }}
             >
                 <Container maxWidth="lg">
                     <Box
                         sx={{
                             display: 'grid',
-                            gridTemplateColumns: { xs: '1fr 1fr', sm: 'repeat(4, 1fr)' },
-                            gap: { xs: 2, sm: 3 },
-                            p: 3,
-                            borderRadius: '16px',
-                            border: '1px solid rgba(255,255,255,0.05)',
-                            bgcolor: 'rgba(19,19,27,0.6)',
-                            backdropFilter: 'blur(10px)',
+                            gridTemplateColumns: { xs: '1fr 1fr', sm: '1fr 1fr', md: 'repeat(4, 1fr)' },
+                            gap: { xs: 1, sm: 2 },
                         }}
                     >
                         {TRUST_ITEMS.map(({ icon, color, label, desc }, i) => (
@@ -69,25 +63,30 @@ export function TrustBadgesSection() {
                                 initial="hidden"
                                 whileInView="visible"
                                 viewport={{ once: true, amount: 0.3 }}
-                                transition={{ delay: i * 0.1 }}
+                                transition={{ delay: i * 0.12 }}
                             >
                                 <Box
                                     sx={{
                                         display: 'flex',
-                                        alignItems: 'center',
-                                        gap: 1.5,
-                                        p: { xs: 1, sm: 0 },
+                                        alignItems: { xs: 'center', sm: 'flex-start' },
+                                        gap: { xs: 1, sm: 1.5 },
+                                        p: { xs: 1.5, sm: 2.5 },
                                         borderRadius: '12px',
-                                        transition: 'all 0.3s var(--mirai-ease)',
+                                        border: '1px solid rgba(255,255,255,0.08)',
+                                        bgcolor: 'rgba(19,22,35,0.5)',
+                                        backdropFilter: 'blur(8px)',
+                                        transition: 'all 0.3s ease',
                                         '&:hover': {
-                                            transform: 'translateY(-2px)',
+                                            borderColor: `${color}30`,
+                                            transform: 'translateY(-3px)',
+                                            boxShadow: `0 8px 24px ${color}10`,
                                         },
                                     }}
                                 >
                                     <Box sx={{
-                                        width: 40, height: 40,
-                                        borderRadius: '50%',
-                                        bgcolor: `${color}12`,
+                                        width: { xs: 30, sm: 36 }, height: { xs: 30, sm: 36 },
+                                        borderRadius: '8px',
+                                        bgcolor: `${color}14`,
                                         display: 'flex',
                                         alignItems: 'center',
                                         justifyContent: 'center',
@@ -97,10 +96,22 @@ export function TrustBadgesSection() {
                                         {icon}
                                     </Box>
                                     <Box>
-                                        <Typography sx={{ fontWeight: 700, fontSize: { xs: '0.78rem', sm: '0.9rem' }, color: '#E8ECF2', fontFamily: '"Orbitron", sans-serif' }}>
+                                        <Typography sx={{
+                                            fontWeight: 700,
+                                            fontSize: { xs: '0.72rem', sm: '0.82rem' },
+                                            color: '#E8ECF2',
+                                            letterSpacing: '0.02em',
+                                            lineHeight: 1.3,
+                                            mb: { xs: 0, sm: 0.25 },
+                                        }}>
                                             {label}
                                         </Typography>
-                                        <Typography sx={{ fontSize: '0.72rem', color: '#8A919D' }}>
+                                        <Typography sx={{
+                                            fontSize: '0.72rem',
+                                            color: '#8A919D',
+                                            lineHeight: 1.4,
+                                            display: { xs: 'none', sm: 'block' },
+                                        }}>
                                             {desc}
                                         </Typography>
                                     </Box>

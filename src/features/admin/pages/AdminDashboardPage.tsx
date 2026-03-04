@@ -200,7 +200,7 @@ export function AdminDashboardPage() {
             transition={{ delay: i * 0.1, duration: 0.5 }}
             whileHover={{ y: -5 }}
           >
-            <Card className="mirai-glass" sx={{ borderRadius: '16px', borderBottom: `2px solid ${kpi.color}`, transition: 'all 0.3s' }}>
+            <Card className="mirai-glass" sx={{ borderRadius: '16px', borderLeft: `3px solid ${kpi.color}`, transition: 'all 0.3s' }}>
               <CardContent>
                 <Typography sx={{ color: 'var(--mirai-gray)', fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }} gutterBottom>
                   {kpi.title}
