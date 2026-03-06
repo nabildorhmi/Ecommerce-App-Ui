@@ -263,7 +263,7 @@ function PromoSection() {
   return (
     <AnimatedSection>
       <Box component="section" sx={{ bgcolor: '#0c0c14', pt: 4, pb: 8 }}>
-        <Container maxWidth="lg">
+        <Container maxWidth="xl">
           <Box
             sx={{
               display: 'flex',
@@ -368,7 +368,7 @@ function FooterCTA() {
           WebkitMaskImage: 'radial-gradient(ellipse 50% 60% at 50% 50%, black 30%, transparent 100%)',
         }} />
 
-        <Container maxWidth="md" sx={{ position: 'relative', zIndex: 1 }}>
+        <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 1 }}>
           <Typography sx={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.2)', mb: 2, fontFamily: '"Noto Serif JP", serif', letterSpacing: '0.4em' }}>
             未来テック
           </Typography>

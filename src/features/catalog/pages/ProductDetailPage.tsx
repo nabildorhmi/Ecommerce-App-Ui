@@ -38,7 +38,7 @@ import { useRef as useScrollRef } from 'react';
 function ProductDetailSkeleton() {
   return (
     <Box sx={{ bgcolor: 'background.default', minHeight: '100vh', py: 4 }}>
-      <Container maxWidth="lg">
+      <Container maxWidth="xl">
         <Skeleton variant="text" width={200} height={24} sx={{ mb: 3, bgcolor: 'action.hover' }} />
         <Grid container spacing={5}>
           <Grid size={{ xs: 12, md: 7 }}>
@@ -140,7 +140,7 @@ export function ProductDetailPage() {
   if (isError || !product) {
     return (
       <Box sx={{ bgcolor: 'background.default', minHeight: '100vh', py: 6 }}>
-        <Container maxWidth="lg">
+        <Container maxWidth="xl">
           <Alert severity="warning" sx={{ mb: 3 }}>
             {"Produit introuvable"}
           </Alert>
@@ -186,7 +186,7 @@ export function ProductDetailPage() {
       {/* Futuristic side decorations */}
       <PageDecor variant="productDetail" />
 
-      <Container maxWidth="lg" sx={{ py: { xs: 3, md: 5 }, position: 'relative', zIndex: 1 }}>
+      <Container maxWidth="xl" sx={{ py: { xs: 3, md: 5 }, position: 'relative', zIndex: 1 }}>
         {/* Breadcrumb */}
         <Box sx={{ mb: 3 }}>
           <CategoryBreadcrumb category={product.category} />

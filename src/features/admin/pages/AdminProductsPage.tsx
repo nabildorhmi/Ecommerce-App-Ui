@@ -28,6 +28,7 @@ import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import Container from '@mui/material/Container';
 import AddIcon from '@mui/icons-material/Add';
 import StarIcon from '@mui/icons-material/Star';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
@@ -136,7 +137,7 @@ export function AdminProductsPage() {
   };
 
   return (
-    <Box p={3}>
+    <Container maxWidth="xl" sx={{ py: 3 }}>
       <Box
         display="flex"
         justifyContent="space-between"
@@ -417,6 +418,6 @@ export function AdminProductsPage() {
           />
         )}
       </Box>
-    </Box>
+    </Container>
   );
 }

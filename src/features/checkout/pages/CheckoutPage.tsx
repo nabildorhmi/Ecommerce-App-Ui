@@ -186,7 +186,7 @@ export function CheckoutPage() {
   return (
     <Box sx={{ position: 'relative', overflow: 'hidden', minHeight: '100vh' }}>
       <PageDecor variant="checkout" />
-      <Container maxWidth="md" sx={{ py: 4, position: 'relative', zIndex: 1 }}>
+      <Container maxWidth="xl" sx={{ py: 4, position: 'relative', zIndex: 1 }}>
         {/* Page header */}
         <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1.5, mb: 1.5 }}>
           <Typography variant="h4" fontWeight={800} color="var(--mirai-white)">
