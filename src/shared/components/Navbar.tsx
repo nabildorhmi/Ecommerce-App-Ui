@@ -15,7 +15,6 @@ import ListItemText from '@mui/material/ListItemText';
 import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import Drawer from '@mui/material/Drawer';
-import Badge from '@mui/material/Badge';
 import InputBase from '@mui/material/InputBase';
 import Popper from '@mui/material/Popper';
 import Paper from '@mui/material/Paper';
@@ -28,16 +27,10 @@ import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import LogoutIcon from '@mui/icons-material/Logout';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
-import AssignmentIcon from '@mui/icons-material/Assignment';
-import DescriptionIcon from '@mui/icons-material/Description';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
-import PeopleIcon from '@mui/icons-material/People';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import TuneIcon from '@mui/icons-material/Tune';
-import ViewCarouselIcon from '@mui/icons-material/ViewCarousel';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import FiberNewIcon from '@mui/icons-material/FiberNew';
 import { useAuthStore } from '@/features/auth/store';
@@ -96,23 +89,9 @@ export function Navbar() {
   const { data: categoriesData } = useCategories();
   const categories = categoriesData?.data ?? [];
 
-  // Admin pending orders count
-  const { data: pendingData } = useQuery({
-    queryKey: ['admin', 'orders', 'pending-count'],
-    queryFn: async () => {
-      const res = await apiClient.get('/admin/orders', { params: { 'filter[status]': 'pending', per_page: 1 } });
-      return res.data.meta?.total ?? 0;
-    },
-    enabled: user?.role === 'admin' || user?.role === 'global_admin',
-    refetchInterval: 30_000,
-    staleTime: 15_000,
-  });
-  const pendingCount = pendingData ?? 0;
-
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [userMenuAnchor, setUserMenuAnchor] = useState<null | HTMLElement>(null);
-  const [adminMenuAnchor, setAdminMenuAnchor] = useState<null | HTMLElement>(null);
   const [catMenuAnchor, setCatMenuAnchor] = useState<null | HTMLElement>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchFocused, setSearchFocused] = useState(false);
@@ -142,7 +121,6 @@ export function Navbar() {
   };
 
   const closeUserMenu = () => setUserMenuAnchor(null);
-  const closeAdminMenu = () => setAdminMenuAnchor(null);
   const closeCatMenu = () => setCatMenuAnchor(null);
 
   const handleSearch = () => {
@@ -207,7 +185,7 @@ export function Navbar() {
                 component="img"
                 src={miraiLogo}
                 alt="MiraiTech"
-                sx={{ height: { xs: 24, md: 32 }, width: 'auto', display: 'block' }}
+                sx={{ height: { xs: 40, md: 50 }, width: 'auto', display: 'block' }}
               />
             </Box>
 
@@ -424,58 +402,19 @@ export function Navbar() {
               {user ? (
                 <>
                   {(user.role === 'admin' || user.role === 'global_admin') && (
-                    <>
-                      <IconButton
-                        onClick={(e) => setAdminMenuAnchor(e.currentTarget)}
-                        aria-label="Administration"
-                        size="small"
-                        sx={{
-                          color: '#8A919D',
-                          transition: 'all 0.2s',
-                          '&:hover': { color: '#00C2FF', backgroundColor: 'rgba(0,194,255,0.06)' },
-                        }}
-                      >
-                        <Badge variant="dot" color="error" invisible={pendingCount === 0}>
-                          <AdminPanelSettingsIcon sx={{ fontSize: '1.1rem' }} />
-                        </Badge>
-                      </IconButton>
-                      <Menu
-                        anchorEl={adminMenuAnchor}
-                        open={Boolean(adminMenuAnchor)}
-                        onClose={closeAdminMenu}
-                        disableScrollLock
-                        PaperProps={{ sx: menuPaperSx }}
-                      >
-                        {(() => {
-                          const menuItems = [
-                            { to: '/admin', icon: <DashboardIcon fontSize="small" />, label: 'Tableau de bord' },
-                            { to: '/admin/products', icon: <AssignmentIcon fontSize="small" />, label: 'Produits' },
-                            { to: '/admin/categories', icon: <AssignmentIcon fontSize="small" />, label: 'Catégories' },
-                            { to: '/admin/variation-types', icon: <TuneIcon fontSize="small" />, label: 'Types de variations' },
-                            { to: '/admin/orders', icon: <Badge badgeContent={pendingCount} color="error" max={99}><ReceiptLongIcon fontSize="small" /></Badge>, label: 'Commandes' },
-                            { to: '/admin/pages', icon: <DescriptionIcon fontSize="small" />, label: 'Pages' },
-                            { to: '/admin/hero-banners', icon: <ViewCarouselIcon fontSize="small" />, label: 'Hero Banners' },
-                          ];
-
-                          if (user.role === 'global_admin') {
-                            menuItems.push({ to: '/admin/users', icon: <PeopleIcon fontSize="small" />, label: 'Utilisateurs' });
-                          }
-
-                          return menuItems.map(({ to, icon, label }) => (
-                            <MenuItem
-                              key={to}
-                              component={Link}
-                              to={to}
-                              onClick={closeAdminMenu}
-                              sx={menuItemSx}
-                            >
-                              <ListItemIcon sx={{ color: '#00C2FF', minWidth: 32 }}>{icon}</ListItemIcon>
-                              <ListItemText primaryTypographyProps={{ fontSize: '0.84rem' }}>{label}</ListItemText>
-                            </MenuItem>
-                          ));
-                        })()}
-                      </Menu>
-                    </>
+                    <IconButton
+                      component={Link}
+                      to="/admin"
+                      aria-label="Administration"
+                      size="small"
+                      sx={{
+                        color: '#8A919D',
+                        transition: 'all 0.2s',
+                        '&:hover': { color: '#00C2FF', backgroundColor: 'rgba(0,194,255,0.06)' },
+                      }}
+                    >
+                      <AdminPanelSettingsIcon sx={{ fontSize: '1.1rem' }} />
+                    </IconButton>
                   )}
 
                   <IconButton

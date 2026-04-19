@@ -84,7 +84,7 @@ export function Footer() {
                 component="img"
                 src={miraiLogo}
                 alt="MiraiTech"
-                sx={{ height: 35, width: 'auto' }}
+                sx={{ height: 45, width: 'auto' }}
               />
             </Box>
             <Typography variant="body2" sx={{ color: '#8A919D', lineHeight: 1.8, maxWidth: 300, mb: 2 }}>

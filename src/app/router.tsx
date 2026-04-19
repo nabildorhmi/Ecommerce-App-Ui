@@ -72,7 +72,8 @@ const ContactPage = lazy(() => import('@/features/info/pages/ContactPage').then(
 const CgvPage = lazy(() => import('@/features/info/pages/CgvPage').then(m => ({ default: m.CgvPage })));
 const MentionsLegalesPage = lazy(() => import('@/features/info/pages/MentionsLegalesPage').then(m => ({ default: m.MentionsLegalesPage })));
 
-// Admin pages
+// Admin layout + pages
+const AdminLayout = lazy(() => import('@/shared/components/AdminLayout').then(m => ({ default: m.AdminLayout })));
 const AdminDashboardPage = lazy(() => import('@/features/admin/pages/AdminDashboardPage').then(m => ({ default: m.AdminDashboardPage })));
 const AdminProductsPage = lazy(() => import('@/features/admin/pages/AdminProductsPage').then(m => ({ default: m.AdminProductsPage })));
 const AdminProductEditPage = lazy(() => import('@/features/admin/pages/AdminProductEditPage').then(m => ({ default: m.AdminProductEditPage })));
@@ -154,58 +155,28 @@ export const router = createBrowserRouter([
           },
         ],
       },
-      // Admin routes — require admin role
+    ],
+  },
+  {
+    // Admin layout — separate from storefront
+    element: <AdminRoute />,
+    errorElement: <RouteErrorPage />,
+    children: [
       {
-        element: <AdminRoute />,
+        element: <Suspense fallback={<PageLoader />}><AdminLayout /></Suspense>,
         children: [
-          {
-            path: '/admin',
-            element: <Suspense fallback={<PageLoader />}><AdminDashboardPage /></Suspense>,
-          },
-          {
-            path: '/admin/products',
-            element: <Suspense fallback={<PageLoader />}><AdminProductsPage /></Suspense>,
-          },
-          {
-            path: '/admin/products/create',
-            element: <Suspense fallback={<PageLoader />}><AdminProductEditPage /></Suspense>,
-          },
-          {
-            path: '/admin/products/:id/edit',
-            element: <Suspense fallback={<PageLoader />}><AdminProductEditPage /></Suspense>,
-          },
-          {
-            path: '/admin/categories',
-            element: <Suspense fallback={<PageLoader />}><AdminCategoriesPage /></Suspense>,
-          },
-          {
-            path: '/admin/users',
-            element: <Suspense fallback={<PageLoader />}><AdminUsersPage /></Suspense>,
-          },
-          {
-            path: '/admin/users/:id',
-            element: <Suspense fallback={<PageLoader />}><AdminUserDetailPage /></Suspense>,
-          },
-          {
-            path: '/admin/orders',
-            element: <Suspense fallback={<PageLoader />}><AdminOrdersPage /></Suspense>,
-          },
-          {
-            path: '/admin/orders/:id',
-            element: <Suspense fallback={<PageLoader />}><AdminOrderDetailPage /></Suspense>,
-          },
-          {
-            path: '/admin/pages',
-            element: <Suspense fallback={<PageLoader />}><AdminPagesPage /></Suspense>,
-          },
-          {
-            path: '/admin/variation-types',
-            element: <Suspense fallback={<PageLoader />}><AdminVariationTypesPage /></Suspense>,
-          },
-          {
-            path: '/admin/hero-banners',
-            element: <Suspense fallback={<PageLoader />}><AdminHeroBannersPage /></Suspense>,
-          },
+          { path: '/admin', element: <Suspense fallback={<PageLoader />}><AdminDashboardPage /></Suspense> },
+          { path: '/admin/products', element: <Suspense fallback={<PageLoader />}><AdminProductsPage /></Suspense> },
+          { path: '/admin/products/create', element: <Suspense fallback={<PageLoader />}><AdminProductEditPage /></Suspense> },
+          { path: '/admin/products/:id/edit', element: <Suspense fallback={<PageLoader />}><AdminProductEditPage /></Suspense> },
+          { path: '/admin/categories', element: <Suspense fallback={<PageLoader />}><AdminCategoriesPage /></Suspense> },
+          { path: '/admin/users', element: <Suspense fallback={<PageLoader />}><AdminUsersPage /></Suspense> },
+          { path: '/admin/users/:id', element: <Suspense fallback={<PageLoader />}><AdminUserDetailPage /></Suspense> },
+          { path: '/admin/orders', element: <Suspense fallback={<PageLoader />}><AdminOrdersPage /></Suspense> },
+          { path: '/admin/orders/:id', element: <Suspense fallback={<PageLoader />}><AdminOrderDetailPage /></Suspense> },
+          { path: '/admin/pages', element: <Suspense fallback={<PageLoader />}><AdminPagesPage /></Suspense> },
+          { path: '/admin/variation-types', element: <Suspense fallback={<PageLoader />}><AdminVariationTypesPage /></Suspense> },
+          { path: '/admin/hero-banners', element: <Suspense fallback={<PageLoader />}><AdminHeroBannersPage /></Suspense> },
         ],
       },
     ],
