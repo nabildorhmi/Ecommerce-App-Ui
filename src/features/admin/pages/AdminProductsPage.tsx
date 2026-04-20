@@ -19,6 +19,7 @@ import DialogActions from '@mui/material/DialogActions';
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 import Alert from '@mui/material/Alert';
+import Snackbar from '@mui/material/Snackbar';
 import Pagination from '@mui/material/Pagination';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
@@ -36,7 +37,7 @@ import NewReleasesIcon from '@mui/icons-material/NewReleases';
 import NewReleasesOutlinedIcon from '@mui/icons-material/NewReleasesOutlined';
 import SearchIcon from '@mui/icons-material/Search';
 import FilterListIcon from '@mui/icons-material/FilterList';
-import { useAdminProducts, useDeleteProduct, useUpdateProduct } from '../api/products';
+import { useAdminProducts, useDeleteProduct, useUpdateProduct, useClearAllProductDiscounts } from '../api/products';
 import { useCategories } from '../../catalog/api/categories';
 import type { AdminProduct } from '../types';
 function formatPrice(centimes: number): string {
@@ -104,8 +105,11 @@ export function AdminProductsPage() {
   const categories = categoriesData?.data ?? [];
   const updateMutation = useUpdateProduct();
   const deleteMutation = useDeleteProduct();
+  const clearDiscountsMutation = useClearAllProductDiscounts();
 
   const [deleteTarget, setDeleteTarget] = useState<AdminProduct | null>(null);
+  const [clearDiscountsDialogOpen, setClearDiscountsDialogOpen] = useState(false);
+  const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
   const products: AdminProduct[] = (data?.data as AdminProduct[]) ?? [];
   const totalPages = data?.meta?.last_page ?? 1;
@@ -134,6 +138,22 @@ export function AdminProductsPage() {
   const handleDelete = async (id: number) => {
     await deleteMutation.mutateAsync(id);
     setDeleteTarget(null);
+  };
+
+  const handleClearAllDiscounts = async () => {
+    try {
+      const result = await clearDiscountsMutation.mutateAsync() as {
+        products_updated?: number;
+        variants_updated?: number;
+      };
+      setClearDiscountsDialogOpen(false);
+      setFeedback({
+        type: 'success',
+        message: `Remises desactivees (${result.products_updated ?? 0} produits, ${result.variants_updated ?? 0} variantes).`,
+      });
+    } catch {
+      setFeedback({ type: 'error', message: 'Echec de la desactivation globale des remises.' });
+    }
   };
 
   return (
@@ -218,6 +238,16 @@ export function AdminProductsPage() {
             Effacer
           </Button>
         )}
+        <Button
+          size="small"
+          variant="outlined"
+          color="error"
+          onClick={() => setClearDiscountsDialogOpen(true)}
+          disabled={clearDiscountsMutation.isPending}
+          startIcon={clearDiscountsMutation.isPending ? <CircularProgress size={14} /> : undefined}
+        >
+          Desactiver toutes remises
+        </Button>
         <Typography variant="body2" color="text.secondary" sx={{ ml: 'auto' }}>
           {data?.meta?.total ?? 0} produit(s)
         </Typography>
@@ -393,6 +423,35 @@ export function AdminProductsPage() {
         isDeleting={deleteMutation.isPending}
       />
 
+      <Dialog
+        open={clearDiscountsDialogOpen}
+        onClose={() => setClearDiscountsDialogOpen(false)}
+      >
+        <DialogTitle>Desactiver toutes les remises</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Cette action va supprimer les remises de tous les produits et de toutes les variantes. Vous pourrez ensuite reactiver des remises produit par produit.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => setClearDiscountsDialogOpen(false)}
+            disabled={clearDiscountsMutation.isPending}
+          >
+            Annuler
+          </Button>
+          <Button
+            color="error"
+            variant="contained"
+            onClick={() => void handleClearAllDiscounts()}
+            disabled={clearDiscountsMutation.isPending}
+            startIcon={clearDiscountsMutation.isPending ? <CircularProgress size={16} /> : undefined}
+          >
+            Desactiver toutes remises
+          </Button>
+        </DialogActions>
+      </Dialog>
+
       <Box display="flex" justifyContent="space-between" alignItems="center" mt={3} flexWrap="wrap" gap={2}>
         <Box display="flex" alignItems="center" gap={1}>
           <FormControl size="small" sx={{ minWidth: 130 }}>
@@ -418,6 +477,21 @@ export function AdminProductsPage() {
           />
         )}
       </Box>
+
+      <Snackbar
+        open={Boolean(feedback)}
+        autoHideDuration={3000}
+        onClose={() => setFeedback(null)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert
+          severity={feedback?.type ?? 'success'}
+          onClose={() => setFeedback(null)}
+          sx={{ width: '100%' }}
+        >
+          {feedback?.message}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 }

@@ -213,3 +213,18 @@ export function useDeleteProductImage() {
     },
   });
 }
+
+export function useClearAllProductDiscounts() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async () => {
+      const res = await apiClient.post('/admin/products/discounts/clear');
+      return res.data;
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['admin', 'products'] });
+      void queryClient.invalidateQueries({ queryKey: ['products'] });
+    },
+  });
+}
