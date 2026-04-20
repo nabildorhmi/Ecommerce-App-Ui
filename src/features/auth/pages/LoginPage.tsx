@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate, Navigate } from 'react-router';
 import { useMutation } from '@tanstack/react-query';
 import Container from '@mui/material/Container';
@@ -11,6 +11,7 @@ import { LoginForm } from '../components/LoginForm';
 import { RegisterForm } from '../components/RegisterForm';
 import { loginApi, registerApi } from '../api/auth';
 import { useAuthStore } from '../store';
+import { useCartStore } from '@/features/cart/store';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import { PageDecor } from '@/shared/components/PageDecor';
 
@@ -26,50 +27,44 @@ export function LoginPage() {
   const [tab, setTab] = useState(0);
   const [loginError, setLoginError] = useState<string | null>(null);
   const [registerError, setRegisterError] = useState<string | null>(null);
+  const isAuthenticating = useRef(false);
 
   const user = useAuthStore((s) => s.user);
 
-  // Already authenticated — redirect immediately
-  if (user) {
+  // Already authenticated — redirect (skip during active login/register to avoid unmount before sync)
+  if (user && !isAuthenticating.current) {
     return <Navigate to="/products" replace />;
   }
 
   const loginMutation = useMutation({
     mutationFn: ({ email, password }: { email: string; password: string }) =>
       loginApi(email, password),
-    onSuccess: ({ token, user: loggedInUser }) => {
-      useAuthStore.getState().setAuth(token, loggedInUser);
-      if (loggedInUser.role === 'admin') {
-        void navigate('/admin/products');
-      } else {
-        void navigate('/products');
-      }
-    },
-    onError: (err: unknown) => {
-      const message =
-        (err as { response?: { data?: { message?: string } } })?.response?.data
-          ?.message ?? "Identifiants incorrects";
-      setLoginError(message);
-    },
   });
 
   const registerMutation = useMutation({
     mutationFn: registerApi,
-    onSuccess: ({ token, user: newUser }) => {
-      useAuthStore.getState().setAuth(token, newUser);
-      void navigate('/products');
-    },
-    onError: (err: unknown) => {
-      const message =
-        (err as { response?: { data?: { message?: string } } })?.response?.data
-          ?.message ?? "Erreur lors de l'inscription";
-      setRegisterError(message);
-    },
   });
 
   const handleLogin = async (data: { email: string; password: string }) => {
     setLoginError(null);
-    await loginMutation.mutateAsync(data);
+    isAuthenticating.current = true;
+    try {
+      const { token, user: loggedInUser } = await loginMutation.mutateAsync(data);
+      useAuthStore.getState().setAuth(token, loggedInUser);
+      await useCartStore.getState().syncWithServer();
+      if (loggedInUser.role === 'admin' || loggedInUser.role === 'global_admin') {
+        void navigate('/admin');
+      } else {
+        void navigate('/products');
+      }
+    } catch (err: unknown) {
+      const message =
+        (err as { response?: { data?: { message?: string } } })?.response?.data
+          ?.message ?? "Identifiants incorrects";
+      setLoginError(message);
+    } finally {
+      isAuthenticating.current = false;
+    }
   };
 
   const handleRegister = async (data: {
@@ -80,7 +75,20 @@ export function LoginPage() {
     password_confirmation: string;
   }) => {
     setRegisterError(null);
-    await registerMutation.mutateAsync(data);
+    isAuthenticating.current = true;
+    try {
+      const { token, user: newUser } = await registerMutation.mutateAsync(data);
+      useAuthStore.getState().setAuth(token, newUser);
+      await useCartStore.getState().syncWithServer();
+      void navigate('/products');
+    } catch (err: unknown) {
+      const message =
+        (err as { response?: { data?: { message?: string } } })?.response?.data
+          ?.message ?? "Erreur lors de l'inscription";
+      setRegisterError(message);
+    } finally {
+      isAuthenticating.current = false;
+    }
   };
 
   return (
