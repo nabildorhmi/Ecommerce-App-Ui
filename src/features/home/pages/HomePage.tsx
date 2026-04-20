@@ -18,6 +18,7 @@ import { TrustBadgesSection } from '../components/TrustBadgesSection';
 import { TestimonialsSection } from '../components/TestimonialsSection';
 import { WhyChooseUsSection } from '../components/WhyChooseUsSection';
 import { AnimatedSection } from '@/shared/components/AnimatedSection';
+import { useSiteSettings } from '@/shared/hooks/useSiteSettings';
 import type { Product } from '../../catalog/types';
 
 /* ════════════════════════════════════════════════════════════════════
@@ -206,8 +207,10 @@ const MANUAL_PROMO_HEADLINE: string | null = null;
 
 function PromoSection() {
   const { data, isLoading } = useProducts({ 'filter[is_on_sale]': '1', per_page: 24 });
+  const { data: siteSettings } = useSiteSettings();
   const saleProducts = data?.data ?? [];
   const manualHeadlineFromEnv = (import.meta.env.VITE_HOME_PROMO_HEADLINE as string | undefined)?.trim();
+  const manualHeadlineFromCms = siteSettings?.home_promo_headline?.trim();
 
   if (!isLoading && saleProducts.length === 0) {
     return null;
@@ -223,7 +226,7 @@ function PromoSection() {
   }, 0);
 
   const headline =
-    (manualHeadlineFromEnv || MANUAL_PROMO_HEADLINE)
+    (manualHeadlineFromCms || manualHeadlineFromEnv || MANUAL_PROMO_HEADLINE)
     ?? (biggestDiscount > 0 ? `JUSQU'A -${biggestDiscount}%` : 'OFFRES SPECIALES');
 
   return (

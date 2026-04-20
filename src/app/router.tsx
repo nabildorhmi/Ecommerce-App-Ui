@@ -85,6 +85,7 @@ const AdminOrderDetailPage = lazy(() => import('@/features/orders/pages/AdminOrd
 const AdminPagesPage = lazy(() => import('@/features/admin/pages/AdminPagesPage').then(m => ({ default: m.AdminPagesPage })));
 const AdminVariationTypesPage = lazy(() => import('@/features/admin/pages/AdminVariationTypesPage').then(m => ({ default: m.AdminVariationTypesPage })));
 const AdminHeroBannersPage = lazy(() => import('@/features/admin/pages/AdminHeroBannersPage').then(m => ({ default: m.AdminHeroBannersPage })));
+const AdminSiteSettingsPage = lazy(() => import('@/features/admin/pages/AdminSiteSettingsPage').then(m => ({ default: m.AdminSiteSettingsPage })));
 
 export const router = createBrowserRouter([
   {
@@ -175,6 +176,7 @@ export const router = createBrowserRouter([
           { path: '/admin/orders', element: <Suspense fallback={<PageLoader />}><AdminOrdersPage /></Suspense> },
           { path: '/admin/orders/:id', element: <Suspense fallback={<PageLoader />}><AdminOrderDetailPage /></Suspense> },
           { path: '/admin/pages', element: <Suspense fallback={<PageLoader />}><AdminPagesPage /></Suspense> },
+          { path: '/admin/site-settings', element: <Suspense fallback={<PageLoader />}><AdminSiteSettingsPage /></Suspense> },
           { path: '/admin/variation-types', element: <Suspense fallback={<PageLoader />}><AdminVariationTypesPage /></Suspense> },
           { path: '/admin/hero-banners', element: <Suspense fallback={<PageLoader />}><AdminHeroBannersPage /></Suspense> },
         ],

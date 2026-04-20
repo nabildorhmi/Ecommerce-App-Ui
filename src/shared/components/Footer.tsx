@@ -6,6 +6,7 @@ import Stack from '@mui/material/Stack';
 import Divider from '@mui/material/Divider';
 import { Link } from 'react-router';
 import { useCategories } from '@/features/catalog/api/categories';
+import { useSiteSettings } from '@/shared/hooks/useSiteSettings';
 import miraiLogo from '@/assets/miraiTech-Logo.png';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
@@ -19,11 +20,9 @@ import InstagramIcon from '@mui/icons-material/Instagram';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 
-const socialLinks = [
-  { label: 'Instagram', href: '#', icon: <InstagramIcon sx={{ fontSize: '1rem' }} /> },
-  { label: 'Facebook', href: '#', icon: <FacebookIcon sx={{ fontSize: '1rem' }} /> },
-  { label: 'WhatsApp', href: '#', icon: <WhatsAppIcon sx={{ fontSize: '1rem' }} /> },
-];
+function normalizePhoneForWa(phone: string): string {
+  return phone.replace(/\D/g, '');
+}
 
 const trustBadges = [
   { icon: <LockOutlinedIcon sx={{ fontSize: '1.3rem', color: '#00C2FF' }} />, label: 'Paiement Sécurisé', sub: 'Données protégées' },
@@ -34,7 +33,24 @@ const trustBadges = [
 
 export function Footer() {
   const { data } = useCategories();
+  const { data: siteSettings } = useSiteSettings();
   const categories = data?.data ?? [];
+  const whatsappNumber = normalizePhoneForWa(siteSettings?.whatsapp_number ?? '212600000000');
+  const whatsappMessage = encodeURIComponent(siteSettings?.whatsapp_prefill_message ?? 'Bonjour');
+  const whatsappHref = siteSettings?.whatsapp_url || `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
+
+  const socialLinks = [
+    { label: 'Instagram', href: siteSettings?.instagram_url || '#', icon: <InstagramIcon sx={{ fontSize: '1rem' }} /> },
+    { label: 'Facebook', href: siteSettings?.facebook_url || '#', icon: <FacebookIcon sx={{ fontSize: '1rem' }} /> },
+    { label: 'WhatsApp', href: whatsappHref, icon: <WhatsAppIcon sx={{ fontSize: '1rem' }} /> },
+  ].filter((item) => item.href && item.href !== '#');
+
+  const companyLinks = (siteSettings?.short_links?.length ? siteSettings.short_links : [
+    { label: 'A propos', url: '/a-propos' },
+    { label: 'Contact', url: '/contact' },
+    { label: 'CGV', url: '/cgv' },
+    { label: 'Mentions legales', url: '/mentions-legales' },
+  ]);
   return (
     <Box
       component="footer"
@@ -88,12 +104,12 @@ export function Footer() {
               />
             </Box>
             <Typography variant="body2" sx={{ color: '#8A919D', lineHeight: 1.8, maxWidth: 300, mb: 2 }}>
-              500+ clients satisfaits au Maroc. Trottinettes électriques premium avec garantie 2 ans et SAV local.
+              {siteSettings?.footer_description ?? '500+ clients satisfaits au Maroc. Trottinettes electriques premium avec garantie 2 ans et SAV local.'}
             </Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
               <LocationOnIcon sx={{ fontSize: '0.9rem', color: '#8A919D' }} />
               <Typography variant="body2" sx={{ color: '#8A919D', fontSize: '0.82rem', lineHeight: 1.7, maxWidth: 300 }}>
-                123 Bd Mohammed V, Casablanca, Maroc
+                {siteSettings?.address ?? '123 Bd Mohammed V, Casablanca, Maroc'}
               </Typography>
             </Box>
 
@@ -105,6 +121,8 @@ export function Footer() {
                   component="a"
                   href={href}
                   aria-label={label}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   sx={{
                     width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center',
                     borderRadius: '8px', border: '1px solid rgba(255,255,255,0.08)',
@@ -155,13 +173,8 @@ export function Footer() {
               Société
             </Typography>
             <Stack spacing={1.25}>
-              {[
-                { to: '/a-propos', label: 'À propos' },
-                { to: '/contact', label: 'Contact' },
-                { to: '/cgv', label: 'CGV' },
-                { to: '/mentions-legales', label: 'Mentions légales' },
-              ].map(({ to, label }) => (
-                <Box key={to} component={Link} to={to} sx={{ fontSize: '0.82rem', color: '#8A919D', textDecoration: 'none', transition: 'all 0.25s ease', '&:hover': { color: '#00C2FF', transform: 'translateX(4px)', display: 'inline-block' } }}>
+              {companyLinks.map(({ url, label }) => (
+                <Box key={`${url}-${label}`} component={Link} to={url} sx={{ fontSize: '0.82rem', color: '#8A919D', textDecoration: 'none', transition: 'all 0.25s ease', '&:hover': { color: '#00C2FF', transform: 'translateX(4px)', display: 'inline-block' } }}>
                   {label}
                 </Box>
               ))}
@@ -177,19 +190,19 @@ export function Footer() {
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <PhoneIcon sx={{ fontSize: '0.9rem', color: '#8A919D' }} />
                 <Typography sx={{ fontSize: '0.82rem', color: '#8A919D', lineHeight: 1.6 }}>
-                  +212 6XX XXX XXX
+                  {siteSettings?.phone ?? '+212 6XX XXX XXX'}
                 </Typography>
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <EmailIcon sx={{ fontSize: '0.9rem', color: '#8A919D' }} />
                 <Typography sx={{ fontSize: '0.82rem', color: '#8A919D', lineHeight: 1.6 }}>
-                  contact@miraitech.ma
+                  {siteSettings?.email ?? 'contact@miraitech.ma'}
                 </Typography>
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <ScheduleIcon sx={{ fontSize: '0.9rem', color: '#8A919D' }} />
                 <Typography sx={{ fontSize: '0.82rem', color: '#8A919D', lineHeight: 1.6 }}>
-                  Lun-Sam: 9h – 18h
+                  {siteSettings?.business_hours ?? 'Lun-Sam: 9h - 18h'}
                 </Typography>
               </Box>
             </Stack>

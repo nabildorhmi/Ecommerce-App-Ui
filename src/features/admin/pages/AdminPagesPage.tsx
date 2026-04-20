@@ -73,6 +73,7 @@ export function AdminPagesPage() {
   };
 
   const filteredPages = (pages ?? []).filter((page) => {
+    if (page.slug === 'site-settings') return false;
     const q = search.trim().toLowerCase();
     if (!q) return true;
     return page.title.toLowerCase().includes(q) || page.slug.toLowerCase().includes(q);
@@ -181,7 +182,6 @@ export function AdminPagesPage() {
         </Table>
       </TableContainer>
 
-      {/* Edit Dialog */}
       <Dialog
         open={Boolean(editTarget)}
         onClose={closeEdit}
@@ -210,7 +210,7 @@ export function AdminPagesPage() {
                 sx={{ borderBottom: 1, borderColor: 'divider', mb: 1 }}
               >
                 <Tab label="Modifier" sx={{ textTransform: 'none' }} />
-                <Tab label="Aperçu" sx={{ textTransform: 'none' }} />
+                <Tab label="Apercu" sx={{ textTransform: 'none' }} />
               </Tabs>
               {editTab === 0 ? (
                 <MDEditor

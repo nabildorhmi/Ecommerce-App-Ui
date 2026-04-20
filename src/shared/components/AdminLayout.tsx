@@ -26,6 +26,7 @@ import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import DescriptionIcon from '@mui/icons-material/Description';
 import ViewCarouselIcon from '@mui/icons-material/ViewCarousel';
 import PeopleIcon from '@mui/icons-material/People';
+import SettingsIcon from '@mui/icons-material/Settings';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -62,6 +63,7 @@ function getPageTitle(pathname: string): string {
     '/admin/pages': 'Pages',
     '/admin/hero-banners': 'Hero Banners',
     '/admin/users': 'Utilisateurs',
+    '/admin/site-settings': 'Parametres du site',
   };
 
   // Exact match first
@@ -115,6 +117,7 @@ export function AdminLayout() {
   ];
   if (user?.role === 'global_admin') {
     navItems.push({ to: '/admin/users', icon: <PeopleIcon />, label: 'Utilisateurs' });
+    navItems.push({ to: '/admin/site-settings', icon: <SettingsIcon />, label: 'Parametres du site' });
   }
 
   const isItemActive = (item: NavItem) => {
