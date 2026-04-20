@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import Box from '@mui/material/Box';
@@ -18,6 +18,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+import InputAdornment from '@mui/material/InputAdornment';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -25,6 +26,7 @@ import Typography from '@mui/material/Typography';
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
 import EditIcon from '@mui/icons-material/Edit';
+import SearchIcon from '@mui/icons-material/Search';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import MDEditor from '@uiw/react-md-editor';
@@ -45,19 +47,20 @@ export function AdminPagesPage() {
   const [editTarget, setEditTarget] = useState<PageData | null>(null);
   const [successOpen, setSuccessOpen] = useState(false);
   const [editTab, setEditTab] = useState(0);
+  const [search, setSearch] = useState('');
 
   const {
     register,
     handleSubmit,
     reset,
-    watch,
+    control,
     setValue,
     formState: { errors },
   } = useForm<PageFormData>({
     resolver: zodResolver(pageSchema),
   });
 
-  const contentValue = watch('content');
+  const contentValue = useWatch({ control, name: 'content' }) || '';
 
   const openEdit = (page: PageData) => {
     setEditTarget(page);
@@ -68,6 +71,12 @@ export function AdminPagesPage() {
   const closeEdit = () => {
     setEditTarget(null);
   };
+
+  const filteredPages = (pages ?? []).filter((page) => {
+    const q = search.trim().toLowerCase();
+    if (!q) return true;
+    return page.title.toLowerCase().includes(q) || page.slug.toLowerCase().includes(q);
+  });
 
   const onSubmit = async (data: PageFormData) => {
     if (!editTarget) return;
@@ -104,6 +113,33 @@ export function AdminPagesPage() {
         </Typography>
       </Box>
 
+      <Box display="flex" gap={1.5} alignItems="center" mb={2} flexWrap="wrap">
+        <TextField
+          size="small"
+          placeholder="Rechercher (titre, slug)"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          sx={{ minWidth: 260 }}
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon fontSize="small" sx={{ color: 'text.disabled' }} />
+                </InputAdornment>
+              ),
+            },
+          }}
+        />
+        {search && (
+          <Button size="small" variant="outlined" onClick={() => setSearch('')}>
+            Effacer
+          </Button>
+        )}
+        <Typography variant="body2" color="text.secondary" sx={{ ml: 'auto' }}>
+          {filteredPages.length} page(s)
+        </Typography>
+      </Box>
+
       <TableContainer component={Paper}>
         <Table size="small">
           <TableHead>
@@ -115,14 +151,14 @@ export function AdminPagesPage() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {(!pages || pages.length === 0) ? (
+            {filteredPages.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={4} align="center">
-                  Aucune page
+                  Aucune page trouvee
                 </TableCell>
               </TableRow>
             ) : (
-              pages.map((page) => (
+              filteredPages.map((page) => (
                 <TableRow key={page.id} hover>
                   <TableCell>{page.title}</TableCell>
                   <TableCell>{page.slug}</TableCell>

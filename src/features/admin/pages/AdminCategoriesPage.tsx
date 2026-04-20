@@ -23,10 +23,13 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
+import TextField from '@mui/material/TextField';
+import InputAdornment from '@mui/material/InputAdornment';
 import Container from '@mui/material/Container';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import SearchIcon from '@mui/icons-material/Search';
 import {
   useAdminCategories,
   useDeleteCategory,
@@ -102,13 +105,20 @@ export function AdminCategoriesPage() {
   const [formOpen, setFormOpen] = useState(false);
   const [editTarget, setEditTarget] = useState<AdminCategory | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<AdminCategory | null>(null);
+  const [search, setSearch] = useState('');
 
   const categories: AdminCategory[] = (data?.data as AdminCategory[]) ?? [];
+  const filteredCategories = categories.filter((cat) => {
+    const q = search.trim().toLowerCase();
+    if (!q) return true;
+    return cat.name.toLowerCase().includes(q) || cat.slug.toLowerCase().includes(q);
+  });
 
   const [catPage, setCatPage] = useState(1);
   const [catPerPage, setCatPerPage] = useState(10);
-  const catTotalPages = Math.ceil(categories.length / catPerPage);
-  const paginatedCategories = categories.slice((catPage - 1) * catPerPage, catPage * catPerPage);
+  const catTotalPages = Math.max(1, Math.ceil(filteredCategories.length / catPerPage));
+  const safeCatPage = Math.min(catPage, catTotalPages);
+  const paginatedCategories = filteredCategories.slice((safeCatPage - 1) * catPerPage, safeCatPage * catPerPage);
 
   const handleToggleActive = async (cat: AdminCategory) => {
     await updateMutation.mutateAsync({
@@ -173,6 +183,34 @@ export function AdminCategoriesPage() {
         </Button>
       </Box>
 
+      <Box display="flex" gap={1.5} alignItems="center" mb={2} flexWrap="wrap">
+        <TextField
+          size="small"
+          placeholder="Rechercher (nom, slug)"
+          value={search}
+          onChange={(e) => {
+            setSearch(e.target.value);
+            setCatPage(1);
+          }}
+          sx={{ minWidth: 240 }}
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon fontSize="small" sx={{ color: 'text.disabled' }} />
+                </InputAdornment>
+              ),
+            },
+          }}
+        />
+
+        {search && (
+          <Button size="small" variant="outlined" onClick={() => { setSearch(''); setCatPage(1); }}>
+            Effacer
+          </Button>
+        )}
+      </Box>
+
       <TableContainer component={Paper}>
         <Table size="small">
           <TableHead>
@@ -184,10 +222,10 @@ export function AdminCategoriesPage() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {categories.length === 0 ? (
+            {filteredCategories.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={4} align="center">
-                  Aucune categorie / No categories found
+                  Aucune categorie
                 </TableCell>
               </TableRow>
             ) : (
@@ -247,13 +285,13 @@ export function AdminCategoriesPage() {
             </Select>
           </FormControl>
           <Typography variant="body2" color="text.secondary">
-            {categories.length} au total
+            {filteredCategories.length} au total
           </Typography>
         </Box>
         {catTotalPages > 1 && (
           <Pagination
             count={catTotalPages}
-            page={catPage}
+            page={safeCatPage}
             onChange={(_e, p) => setCatPage(p)}
             color="primary"
             size="small"

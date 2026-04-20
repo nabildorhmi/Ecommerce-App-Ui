@@ -9,6 +9,11 @@ import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
+import InputAdornment from '@mui/material/InputAdornment';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import IconButton from '@mui/material/IconButton';
@@ -25,6 +30,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 import CenterFocusStrongIcon from '@mui/icons-material/CenterFocusStrong';
+import SearchIcon from '@mui/icons-material/Search';
 import {
   useAdminHeroBanners,
   useCreateHeroBanner,
@@ -39,9 +45,26 @@ import {
 export function AdminHeroBannersPage() {
   const { data, isLoading } = useAdminHeroBanners();
   const banners = data?.data ?? [];
+  const [search, setSearch] = useState('');
+  const [activeFilter, setActiveFilter] = useState<'' | '1' | '0'>('');
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<HeroBanner | null>(null);
+
+  const filteredBanners = banners.filter((banner) => {
+    const q = search.trim().toLowerCase();
+    const matchesSearch =
+      !q ||
+      (banner.title ?? '').toLowerCase().includes(q) ||
+      (banner.subtitle ?? '').toLowerCase().includes(q) ||
+      (banner.link ?? '').toLowerCase().includes(q);
+
+    const matchesActive =
+      activeFilter === '' ||
+      (activeFilter === '1' ? banner.is_active : !banner.is_active);
+
+    return matchesSearch && matchesActive;
+  });
 
   const handleAdd = () => {
     setEditing(null);
@@ -64,6 +87,48 @@ export function AdminHeroBannersPage() {
         </Button>
       </Box>
 
+      <Box display="flex" gap={1.5} alignItems="center" mb={2} flexWrap="wrap">
+        <TextField
+          size="small"
+          placeholder="Rechercher (titre, sous-titre, lien)"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          sx={{ minWidth: 280 }}
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon fontSize="small" sx={{ color: 'text.disabled' }} />
+                </InputAdornment>
+              ),
+            },
+          }}
+        />
+
+        <FormControl size="small" sx={{ minWidth: 130 }}>
+          <InputLabel>Statut</InputLabel>
+          <Select
+            label="Statut"
+            value={activeFilter}
+            onChange={(e) => setActiveFilter(e.target.value as '' | '1' | '0')}
+          >
+            <MenuItem value="">Tous</MenuItem>
+            <MenuItem value="1">Actifs</MenuItem>
+            <MenuItem value="0">Inactifs</MenuItem>
+          </Select>
+        </FormControl>
+
+        {(search || activeFilter) && (
+          <Button size="small" variant="outlined" onClick={() => { setSearch(''); setActiveFilter(''); }}>
+            Effacer
+          </Button>
+        )}
+
+        <Typography variant="body2" color="text.secondary" sx={{ ml: 'auto' }}>
+          {filteredBanners.length} banner(s)
+        </Typography>
+      </Box>
+
       {isLoading ? (
         <Grid container spacing={3}>
           {[1, 2, 3].map((i) => (
@@ -72,11 +137,11 @@ export function AdminHeroBannersPage() {
             </Grid>
           ))}
         </Grid>
-      ) : banners.length === 0 ? (
+      ) : filteredBanners.length === 0 ? (
         <Alert severity="info">Aucun banner. Ajoutez-en un pour le carousel hero.</Alert>
       ) : (
         <Grid container spacing={3}>
-          {banners.map((banner) => (
+          {filteredBanners.map((banner) => (
             <Grid size={{ xs: 12, sm: 6, md: 4 }} key={banner.id}>
               <BannerCard banner={banner} onEdit={() => handleEdit(banner)} />
             </Grid>

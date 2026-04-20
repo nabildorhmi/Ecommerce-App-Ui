@@ -25,10 +25,12 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
+import InputAdornment from '@mui/material/InputAdornment';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CloseIcon from '@mui/icons-material/Close';
+import SearchIcon from '@mui/icons-material/Search';
 import {
   useVariationTypes,
   useCreateVariationType,
@@ -222,13 +224,21 @@ export function AdminVariationTypesPage() {
   const [formOpen, setFormOpen] = useState(false);
   const [editTarget, setEditTarget] = useState<VariationType | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<VariationType | null>(null);
+  const [search, setSearch] = useState('');
 
   const types: VariationType[] = (data as VariationType[]) ?? [];
+  const filteredTypes = types.filter((type) => {
+    const q = search.trim().toLowerCase();
+    if (!q) return true;
+    const valuesText = type.values.map((v) => v.value).join(' ').toLowerCase();
+    return type.name.toLowerCase().includes(q) || valuesText.includes(q);
+  });
 
   const [typePage, setTypePage] = useState(1);
   const [typePerPage, setTypePerPage] = useState(10);
-  const typeTotalPages = Math.ceil(types.length / typePerPage);
-  const paginatedTypes = types.slice((typePage - 1) * typePerPage, typePage * typePerPage);
+  const typeTotalPages = Math.max(1, Math.ceil(filteredTypes.length / typePerPage));
+  const safeTypePage = Math.min(typePage, typeTotalPages);
+  const paginatedTypes = filteredTypes.slice((safeTypePage - 1) * typePerPage, safeTypePage * typePerPage);
 
   const handleCreate = async (name: string, values: string[]) => {
     await createMutation.mutateAsync({ name, values });
@@ -296,6 +306,34 @@ export function AdminVariationTypesPage() {
         </Button>
       </Box>
 
+      <Box display="flex" gap={1.5} alignItems="center" mb={2} flexWrap="wrap">
+        <TextField
+          size="small"
+          placeholder="Rechercher (attribut, valeurs)"
+          value={search}
+          onChange={(e) => {
+            setSearch(e.target.value);
+            setTypePage(1);
+          }}
+          sx={{ minWidth: 260 }}
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon fontSize="small" sx={{ color: 'text.disabled' }} />
+                </InputAdornment>
+              ),
+            },
+          }}
+        />
+
+        {search && (
+          <Button size="small" variant="outlined" onClick={() => { setSearch(''); setTypePage(1); }}>
+            Effacer
+          </Button>
+        )}
+      </Box>
+
       <TableContainer component={Paper}>
         <Table size="small">
           <TableHead>
@@ -306,10 +344,10 @@ export function AdminVariationTypesPage() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {types.length === 0 ? (
+            {filteredTypes.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={3} align="center">
-                  Aucun attribut / No attributes found
+                  Aucun attribut
                 </TableCell>
               </TableRow>
             ) : (
@@ -370,13 +408,13 @@ export function AdminVariationTypesPage() {
             </Select>
           </FormControl>
           <Typography variant="body2" color="text.secondary">
-            {types.length} au total
+            {filteredTypes.length} au total
           </Typography>
         </Box>
         {typeTotalPages > 1 && (
           <Pagination
             count={typeTotalPages}
-            page={typePage}
+            page={safeTypePage}
             onChange={(_e, p) => setTypePage(p)}
             color="primary"
             size="small"

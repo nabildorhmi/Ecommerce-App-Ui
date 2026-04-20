@@ -6,6 +6,7 @@ import {
   Paper,
   Stack,
   TextField,
+  Button,
   Select,
   MenuItem,
   FormControl,
@@ -74,8 +75,9 @@ export function AdminDashboardPage() {
   const handleFilterChange = (key: keyof DashboardFilters, value: string | number | undefined) => {
     setFilters((prev) => {
       if (value === undefined || value === '') {
-        const { [key]: _, ...rest } = prev;
-        return rest;
+        const next = { ...prev };
+        delete next[key];
+        return next;
       }
       return { ...prev, [key]: value };
     });
@@ -134,7 +136,7 @@ export function AdminDashboardPage() {
             size="small"
             sx={{ minWidth: 150 }}
             InputLabelProps={{ shrink: true }}
-            value={filters.date_from || ''}
+            value={filters.date_to || ''}
             onChange={(e) => handleFilterChange('date_to', e.target.value)}
           />
           <FormControl size="small" sx={{ minWidth: 120 }}>
@@ -182,6 +184,15 @@ export function AdminDashboardPage() {
               ))}
             </Select>
           </FormControl>
+          {Object.keys(filters).length > 0 && (
+            <Button
+              size="small"
+              variant="outlined"
+              onClick={() => setFilters({})}
+            >
+              Effacer filtres
+            </Button>
+          )}
         </Stack>
       </Paper>
 

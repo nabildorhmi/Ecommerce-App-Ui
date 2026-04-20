@@ -49,6 +49,14 @@ function slugify(value: string): string {
     .replace(/^-|-$/g, '');
 }
 
+function skuify(value: string): string {
+  const base = slugify(value)
+    .toUpperCase()
+    .replace(/-/g, '_')
+    .slice(0, 40);
+  return base;
+}
+
 // ── Zod schema ──
 const schema = z.object({
   sku: z.string().min(1, 'SKU requis').max(50),
@@ -247,6 +255,7 @@ export function ProductForm({ product, onSuccess }: ProductFormProps) {
   const [templateDialogOpen, setTemplateDialogOpen] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState<AttributeTemplateOption | null>(null);
   const [slugManual, setSlugManual] = useState(false);
+  const [skuManual, setSkuManual] = useState(Boolean(product?.sku));
 
   const defaultValues: FormValues = {
     sku: product?.sku ?? '',
@@ -280,6 +289,12 @@ export function ProductForm({ product, onSuccess }: ProductFormProps) {
       setValue('slug', slugify(name), { shouldValidate: false });
     }
   }, [name, slugManual, setValue]);
+
+  useEffect(() => {
+    if (!skuManual && !isEdit && name) {
+      setValue('sku', skuify(name), { shouldValidate: false });
+    }
+  }, [name, skuManual, isEdit, setValue]);
 
   const handleDeleteExistingImage = useCallback((mediaId: number) => {
     setExistingImages((prev) => prev.filter((img) => img.id !== mediaId));
@@ -355,9 +370,9 @@ export function ProductForm({ product, onSuccess }: ProductFormProps) {
           <TextField
             label="SKU *"
             size="small"
-            {...register('sku')}
+            {...register('sku', { onChange: () => setSkuManual(true) })}
             error={Boolean(errors.sku)}
-            helperText={errors.sku?.message ?? 'Code unique du produit'}
+            helperText={errors.sku?.message ?? 'Auto-genere depuis le nom (modifiable)'}
           />
           <TextField
             label="Nom du produit *"
