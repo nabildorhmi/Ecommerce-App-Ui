@@ -5,6 +5,7 @@ import { z } from 'zod';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import FormControl from '@mui/material/FormControl';
@@ -15,7 +16,6 @@ import Typography from '@mui/material/Typography';
 import Alert from '@mui/material/Alert';
 import CircularProgress from '@mui/material/CircularProgress';
 import IconButton from '@mui/material/IconButton';
-import Chip from '@mui/material/Chip';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -69,6 +69,12 @@ type FormValues = z.input<typeof schema>;
 interface AttrRow {
   key: string;
   value: string;
+}
+
+interface AttributeTemplateOption {
+  id: string;
+  name: string;
+  keys: string[];
 }
 
 interface ProductFormProps {
@@ -239,6 +245,7 @@ export function ProductForm({ product, onSuccess }: ProductFormProps) {
   const [existingImages, setExistingImages] = useState(product?.images ?? []);
   const [attrRows, setAttrRows] = useState<AttrRow[]>(() => attrsToRows(product?.attributes));
   const [templateDialogOpen, setTemplateDialogOpen] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState<AttributeTemplateOption | null>(null);
   const [slugManual, setSlugManual] = useState(false);
 
   const defaultValues: FormValues = {
@@ -505,22 +512,34 @@ export function ProductForm({ product, onSuccess }: ProductFormProps) {
           </Tooltip>
         </Box>
 
-        {/* Template chips */}
+        {/* Template selector */}
         {templates.length > 0 && (
-          <Box sx={{ display: 'flex', gap: 0.75, mb: 2, flexWrap: 'wrap', alignItems: 'center' }}>
-            <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', mr: 0.5 }}>
-              Appliquer modèle :
+          <Box sx={{ mb: 2 }}>
+            <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', mb: 0.75 }}>
+              Appliquer un modele de caracteristiques
             </Typography>
-            {templates.map((t) => (
-              <Chip
-                key={t.id}
-                label={t.name}
-                onClick={() => applyTemplate(t.id)}
-                variant="outlined"
-                size="small"
-                sx={{ cursor: 'pointer', borderColor: 'rgba(0,194,255,0.3)', fontSize: '0.73rem', '&:hover': { borderColor: '#00C2FF', background: 'rgba(0,194,255,0.08)' } }}
-              />
-            ))}
+            <Autocomplete
+              size="small"
+              options={templates as AttributeTemplateOption[]}
+              value={selectedTemplate}
+              onChange={(_, newValue) => {
+                setSelectedTemplate(newValue);
+                if (newValue) {
+                  applyTemplate(newValue.id);
+                  setSelectedTemplate(null);
+                }
+              }}
+              getOptionLabel={(option) => option.name}
+              isOptionEqualToValue={(option, value) => option.id === value.id}
+              noOptionsText="Aucun modele"
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Modeles"
+                  placeholder="Rechercher un modele..."
+                />
+              )}
+            />
           </Box>
         )}
 

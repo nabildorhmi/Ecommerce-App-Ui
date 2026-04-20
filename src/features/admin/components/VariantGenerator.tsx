@@ -3,6 +3,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Chip from '@mui/material/Chip';
+import IconButton from '@mui/material/IconButton';
 import Alert from '@mui/material/Alert';
 import CircularProgress from '@mui/material/CircularProgress';
 import Autocomplete from '@mui/material/Autocomplete';
@@ -11,6 +12,8 @@ import Divider from '@mui/material/Divider';
 import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
 import TuneIcon from '@mui/icons-material/Tune';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { Link } from 'react-router';
 import { useAttributes, useGenerateVariants } from '../api/variations';
 import type { Attribute as AttrType, AttributeValue } from '../types';
@@ -20,26 +23,37 @@ interface VariantGeneratorProps {
   productSku: string;
 }
 
+interface GeneratorRow {
+  id: number;
+  attributeId: number | null;
+}
+
 export function VariantGenerator({ productId, productSku }: VariantGeneratorProps) {
   const { data: attributes, isLoading: attrsLoading } = useAttributes();
   const generateMutation = useGenerateVariants();
 
   const [selected, setSelected] = useState<Record<number, AttributeValue[]>>({});
+  const [rows, setRows] = useState<GeneratorRow[]>([]);
+  const [rowSeed, setRowSeed] = useState(1);
 
   const attrs: AttrType[] = useMemo(() => (attributes as AttrType[]) ?? [], [attributes]);
   const attrsWithValues = useMemo(() => attrs.filter((a) => a.values.length > 0), [attrs]);
 
+  const selectedGroups = useMemo(() => {
+    return rows
+      .map((row) => (row.attributeId ? selected[row.attributeId] ?? [] : []))
+      .filter((vals) => vals.length > 0);
+  }, [rows, selected]);
+
   // Count total combinations (Cartesian product)
   const totalCombinations = useMemo(() => {
-    const groups = Object.values(selected).filter((vals) => vals.length > 0);
-    if (groups.length === 0) return 0;
-    return groups.reduce((acc, vals) => acc * vals.length, 1);
-  }, [selected]);
+    if (selectedGroups.length === 0) return 0;
+    return selectedGroups.reduce((acc, vals) => acc * vals.length, 1);
+  }, [selectedGroups]);
 
   // Preview: flat list of combination labels
   const combinationPreview = useMemo(() => {
-    const groups = Object.values(selected).filter((vals) => vals.length > 0);
-    if (groups.length === 0) return [];
+    if (selectedGroups.length === 0) return [];
 
     const cartesian = (arr: AttributeValue[][]): AttributeValue[][] => {
       if (arr.length === 0) return [[]];
@@ -48,14 +62,56 @@ export function VariantGenerator({ productId, productSku }: VariantGeneratorProp
       return first.flatMap((item) => restProduct.map((combo) => [item, ...combo]));
     };
 
-    return cartesian(groups).map((combo) => combo.map((v) => v.value).join(' · '));
-  }, [selected]);
+    return cartesian(selectedGroups).map((combo) => combo.map((v) => v.value).join(' · '));
+  }, [selectedGroups]);
+
+  const addAttributeRow = () => {
+    setRows((prev) => [...prev, { id: rowSeed, attributeId: null }]);
+    setRowSeed((prev) => prev + 1);
+  };
+
+  const removeAttributeRow = (rowId: number) => {
+    setRows((prev) => {
+      const rowToRemove = prev.find((row) => row.id === rowId);
+      if (rowToRemove?.attributeId) {
+        setSelected((old) => {
+          const next = { ...old };
+          delete next[rowToRemove.attributeId!];
+          return next;
+        });
+      }
+      return prev.filter((row) => row.id !== rowId);
+    });
+  };
+
+  const updateRowAttribute = (rowId: number, newAttributeId: number | null) => {
+    setRows((prev) => {
+      const current = prev.find((row) => row.id === rowId);
+      const previousAttributeId = current?.attributeId ?? null;
+
+      if (previousAttributeId && previousAttributeId !== newAttributeId) {
+        setSelected((old) => {
+          const next = { ...old };
+          delete next[previousAttributeId];
+          return next;
+        });
+      }
+
+      return prev.map((row) =>
+        row.id === rowId ? { ...row, attributeId: newAttributeId } : row
+      );
+    });
+  };
 
   const handleGenerate = async () => {
     const attributeValues: Record<number, number[]> = {};
-    for (const [attrId, vals] of Object.entries(selected)) {
+    for (const row of rows) {
+      if (!row.attributeId) continue;
+      const vals = selected[row.attributeId] ?? [];
       const ids = vals.map((v) => v.id);
-      if (ids.length > 0) attributeValues[Number(attrId)] = ids;
+      if (ids.length > 0) {
+        attributeValues[row.attributeId] = ids;
+      }
     }
     if (Object.keys(attributeValues).length === 0) return;
 
@@ -69,6 +125,7 @@ export function VariantGenerator({ productId, productSku }: VariantGeneratorProp
       },
     });
     setSelected({});
+    setRows([]);
   };
 
   if (attrsLoading) {
@@ -156,56 +213,128 @@ export function VariantGenerator({ productId, productSku }: VariantGeneratorProp
         Sélectionnez les valeurs ci-dessous — toutes les combinaisons seront créées automatiquement.
       </Typography>
 
-      {/* One autocomplete per attribute */}
-      <Box display="grid" gridTemplateColumns={{ xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' }} gap={1.5}>
-        {attrsWithValues.map((attr) => (
-          <Autocomplete
-            key={attr.id}
-            multiple
-            options={attr.values}
-            getOptionLabel={(option) => option.value}
-            isOptionEqualToValue={(opt, val) => opt.id === val.id}
-            value={selected[attr.id] ?? []}
-            onChange={(_, newValue) => {
-              setSelected((prev) => {
-                const next = { ...prev };
-                if (newValue.length === 0) {
-                  delete next[attr.id];
-                } else {
-                  next[attr.id] = newValue;
-                }
-                return next;
-              });
-            }}
-            renderTags={(tagValue, getTagProps) =>
-              tagValue.map((option, index) => {
-                const { key, ...rest } = getTagProps({ index });
-                return (
-                  <Chip
-                    key={key}
-                    label={option.value}
-                    size="small"
-                    color="primary"
-                    variant="outlined"
-                    sx={{ fontSize: '0.7rem' }}
-                    {...rest}
-                  />
-                );
-              })
-            }
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label={attr.name}
-                placeholder={`Choisir ${attr.name.toLowerCase()}…`}
-                size="small"
-              />
-            )}
-            size="small"
-            disableCloseOnSelect
-          />
-        ))}
-      </Box>
+      {rows.length === 0 ? (
+        <Box
+          sx={{
+            border: '1px dashed rgba(255,255,255,0.12)',
+            borderRadius: '12px',
+            p: 2,
+            textAlign: 'center',
+          }}
+        >
+          <Typography sx={{ fontSize: '0.78rem', color: 'var(--mirai-gray)', mb: 1.2 }}>
+            Ajoutez d'abord les attributs que vous voulez combiner.
+          </Typography>
+          <Button size="small" startIcon={<AddIcon />} variant="outlined" onClick={addAttributeRow}>
+            Ajouter un attribut
+          </Button>
+        </Box>
+      ) : (
+        <Box display="flex" flexDirection="column" gap={1.5}>
+          {rows.map((row, index) => {
+            const usedIds = rows
+              .filter((r) => r.id !== row.id && r.attributeId !== null)
+              .map((r) => r.attributeId as number);
+            const attributeOptions = attrsWithValues.filter(
+              (attr) => attr.id === row.attributeId || !usedIds.includes(attr.id)
+            );
+            const selectedAttr = attrsWithValues.find((attr) => attr.id === row.attributeId) ?? null;
+
+            return (
+              <Box
+                key={row.id}
+                sx={{
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  borderRadius: '10px',
+                  p: 1.5,
+                }}
+              >
+                <Box display="flex" alignItems="center" gap={1} mb={1}>
+                  <Typography sx={{ fontSize: '0.72rem', color: 'rgba(0,194,255,0.75)', fontWeight: 700 }}>
+                    Attribut #{index + 1}
+                  </Typography>
+                  <Box sx={{ ml: 'auto' }}>
+                    <IconButton size="small" color="error" onClick={() => removeAttributeRow(row.id)}>
+                      <DeleteIcon fontSize="small" />
+                    </IconButton>
+                  </Box>
+                </Box>
+
+                <Autocomplete
+                  size="small"
+                  options={attributeOptions}
+                  getOptionLabel={(option) => option.name}
+                  isOptionEqualToValue={(option, value) => option.id === value.id}
+                  value={selectedAttr}
+                  noOptionsText="Aucun attribut"
+                  onChange={(_, newValue) => updateRowAttribute(row.id, newValue?.id ?? null)}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Attribut"
+                      placeholder="Rechercher un attribut..."
+                    />
+                  )}
+                />
+
+                {selectedAttr && (
+                  <Box mt={1}>
+                    <Autocomplete
+                      multiple
+                      size="small"
+                      options={selectedAttr.values}
+                      getOptionLabel={(option) => option.value}
+                      isOptionEqualToValue={(opt, val) => opt.id === val.id}
+                      value={selected[selectedAttr.id] ?? []}
+                      onChange={(_, newValue) => {
+                        setSelected((prev) => {
+                          const next = { ...prev };
+                          if (newValue.length === 0) {
+                            delete next[selectedAttr.id];
+                          } else {
+                            next[selectedAttr.id] = newValue;
+                          }
+                          return next;
+                        });
+                      }}
+                      renderTags={(tagValue, getTagProps) =>
+                        tagValue.map((option, tagIndex) => {
+                          const { key, ...rest } = getTagProps({ index: tagIndex });
+                          return (
+                            <Chip
+                              key={key}
+                              label={option.value}
+                              size="small"
+                              color="primary"
+                              variant="outlined"
+                              sx={{ fontSize: '0.7rem' }}
+                              {...rest}
+                            />
+                          );
+                        })
+                      }
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label={`Valeurs (${selectedAttr.name})`}
+                          placeholder="Selectionner les valeurs..."
+                        />
+                      )}
+                      disableCloseOnSelect
+                    />
+                  </Box>
+                )}
+              </Box>
+            );
+          })}
+
+          <Box>
+            <Button size="small" startIcon={<AddIcon />} variant="outlined" onClick={addAttributeRow}>
+              Ajouter un attribut
+            </Button>
+          </Box>
+        </Box>
+      )}
 
       {/* Combination preview */}
       {combinationPreview.length > 0 && (

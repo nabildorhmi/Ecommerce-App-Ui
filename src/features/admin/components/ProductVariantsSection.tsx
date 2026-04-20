@@ -10,6 +10,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogActions from '@mui/material/DialogActions';
 import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
@@ -95,6 +96,13 @@ function VariantDialog({
     });
   }
 
+  const typesWithValues = variationTypes.filter((t) => t.values.length > 0);
+  const initialSelectedAttributeIds = typesWithValues
+    .filter((type) => Boolean(initialSelectedValues[type.id]))
+    .map((type) => type.id);
+
+  const [selectedAttributeIds, setSelectedAttributeIds] = useState<number[]>(initialSelectedAttributeIds);
+
   const [formData, setFormData] = useState<VariantFormData>({
     sku: editTarget?.sku ?? '',
     priceOverrideMad: editTarget?.price ? (editTarget.price / 100).toFixed(2) : '',
@@ -104,7 +112,10 @@ function VariantDialog({
     selectedValues: initialSelectedValues,
   });
 
-  const typesWithValues = variationTypes.filter((t) => t.values.length > 0);
+  const selectedTypes = typesWithValues.filter((type) => selectedAttributeIds.includes(type.id));
+  const hasAllRequiredSelections =
+    isDefault ||
+    (selectedTypes.length > 0 && selectedTypes.every((type) => Boolean(formData.selectedValues[type.id])));
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth
@@ -130,21 +141,49 @@ function VariantDialog({
                   </a>
                 </Alert>
               )}
-              {typesWithValues.map((type) => (
+              <Autocomplete
+                multiple
+                size="small"
+                options={typesWithValues}
+                getOptionLabel={(option) => option.name}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                value={typesWithValues.filter((type) => selectedAttributeIds.includes(type.id))}
+                noOptionsText="Aucun attribut"
+                onChange={(_, newSelected) => {
+                  const nextIds = newSelected.map((type) => type.id);
+                  setSelectedAttributeIds(nextIds);
+                  setFormData((prev) => {
+                    const nextValues: Record<number, number> = {};
+                    for (const attrId of nextIds) {
+                      const picked = prev.selectedValues[attrId];
+                      if (picked) nextValues[attrId] = picked;
+                    }
+                    return { ...prev, selectedValues: nextValues };
+                  });
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Attributs a utiliser"
+                    placeholder="Rechercher puis selectionner des attributs..."
+                  />
+                )}
+              />
+
+              {selectedTypes.map((type) => (
                 <FormControl key={type.id} fullWidth size="small">
                   <InputLabel>{type.name}</InputLabel>
                   <Select
                     value={formData.selectedValues[type.id] ?? ''}
                     onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        selectedValues: { ...formData.selectedValues, [type.id]: Number(e.target.value) },
-                      })
+                      setFormData((prev) => ({
+                        ...prev,
+                        selectedValues: { ...prev.selectedValues, [type.id]: Number(e.target.value) },
+                      }))
                     }
                     label={type.name}
-                    required
                   >
-                    <MenuItem value=""><em>Sélectionner…</em></MenuItem>
+                    <MenuItem value=""><em>Selectionner...</em></MenuItem>
                     {type.values.map((val) => (
                       <MenuItem key={val.id} value={val.id}>{val.value}</MenuItem>
                     ))}
@@ -222,7 +261,7 @@ function VariantDialog({
         <Button
           variant="contained"
           onClick={() => void onSubmit(formData)}
-          disabled={isSubmitting || (!isDefault && typesWithValues.length === 0)}
+          disabled={isSubmitting || (!isDefault && (typesWithValues.length === 0 || !hasAllRequiredSelections))}
           startIcon={isSubmitting ? <CircularProgress size={16} color="inherit" /> : undefined}
           sx={{
             borderRadius: '8px',
