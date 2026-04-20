@@ -430,7 +430,7 @@ export function CheckoutPage() {
                 <Stack spacing={1} divider={<Divider />}>
                   {items.map((item) => (
                     <Stack
-                      key={item.productId}
+                      key={`${item.productId}-${item.variantId ?? 'default'}`}
                       direction="row"
                       justifyContent="space-between"
                       alignItems="center"

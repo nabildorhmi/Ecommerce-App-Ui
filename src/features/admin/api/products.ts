@@ -37,6 +37,7 @@ function buildProductFormData(data: {
   slug?: string;
   description?: string;
   price?: number; // centimes (already converted)
+  stock_quantity?: number;
   discount_percentage?: number | null; // 0-100 integer
   category_id?: number | null;
   is_active?: boolean;
@@ -53,6 +54,7 @@ function buildProductFormData(data: {
   if (data.slug !== undefined) fd.append('slug', data.slug);
   if (data.description !== undefined) fd.append('description', data.description);
   if (data.price !== undefined) fd.append('price', String(data.price));
+  if (data.stock_quantity !== undefined) fd.append('stock_quantity', String(data.stock_quantity));
   if (data.discount_percentage !== undefined) {
     fd.append('discount_percentage', data.discount_percentage !== null ? String(data.discount_percentage) : '');
   }
@@ -95,6 +97,7 @@ interface CreateProductInput {
   slug: string;
   description: string;
   price: number; // in MAD — we convert to centimes here
+  stock_quantity?: number;
   discount_percentage?: number | null; // 0-100 integer
   category_id: number | null;
   is_active: boolean;
@@ -112,6 +115,7 @@ export function useCreateProduct() {
       const fd = buildProductFormData({
         ...input,
         price: Math.round(input.price * 100), // MAD -> centimes
+        stock_quantity: input.stock_quantity ?? 0,
         discount_percentage: input.discount_percentage ?? null,
         delete_images: [],
       });
