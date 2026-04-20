@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -434,13 +434,6 @@ export function ProductVariantsSection({ productId, productSku }: ProductVariant
 
   const totalPages = Math.max(1, Math.ceil(filteredVariants.length / PAGE_SIZE));
   const safePage = Math.min(page, totalPages - 1);
-
-  useEffect(() => {
-    if (page > totalPages - 1) {
-      setPage(Math.max(0, totalPages - 1));
-    }
-  }, [page, totalPages]);
-
   const pagedVariants = filteredVariants.slice(safePage * PAGE_SIZE, safePage * PAGE_SIZE + PAGE_SIZE);
 
   // ── Handlers ──

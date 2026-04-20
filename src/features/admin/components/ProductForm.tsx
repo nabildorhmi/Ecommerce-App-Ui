@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import Box from '@mui/material/Box';
@@ -64,7 +64,7 @@ const schema = z.object({
   is_new: z.boolean(),
 });
 
-type FormValues = z.infer<typeof schema>;
+type FormValues = z.input<typeof schema>;
 
 interface AttrRow {
   key: string;
@@ -259,16 +259,14 @@ export function ProductForm({ product, onSuccess }: ProductFormProps) {
     register,
     control,
     handleSubmit,
-    watch,
     setValue,
     formState: { errors },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } = useForm<FormValues>({
-    resolver: zodResolver(schema) as any,
+    resolver: zodResolver(schema),
     defaultValues,
   });
 
-  const name = watch('name');
+  const name = useWatch({ control, name: 'name' });
 
   useEffect(() => {
     if (!slugManual && name) {
@@ -334,7 +332,7 @@ export function ProductForm({ product, onSuccess }: ProductFormProps) {
   return (
     <Box
       component="form"
-      onSubmit={handleSubmit(onSubmit as Parameters<typeof handleSubmit>[0])}
+      onSubmit={handleSubmit(onSubmit)}
       sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}
     >
       {mutationError && (
