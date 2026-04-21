@@ -172,66 +172,81 @@ export function AdminUsersPage() {
         )}
       </Box>
 
-      <Box display="flex" gap={1.5} mb={2} flexWrap="wrap" alignItems="center">
-        <TextField
-          size="small"
-          placeholder="Rechercher (nom, email, telephone)"
-          value={search}
-          onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-          sx={{ minWidth: 260 }}
-          slotProps={{
-            input: {
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon fontSize="small" sx={{ color: 'text.disabled' }} />
-                </InputAdornment>
-              ),
-            },
-          }}
-        />
+      <Paper variant="outlined" sx={{ p: 2, mb: 2 }}>
+        <Typography variant="subtitle1" fontWeight={700} sx={{ mb: 0.5 }}>
+          Gestion des comptes
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          Filtrez par role ou statut pour administrer rapidement les comptes, puis ouvrez une fiche detail pour plus d actions.
+        </Typography>
+      </Paper>
 
-        <FormControl size="small" sx={{ minWidth: 150 }}>
-          <InputLabel>Role</InputLabel>
-          <Select
-            label="Role"
-            value={roleFilter}
-            onChange={(e) => { setRoleFilter(e.target.value as '' | 'admin' | 'customer' | 'global_admin'); setPage(1); }}
-          >
-            <MenuItem value="">Tous</MenuItem>
-            <MenuItem value="global_admin">Super admin</MenuItem>
-            <MenuItem value="admin">Admin</MenuItem>
-            <MenuItem value="customer">Client</MenuItem>
-          </Select>
-        </FormControl>
-
-        <FormControl size="small" sx={{ minWidth: 130 }}>
-          <InputLabel>Statut</InputLabel>
-          <Select
-            label="Statut"
-            value={activeFilter}
-            onChange={(e) => { setActiveFilter(e.target.value as '' | '1' | '0'); setPage(1); }}
-          >
-            <MenuItem value="">Tous</MenuItem>
-            <MenuItem value="1">Actifs</MenuItem>
-            <MenuItem value="0">Inactifs</MenuItem>
-          </Select>
-        </FormControl>
-
-        {(search || roleFilter || activeFilter) && (
-          <Button
+      <Paper variant="outlined" sx={{ p: 2, mb: 2 }}>
+        <Box display="flex" gap={1.5} flexWrap="wrap" alignItems="center">
+          <TextField
             size="small"
-            variant="outlined"
-            onClick={() => {
-              setSearch('');
-              setRoleFilter('');
-              setActiveFilter('');
-              setPage(1);
+            placeholder="Rechercher (nom, email, telephone)"
+            value={search}
+            onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+            sx={{ minWidth: 260 }}
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon fontSize="small" sx={{ color: 'text.disabled' }} />
+                  </InputAdornment>
+                ),
+              },
             }}
-          >
-            Effacer
-          </Button>
-        )}
-      </Box>
+          />
+
+          <FormControl size="small" sx={{ minWidth: 150 }}>
+            <InputLabel>Role</InputLabel>
+            <Select
+              label="Role"
+              value={roleFilter}
+              onChange={(e) => { setRoleFilter(e.target.value as '' | 'admin' | 'customer' | 'global_admin'); setPage(1); }}
+            >
+              <MenuItem value="">Tous</MenuItem>
+              <MenuItem value="global_admin">Super admin</MenuItem>
+              <MenuItem value="admin">Admin</MenuItem>
+              <MenuItem value="customer">Client</MenuItem>
+            </Select>
+          </FormControl>
+
+          <FormControl size="small" sx={{ minWidth: 130 }}>
+            <InputLabel>Statut</InputLabel>
+            <Select
+              label="Statut"
+              value={activeFilter}
+              onChange={(e) => { setActiveFilter(e.target.value as '' | '1' | '0'); setPage(1); }}
+            >
+              <MenuItem value="">Tous</MenuItem>
+              <MenuItem value="1">Actifs</MenuItem>
+              <MenuItem value="0">Inactifs</MenuItem>
+            </Select>
+          </FormControl>
+
+          {(search || roleFilter || activeFilter) && (
+            <Button
+              size="small"
+              variant="outlined"
+              onClick={() => {
+                setSearch('');
+                setRoleFilter('');
+                setActiveFilter('');
+                setPage(1);
+              }}
+            >
+              Effacer
+            </Button>
+          )}
+
+          <Typography variant="body2" color="text.secondary" sx={{ ml: 'auto' }}>
+            {data?.meta?.total ?? 0} utilisateur(s)
+          </Typography>
+        </Box>
+      </Paper>
 
       <TableContainer component={Paper}>
         <Table size="small">

@@ -189,69 +189,82 @@ export function AdminProductsPage() {
         </Button>
       </Box>
 
-      {/* ── Filters bar ── */}
-      <Box display="flex" gap={1.5} mb={2} flexWrap="wrap" alignItems="center">
-        <TextField
-          size="small"
-          placeholder="Rechercher (nom, SKU…)"
-          value={search}
-          onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-          sx={{ minWidth: 220 }}
-          slotProps={{
-            input: {
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon fontSize="small" sx={{ color: 'text.disabled' }} />
-                </InputAdornment>
-              ),
-            },
-          }}
-        />
-        <FormControl size="small" sx={{ minWidth: 180 }}>
-          <InputLabel sx={{ fontSize: '0.82rem' }}>Catégorie</InputLabel>
-          <Select
-            label="Catégorie"
-            value={categoryId}
-            onChange={(e) => { setCategoryId(e.target.value as number | ''); setPage(1); }}
-            startAdornment={<FilterListIcon fontSize="small" sx={{ mr: 0.5, color: 'text.disabled' }} />}
-          >
-            <MenuItem value="">Toutes</MenuItem>
-            {categories.map((cat) => (
-              <MenuItem key={cat.id} value={cat.id}>{cat.name}</MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <FormControl size="small" sx={{ minWidth: 130 }}>
-          <InputLabel sx={{ fontSize: '0.82rem' }}>Statut</InputLabel>
-          <Select
-            label="Statut"
-            value={activeFilter}
-            onChange={(e) => { setActiveFilter(e.target.value as '' | '1' | '0'); setPage(1); }}
-          >
-            <MenuItem value="">Tous</MenuItem>
-            <MenuItem value="1">Actifs</MenuItem>
-            <MenuItem value="0">Inactifs</MenuItem>
-          </Select>
-        </FormControl>
-        {(search || categoryId !== '' || activeFilter !== '') && (
-          <Button size="small" variant="outlined" color="inherit" onClick={() => { setSearch(''); setCategoryId(''); setActiveFilter(''); setPage(1); }}>
-            Effacer
-          </Button>
-        )}
-        <Button
-          size="small"
-          variant="outlined"
-          color="error"
-          onClick={() => setClearDiscountsDialogOpen(true)}
-          disabled={clearDiscountsMutation.isPending}
-          startIcon={clearDiscountsMutation.isPending ? <CircularProgress size={14} /> : undefined}
-        >
-          Desactiver toutes remises
-        </Button>
-        <Typography variant="body2" color="text.secondary" sx={{ ml: 'auto' }}>
-          {data?.meta?.total ?? 0} produit(s)
+      <Paper variant="outlined" sx={{ p: 2, mb: 2 }}>
+        <Typography variant="subtitle1" fontWeight={700} sx={{ mb: 0.5 }}>
+          Organisation produits
         </Typography>
-      </Box>
+        <Typography variant="body2" color="text.secondary">
+          Utilisez les filtres pour trouver rapidement un produit, puis activez ou mettez a jour ses badges depuis le tableau.
+        </Typography>
+      </Paper>
+
+      <Paper variant="outlined" sx={{ p: 2, mb: 2 }}>
+        <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 1.5 }}>
+          Filtres et actions rapides
+        </Typography>
+        <Box display="flex" gap={1.5} flexWrap="wrap" alignItems="center">
+          <TextField
+            size="small"
+            placeholder="Rechercher (nom, SKU...)"
+            value={search}
+            onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+            sx={{ minWidth: 220 }}
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon fontSize="small" sx={{ color: 'text.disabled' }} />
+                  </InputAdornment>
+                ),
+              },
+            }}
+          />
+          <FormControl size="small" sx={{ minWidth: 180 }}>
+            <InputLabel sx={{ fontSize: '0.82rem' }}>Categorie</InputLabel>
+            <Select
+              label="Categorie"
+              value={categoryId}
+              onChange={(e) => { setCategoryId(e.target.value as number | ''); setPage(1); }}
+              startAdornment={<FilterListIcon fontSize="small" sx={{ mr: 0.5, color: 'text.disabled' }} />}
+            >
+              <MenuItem value="">Toutes</MenuItem>
+              {categories.map((cat) => (
+                <MenuItem key={cat.id} value={cat.id}>{cat.name}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl size="small" sx={{ minWidth: 130 }}>
+            <InputLabel sx={{ fontSize: '0.82rem' }}>Statut</InputLabel>
+            <Select
+              label="Statut"
+              value={activeFilter}
+              onChange={(e) => { setActiveFilter(e.target.value as '' | '1' | '0'); setPage(1); }}
+            >
+              <MenuItem value="">Tous</MenuItem>
+              <MenuItem value="1">Actifs</MenuItem>
+              <MenuItem value="0">Inactifs</MenuItem>
+            </Select>
+          </FormControl>
+          {(search || categoryId !== '' || activeFilter !== '') && (
+            <Button size="small" variant="outlined" color="inherit" onClick={() => { setSearch(''); setCategoryId(''); setActiveFilter(''); setPage(1); }}>
+              Effacer
+            </Button>
+          )}
+          <Button
+            size="small"
+            variant="outlined"
+            color="error"
+            onClick={() => setClearDiscountsDialogOpen(true)}
+            disabled={clearDiscountsMutation.isPending}
+            startIcon={clearDiscountsMutation.isPending ? <CircularProgress size={14} /> : undefined}
+          >
+            Desactiver toutes remises
+          </Button>
+          <Typography variant="body2" color="text.secondary" sx={{ ml: 'auto' }}>
+            {data?.meta?.total ?? 0} produit(s)
+          </Typography>
+        </Box>
+      </Paper>
 
       {error && (
         <Alert severity="error" sx={{ mb: 2 }}>

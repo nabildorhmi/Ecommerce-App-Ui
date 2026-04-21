@@ -84,13 +84,13 @@ function FormDialog({
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>
         {editTarget
-          ? 'Modifier l\'attribut / Edit attribute'
-          : 'Nouvel attribut / New attribute'}
+          ? 'Modifier l\'attribut'
+          : 'Nouvel attribut'}
       </DialogTitle>
       <DialogContent>
         <Box pt={1}>
           <TextField
-            label="Nom / Name"
+            label="Nom"
             value={name}
             onChange={(e) => setName(e.target.value)}
             fullWidth
@@ -100,7 +100,7 @@ function FormDialog({
           />
 
           <Typography variant="subtitle2" mt={3} mb={1}>
-            Valeurs / Values
+            Valeurs
           </Typography>
 
           {values.map((value, index) => (
@@ -109,6 +109,7 @@ function FormDialog({
                 value={value}
                 onChange={(e) => handleValueChange(index, e.target.value)}
                 placeholder="Valeur / Value"
+                placeholder="Valeur"
                 fullWidth
                 size="small"
               />
@@ -117,7 +118,7 @@ function FormDialog({
                   size="small"
                   color="error"
                   onClick={() => handleRemoveValue(index)}
-                  title="Supprimer / Remove"
+                  title="Supprimer"
                 >
                   <CloseIcon fontSize="small" />
                 </IconButton>
@@ -131,20 +132,20 @@ function FormDialog({
             size="small"
             sx={{ mt: 1 }}
           >
-            Ajouter une valeur / Add value
+            Ajouter une valeur
           </Button>
 
           {submitError && (
             <Alert severity="error" sx={{ mt: 2 }}>
               {(submitError as { response?: { data?: { message?: string } } })
-                ?.response?.data?.message ?? 'Une erreur est survenue / An error occurred'}
+                ?.response?.data?.message ?? 'Une erreur est survenue'}
             </Alert>
           )}
         </Box>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} disabled={isSubmitting}>
-          Annuler / Cancel
+          Annuler
         </Button>
         <Button
           variant="contained"
@@ -152,7 +153,7 @@ function FormDialog({
           disabled={isSubmitting || !name.trim()}
           startIcon={isSubmitting ? <CircularProgress size={16} /> : undefined}
         >
-          {editTarget ? 'Modifier / Update' : 'Créer / Create'}
+          {editTarget ? 'Modifier' : 'Creer'}
         </Button>
       </DialogActions>
     </Dialog>
@@ -176,30 +177,30 @@ function DeleteDialog({
 }: DeleteDialogProps) {
   return (
     <Dialog open={Boolean(type)} onClose={onClose}>
-      <DialogTitle>Supprimer l'attribut / Delete attribute</DialogTitle>
+      <DialogTitle>Supprimer l'attribut</DialogTitle>
       <DialogContent>
         <DialogContentText>
           Êtes-vous sûr de vouloir supprimer{' '}
           <strong>{type?.name}</strong>
-          {' '}? Are you sure you want to delete this attribute?
+          {' '}?
           {type?.values && type.values.length > 0 && (
             <>
               <br />
               <br />
-              Ceci supprimera également toutes ses valeurs si elles ne sont pas utilisées / This will also delete all its values if they are not in use.
+              Ceci supprimera egalement toutes ses valeurs si elles ne sont pas utilisees.
             </>
           )}
         </DialogContentText>
         {deleteError && (
           <Alert severity="error" sx={{ mt: 2 }}>
             {(deleteError as { response?: { data?: { message?: string } } })
-              ?.response?.data?.message ?? 'Suppression impossible / Deletion failed. This attribute may be in use by variants.'}
+              ?.response?.data?.message ?? 'Suppression impossible. Cet attribut est peut-etre utilise par des variantes.'}
           </Alert>
         )}
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} disabled={isDeleting}>
-          Annuler / Cancel
+          Annuler
         </Button>
         <Button
           color="error"
@@ -208,7 +209,7 @@ function DeleteDialog({
           disabled={isDeleting}
           startIcon={isDeleting ? <CircularProgress size={16} /> : undefined}
         >
-          Supprimer / Delete
+          Supprimer
         </Button>
       </DialogActions>
     </Dialog>
@@ -295,51 +296,66 @@ export function AdminVariationTypesPage() {
         mb={3}
       >
         <Typography variant="h5" fontWeight="bold">
-          Attributs / Attributes
+          Attributs
         </Typography>
         <Button
           variant="contained"
           startIcon={<AddIcon />}
           onClick={openCreate}
         >
-          Ajouter un attribut / Add attribute
+          Ajouter un attribut
         </Button>
       </Box>
 
-      <Box display="flex" gap={1.5} alignItems="center" mb={2} flexWrap="wrap">
-        <TextField
-          size="small"
-          placeholder="Rechercher (attribut, valeurs)"
-          value={search}
-          onChange={(e) => {
-            setSearch(e.target.value);
-            setTypePage(1);
-          }}
-          sx={{ minWidth: 260 }}
-          slotProps={{
-            input: {
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon fontSize="small" sx={{ color: 'text.disabled' }} />
-                </InputAdornment>
-              ),
-            },
-          }}
-        />
+      <Paper variant="outlined" sx={{ p: 2, mb: 2 }}>
+        <Typography variant="subtitle1" fontWeight={700} sx={{ mb: 0.5 }}>
+          Gestion des attributs
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          Configurez les attributs et leurs valeurs pour generer les variantes produit de facon fiable.
+        </Typography>
+      </Paper>
 
-        {search && (
-          <Button size="small" variant="outlined" onClick={() => { setSearch(''); setTypePage(1); }}>
-            Effacer
-          </Button>
-        )}
-      </Box>
+      <Paper variant="outlined" sx={{ p: 2, mb: 2 }}>
+        <Box display="flex" gap={1.5} alignItems="center" flexWrap="wrap">
+          <TextField
+            size="small"
+            placeholder="Rechercher (attribut, valeurs)"
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setTypePage(1);
+            }}
+            sx={{ minWidth: 260 }}
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon fontSize="small" sx={{ color: 'text.disabled' }} />
+                  </InputAdornment>
+                ),
+              },
+            }}
+          />
+
+          {search && (
+            <Button size="small" variant="outlined" onClick={() => { setSearch(''); setTypePage(1); }}>
+              Effacer
+            </Button>
+          )}
+
+          <Typography variant="body2" color="text.secondary" sx={{ ml: 'auto' }}>
+            {filteredTypes.length} attribut(s)
+          </Typography>
+        </Box>
+      </Paper>
 
       <TableContainer component={Paper}>
         <Table size="small">
           <TableHead>
             <TableRow>
-              <TableCell>Nom / Name</TableCell>
-              <TableCell>Valeurs / Values</TableCell>
+              <TableCell>Nom</TableCell>
+              <TableCell>Valeurs</TableCell>
               <TableCell align="right">Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -358,7 +374,7 @@ export function AdminVariationTypesPage() {
                     <Box display="flex" gap={0.5} flexWrap="wrap">
                       {type.values.length === 0 ? (
                         <Typography variant="body2" color="text.secondary">
-                          Aucune valeur / No values
+                          Aucune valeur
                         </Typography>
                       ) : (
                         type.values.map((val) => (
@@ -371,7 +387,7 @@ export function AdminVariationTypesPage() {
                     <IconButton
                       size="small"
                       onClick={() => openEdit(type)}
-                      title="Modifier / Edit"
+                      title="Modifier"
                     >
                       <EditIcon fontSize="small" />
                     </IconButton>
@@ -379,7 +395,7 @@ export function AdminVariationTypesPage() {
                       size="small"
                       color="error"
                       onClick={() => setDeleteTarget(type)}
-                      title="Supprimer / Delete"
+                      title="Supprimer"
                     >
                       <DeleteIcon fontSize="small" />
                     </IconButton>

@@ -110,36 +110,47 @@ export function AdminPagesPage() {
     <Container maxWidth="xl" sx={{ py: 3 }}>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
         <Typography variant="h5" fontWeight="bold">
-          Pages
+          Pages markdown
         </Typography>
       </Box>
 
-      <Box display="flex" gap={1.5} alignItems="center" mb={2} flexWrap="wrap">
-        <TextField
-          size="small"
-          placeholder="Rechercher (titre, slug)"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          sx={{ minWidth: 260 }}
-          slotProps={{
-            input: {
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon fontSize="small" sx={{ color: 'text.disabled' }} />
-                </InputAdornment>
-              ),
-            },
-          }}
-        />
-        {search && (
-          <Button size="small" variant="outlined" onClick={() => setSearch('')}>
-            Effacer
-          </Button>
-        )}
-        <Typography variant="body2" color="text.secondary" sx={{ ml: 'auto' }}>
-          {filteredPages.length} page(s)
+      <Paper variant="outlined" sx={{ p: 2, mb: 2 }}>
+        <Typography variant="subtitle1" fontWeight={700} sx={{ mb: 0.5 }}>
+          Gestion du contenu
         </Typography>
-      </Box>
+        <Typography variant="body2" color="text.secondary">
+          Cette section centralise les pages markdown publiques. Modifiez le titre ou le contenu puis previsualisez avant enregistrement.
+        </Typography>
+      </Paper>
+
+      <Paper variant="outlined" sx={{ p: 2, mb: 2 }}>
+        <Box display="flex" gap={1.5} alignItems="center" flexWrap="wrap">
+          <TextField
+            size="small"
+            placeholder="Rechercher (titre, slug)"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            sx={{ minWidth: 260 }}
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon fontSize="small" sx={{ color: 'text.disabled' }} />
+                  </InputAdornment>
+                ),
+              },
+            }}
+          />
+          {search && (
+            <Button size="small" variant="outlined" onClick={() => setSearch('')}>
+              Effacer
+            </Button>
+          )}
+          <Typography variant="body2" color="text.secondary" sx={{ ml: 'auto' }}>
+            {filteredPages.length} page(s)
+          </Typography>
+        </Box>
+      </Paper>
 
       <TableContainer component={Paper}>
         <Table size="small">

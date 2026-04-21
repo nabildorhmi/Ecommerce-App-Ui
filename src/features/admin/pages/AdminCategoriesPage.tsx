@@ -58,30 +58,28 @@ function DeleteDialog({
 
   return (
     <Dialog open={Boolean(category)} onClose={onClose}>
-      <DialogTitle>Supprimer la categorie / Delete category</DialogTitle>
+      <DialogTitle>Supprimer la categorie</DialogTitle>
       <DialogContent>
         {hasProducts && (
           <Alert severity="warning" sx={{ mb: 2 }}>
-            Cette categorie contient {category?.product_count} produit(s). La
-            suppression sera bloquee / This category has {category?.product_count}{' '}
-            product(s). Deletion will be blocked.
+            Cette categorie contient {category?.product_count} produit(s). La suppression sera bloquee.
           </Alert>
         )}
         <DialogContentText>
           Etes-vous sur de vouloir supprimer{' '}
           <strong>{category?.name ?? category?.slug}</strong>
-          {' '}? Are you sure you want to delete this category?
+          {' '}?
         </DialogContentText>
         {deleteError && (
           <Alert severity="error" sx={{ mt: 2 }}>
             {(deleteError as { response?: { data?: { message?: string } } })
-              ?.response?.data?.message ?? 'Suppression impossible / Deletion failed'}
+              ?.response?.data?.message ?? 'Suppression impossible'}
           </Alert>
         )}
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} disabled={isDeleting}>
-          Annuler / Cancel
+          Annuler
         </Button>
         <Button
           color="error"
@@ -90,7 +88,7 @@ function DeleteDialog({
           disabled={isDeleting}
           startIcon={isDeleting ? <CircularProgress size={16} /> : undefined}
         >
-          Supprimer / Delete
+          Supprimer
         </Button>
       </DialogActions>
     </Dialog>
@@ -179,37 +177,52 @@ export function AdminCategoriesPage() {
           startIcon={<AddIcon />}
           onClick={openCreate}
         >
-          Ajouter une categorie / Add category
+          Ajouter une categorie
         </Button>
       </Box>
 
-      <Box display="flex" gap={1.5} alignItems="center" mb={2} flexWrap="wrap">
-        <TextField
-          size="small"
-          placeholder="Rechercher (nom, slug)"
-          value={search}
-          onChange={(e) => {
-            setSearch(e.target.value);
-            setCatPage(1);
-          }}
-          sx={{ minWidth: 240 }}
-          slotProps={{
-            input: {
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon fontSize="small" sx={{ color: 'text.disabled' }} />
-                </InputAdornment>
-              ),
-            },
-          }}
-        />
+      <Paper variant="outlined" sx={{ p: 2, mb: 2 }}>
+        <Typography variant="subtitle1" fontWeight={700} sx={{ mb: 0.5 }}>
+          Gestion des categories
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          Organisez votre catalogue par famille de produits. Activez ou desactivez rapidement une categorie depuis le tableau.
+        </Typography>
+      </Paper>
 
-        {search && (
-          <Button size="small" variant="outlined" onClick={() => { setSearch(''); setCatPage(1); }}>
-            Effacer
-          </Button>
-        )}
-      </Box>
+      <Paper variant="outlined" sx={{ p: 2, mb: 2 }}>
+        <Box display="flex" gap={1.5} alignItems="center" flexWrap="wrap">
+          <TextField
+            size="small"
+            placeholder="Rechercher (nom, slug)"
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setCatPage(1);
+            }}
+            sx={{ minWidth: 240 }}
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon fontSize="small" sx={{ color: 'text.disabled' }} />
+                  </InputAdornment>
+                ),
+              },
+            }}
+          />
+
+          {search && (
+            <Button size="small" variant="outlined" onClick={() => { setSearch(''); setCatPage(1); }}>
+              Effacer
+            </Button>
+          )}
+
+          <Typography variant="body2" color="text.secondary" sx={{ ml: 'auto' }}>
+            {filteredCategories.length} categorie(s)
+          </Typography>
+        </Box>
+      </Paper>
 
       <TableContainer component={Paper}>
         <Table size="small">
@@ -217,7 +230,7 @@ export function AdminCategoriesPage() {
             <TableRow>
               <TableCell>Nom</TableCell>
               <TableCell>Slug</TableCell>
-              <TableCell>Actif / Active</TableCell>
+              <TableCell>Statut</TableCell>
               <TableCell align="right">Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -236,7 +249,7 @@ export function AdminCategoriesPage() {
                   <TableCell>
                     <Chip
                       label={
-                        cat.is_active ? 'Actif / Active' : 'Inactif / Inactive'
+                        cat.is_active ? 'Actif' : 'Inactif'
                       }
                       color={cat.is_active ? 'success' : 'default'}
                       size="small"
@@ -248,7 +261,7 @@ export function AdminCategoriesPage() {
                     <IconButton
                       size="small"
                       onClick={() => openEdit(cat)}
-                      title="Modifier / Edit"
+                      title="Modifier"
                     >
                       <EditIcon fontSize="small" />
                     </IconButton>
@@ -256,7 +269,7 @@ export function AdminCategoriesPage() {
                       size="small"
                       color="error"
                       onClick={() => setDeleteTarget(cat)}
-                      title="Supprimer / Delete"
+                      title="Supprimer"
                     >
                       <DeleteIcon fontSize="small" />
                     </IconButton>
@@ -308,8 +321,8 @@ export function AdminCategoriesPage() {
       >
         <DialogTitle>
           {editTarget
-            ? 'Modifier la categorie / Edit category'
-            : 'Nouvelle categorie / New category'}
+            ? 'Modifier la categorie'
+            : 'Nouvelle categorie'}
         </DialogTitle>
         <DialogContent>
           <Box pt={1}>

@@ -24,6 +24,7 @@ import DialogActions from '@mui/material/DialogActions';
 import Skeleton from '@mui/material/Skeleton';
 import Alert from '@mui/material/Alert';
 import Tooltip from '@mui/material/Tooltip';
+import Paper from '@mui/material/Paper';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -79,55 +80,66 @@ export function AdminHeroBannersPage() {
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-        <Typography variant="h4" fontWeight={700}>
-          Hero Banners
+        <Typography variant="h5" fontWeight={700}>
+          Banners hero
         </Typography>
         <Button variant="contained" startIcon={<AddPhotoAlternateIcon />} onClick={handleAdd}>
-          Ajouter un banner
+          Ajouter un visuel
         </Button>
       </Box>
 
-      <Box display="flex" gap={1.5} alignItems="center" mb={2} flexWrap="wrap">
-        <TextField
-          size="small"
-          placeholder="Rechercher (titre, sous-titre, lien)"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          sx={{ minWidth: 280 }}
-          slotProps={{
-            input: {
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon fontSize="small" sx={{ color: 'text.disabled' }} />
-                </InputAdornment>
-              ),
-            },
-          }}
-        />
-
-        <FormControl size="small" sx={{ minWidth: 130 }}>
-          <InputLabel>Statut</InputLabel>
-          <Select
-            label="Statut"
-            value={activeFilter}
-            onChange={(e) => setActiveFilter(e.target.value as '' | '1' | '0')}
-          >
-            <MenuItem value="">Tous</MenuItem>
-            <MenuItem value="1">Actifs</MenuItem>
-            <MenuItem value="0">Inactifs</MenuItem>
-          </Select>
-        </FormControl>
-
-        {(search || activeFilter) && (
-          <Button size="small" variant="outlined" onClick={() => { setSearch(''); setActiveFilter(''); }}>
-            Effacer
-          </Button>
-        )}
-
-        <Typography variant="body2" color="text.secondary" sx={{ ml: 'auto' }}>
-          {filteredBanners.length} banner(s)
+      <Paper variant="outlined" sx={{ p: 2, mb: 2 }}>
+        <Typography variant="subtitle1" fontWeight={700} sx={{ mb: 0.5 }}>
+          Gestion des visuels d accueil
         </Typography>
-      </Box>
+        <Typography variant="body2" color="text.secondary">
+          Administrez les images du carousel principal et leur ordre d affichage pour la page d accueil.
+        </Typography>
+      </Paper>
+
+      <Paper variant="outlined" sx={{ p: 2, mb: 2 }}>
+        <Box display="flex" gap={1.5} alignItems="center" flexWrap="wrap">
+          <TextField
+            size="small"
+            placeholder="Rechercher (titre, sous-titre, lien)"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            sx={{ minWidth: 280 }}
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon fontSize="small" sx={{ color: 'text.disabled' }} />
+                  </InputAdornment>
+                ),
+              },
+            }}
+          />
+
+          <FormControl size="small" sx={{ minWidth: 130 }}>
+            <InputLabel>Statut</InputLabel>
+            <Select
+              label="Statut"
+              value={activeFilter}
+              onChange={(e) => setActiveFilter(e.target.value as '' | '1' | '0')}
+            >
+              <MenuItem value="">Tous</MenuItem>
+              <MenuItem value="1">Actifs</MenuItem>
+              <MenuItem value="0">Inactifs</MenuItem>
+            </Select>
+          </FormControl>
+
+          {(search || activeFilter) && (
+            <Button size="small" variant="outlined" onClick={() => { setSearch(''); setActiveFilter(''); }}>
+              Effacer
+            </Button>
+          )}
+
+          <Typography variant="body2" color="text.secondary" sx={{ ml: 'auto' }}>
+            {filteredBanners.length} visuel(s)
+          </Typography>
+        </Box>
+      </Paper>
 
       {isLoading ? (
         <Grid container spacing={3}>
@@ -138,7 +150,7 @@ export function AdminHeroBannersPage() {
           ))}
         </Grid>
       ) : filteredBanners.length === 0 ? (
-        <Alert severity="info">Aucun banner. Ajoutez-en un pour le carousel hero.</Alert>
+        <Alert severity="info">Aucun visuel. Ajoutez-en un pour le carousel hero.</Alert>
       ) : (
         <Grid container spacing={3}>
           {filteredBanners.map((banner) => (

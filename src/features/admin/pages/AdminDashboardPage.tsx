@@ -118,8 +118,20 @@ export function AdminDashboardPage() {
         </Typography>
       </Box>
 
+      <Paper variant="outlined" sx={{ p: 2, mb: 2 }}>
+        <Typography variant="subtitle1" fontWeight={700} sx={{ mb: 0.5 }}>
+          Vue de pilotage
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          Analysez les performances commerciales par periode, statut de commande et tendances de vente.
+        </Typography>
+      </Paper>
+
       {/* Filters */}
       <Paper className="mirai-glass" sx={{ p: 2, mb: 3, borderRadius: '12px' }}>
+        <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 1.5 }}>
+          Filtres d analyse
+        </Typography>
         <Stack direction="row" spacing={2} flexWrap="wrap" gap={2}>
           <TextField
             label="Date début"
