@@ -13,6 +13,7 @@ import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
+import Paper from '@mui/material/Paper';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import CloseIcon from '@mui/icons-material/Close';
 import SearchOffIcon from '@mui/icons-material/SearchOff';
@@ -114,6 +115,26 @@ export function CatalogPage() {
       </Box>
 
       <Container maxWidth="xl" sx={{ py: 3 }}>
+        <Paper variant="outlined" sx={{ p: 2, mb: 3, borderColor: 'rgba(0,194,255,0.2)', backgroundColor: 'rgba(0,194,255,0.03)' }}>
+          <Typography variant="subtitle1" fontWeight={700} sx={{ mb: 0.5 }}>
+            Comment acheter en 3 etapes
+          </Typography>
+          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr 1fr' }, gap: 1.5 }}>
+            <Box>
+              <Typography sx={{ fontSize: '0.78rem', fontWeight: 700, color: '#00C2FF', mb: 0.25 }}>1. Choisissez un modele</Typography>
+              <Typography sx={{ fontSize: '0.8rem', color: 'text.secondary' }}>Filtrez le catalogue puis ouvrez la fiche produit.</Typography>
+            </Box>
+            <Box>
+              <Typography sx={{ fontSize: '0.78rem', fontWeight: 700, color: '#00C2FF', mb: 0.25 }}>2. Ajoutez au panier</Typography>
+              <Typography sx={{ fontSize: '0.8rem', color: 'text.secondary' }}>Selectionnez les variantes puis cliquez sur Ajouter au panier.</Typography>
+            </Box>
+            <Box>
+              <Typography sx={{ fontSize: '0.78rem', fontWeight: 700, color: '#00C2FF', mb: 0.25 }}>3. Confirmez la commande</Typography>
+              <Typography sx={{ fontSize: '0.8rem', color: 'text.secondary' }}>Passez au checkout et validez avec paiement a la livraison.</Typography>
+            </Box>
+          </Box>
+        </Paper>
+
         <Grid container spacing={3}>
           {/* Sidebar Filters (Desktop) */}
           <Grid size={{ xs: 12, md: 3, lg: 2.5 }} sx={{ display: { xs: 'none', md: 'block' } }}>
@@ -144,7 +165,7 @@ export function CatalogPage() {
                   <Chip
                     key={chip.key}
                     label={chip.label}
-                    onDelete={() => setFilter(chip.key as any, '')}
+                    onDelete={() => setFilter(chip.key, '')}
                     size="small"
                     sx={{
                       backgroundColor: 'rgba(0,194,255,0.1)',
@@ -232,7 +253,7 @@ export function CatalogPage() {
                   <Button
                     variant="outlined"
                     onClick={() => {
-                      activeChips.forEach(chip => setFilter(chip.key as any, ''));
+                      activeChips.forEach(chip => setFilter(chip.key, ''));
                     }}
                     sx={{ color: '#00C2FF', borderColor: 'rgba(0,194,255,0.3)' }}
                   >
