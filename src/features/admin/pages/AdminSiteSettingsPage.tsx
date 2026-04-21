@@ -10,9 +10,12 @@ import Divider from '@mui/material/Divider';
 import CircularProgress from '@mui/material/CircularProgress';
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
-import Paper from '@mui/material/Paper';
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useAuthStore } from '@/features/auth/store';
-import { parseSiteSettingsContent, type SiteSettings, type SiteShortLink } from '@/shared/types/siteSettings';
+import { parseSiteSettingsContent, type ShippingPricingRule, type SiteSettings, type SiteShortLink } from '@/shared/types/siteSettings';
 import { useAdminSiteSettingsPage, useUpdateAdminSiteSettingsPage } from '../api/siteSettings';
 
 function slugifyLabel(label: string): string {
@@ -61,6 +64,17 @@ function buildUniqueShortLinkUrl(label: string, links: SiteShortLink[], currentI
   return `/pages/${candidate}`;
 }
 
+function centimesToMad(centimes: number): string {
+  return (Math.max(0, centimes) / 100).toFixed(2);
+}
+
+function madToCentimes(value: string): number {
+  const normalized = value.replace(',', '.').trim();
+  const amount = Number(normalized);
+  if (!Number.isFinite(amount) || amount < 0) return 0;
+  return Math.round(amount * 100);
+}
+
 function SiteSettingsForm({ initialSettings }: { initialSettings: SiteSettings }) {
   const updateMutation = useUpdateAdminSiteSettingsPage();
   const [siteSettings, setSiteSettings] = useState<SiteSettings>(initialSettings);
@@ -68,6 +82,42 @@ function SiteSettingsForm({ initialSettings }: { initialSettings: SiteSettings }
 
   const handleSiteSettingChange = (key: keyof SiteSettings, value: string) => {
     setSiteSettings((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const handleShippingFieldChange = (key: 'delivery_fee_default' | 'free_shipping_threshold', value: string) => {
+    setSiteSettings((prev) => ({
+      ...prev,
+      [key]: madToCentimes(value),
+    }));
+  };
+
+  const handleShippingRuleChange = (index: number, field: 'min_subtotal' | 'fee', value: string) => {
+    setSiteSettings((prev) => {
+      const nextRules = [...prev.shipping_pricing_rules];
+      nextRules[index] = {
+        ...nextRules[index],
+        [field]: madToCentimes(value),
+      };
+
+      return {
+        ...prev,
+        shipping_pricing_rules: nextRules,
+      };
+    });
+  };
+
+  const addShippingRule = () => {
+    setSiteSettings((prev) => ({
+      ...prev,
+      shipping_pricing_rules: [...prev.shipping_pricing_rules, { min_subtotal: 0, fee: 0 }],
+    }));
+  };
+
+  const removeShippingRule = (index: number) => {
+    setSiteSettings((prev) => ({
+      ...prev,
+      shipping_pricing_rules: prev.shipping_pricing_rules.filter((_, i) => i !== index),
+    }));
   };
 
   const handleShortLinkLabelChange = (index: number, value: string) => {
@@ -121,86 +171,158 @@ function SiteSettingsForm({ initialSettings }: { initialSettings: SiteSettings }
   return (
     <>
     <Card variant="outlined">
-        <CardContent sx={{ p: { xs: 2, md: 3 } }}>
-          <Box display="flex" justifyContent="space-between" alignItems="center" mb={2} flexWrap="wrap" gap={1.5}>
-            <Box>
-              <Typography variant="h6" fontWeight={700}>
-                Parametres de contenu du site
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Organisez les informations globales du footer, des reseaux sociaux et des pages dynamiques.
-              </Typography>
-            </Box>
-            <Button
-              variant="contained"
-              onClick={() => void saveSiteSettings()}
-              disabled={updateMutation.isPending}
-              startIcon={updateMutation.isPending ? <CircularProgress size={16} /> : undefined}
-            >
-              Enregistrer
-            </Button>
+      <CardContent sx={{ p: { xs: 2, md: 3 } }}>
+        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2} flexWrap="wrap" gap={1.5}>
+          <Box>
+            <Typography variant="h6" fontWeight={700}>
+              Parametres de contenu du site
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Organisez les informations globales du footer, des reseaux sociaux et des pages dynamiques.
+            </Typography>
           </Box>
+          <Button
+            variant="contained"
+            onClick={() => void saveSiteSettings()}
+            disabled={updateMutation.isPending}
+            startIcon={updateMutation.isPending ? <CircularProgress size={16} /> : undefined}
+          >
+            Enregistrer
+          </Button>
+        </Box>
 
-          <Divider sx={{ mb: 2 }} />
+        <Divider sx={{ mb: 2 }} />
 
-          <Box display="flex" flexDirection="column" gap={2}>
-            <Paper variant="outlined" sx={{ p: 2 }}>
-              <Typography variant="subtitle1" fontWeight={700} sx={{ mb: 0.5 }}>
-                Contact et disponibilite
-              </Typography>
-              <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1.5 }}>
-                Infos affichees dans le footer et les zones de contact.
-              </Typography>
-              <Box display="grid" gridTemplateColumns={{ xs: '1fr', md: '1fr 1fr' }} gap={1.5}>
-                <TextField label="Email contact" size="small" value={siteSettings.email} onChange={(e) => handleSiteSettingChange('email', e.target.value)} fullWidth />
-                <TextField label="Telephone" size="small" value={siteSettings.phone} onChange={(e) => handleSiteSettingChange('phone', e.target.value)} fullWidth />
-                <TextField label="Horaires" size="small" value={siteSettings.business_hours} onChange={(e) => handleSiteSettingChange('business_hours', e.target.value)} fullWidth />
-                <TextField label="Titre promo homepage (optionnel)" size="small" value={siteSettings.home_promo_headline} onChange={(e) => handleSiteSettingChange('home_promo_headline', e.target.value)} fullWidth />
-                <TextField label="Adresse" size="small" value={siteSettings.address} onChange={(e) => handleSiteSettingChange('address', e.target.value)} fullWidth multiline minRows={2} sx={{ gridColumn: { xs: '1 / -1', md: '1 / -1' } }} />
-                <TextField label="Description footer" size="small" value={siteSettings.footer_description} onChange={(e) => handleSiteSettingChange('footer_description', e.target.value)} fullWidth multiline minRows={2} sx={{ gridColumn: { xs: '1 / -1', md: '1 / -1' } }} />
-              </Box>
-            </Paper>
+        <Box display="flex" flexDirection="column" gap={2}>
+            <Accordion defaultExpanded disableGutters>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography variant="subtitle1" fontWeight={700}>Contact et disponibilite</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1.5 }}>
+                  Infos affichees dans le footer et les zones de contact.
+                </Typography>
+                <Box display="grid" gridTemplateColumns={{ xs: '1fr', md: '1fr 1fr' }} gap={1.5}>
+                  <TextField label="Email contact" size="small" value={siteSettings.email} onChange={(e) => handleSiteSettingChange('email', e.target.value)} fullWidth />
+                  <TextField label="Telephone" size="small" value={siteSettings.phone} onChange={(e) => handleSiteSettingChange('phone', e.target.value)} fullWidth />
+                  <TextField label="Horaires" size="small" value={siteSettings.business_hours} onChange={(e) => handleSiteSettingChange('business_hours', e.target.value)} fullWidth />
+                  <TextField label="Titre promo homepage (optionnel)" size="small" value={siteSettings.home_promo_headline} onChange={(e) => handleSiteSettingChange('home_promo_headline', e.target.value)} fullWidth />
+                  <TextField label="Adresse" size="small" value={siteSettings.address} onChange={(e) => handleSiteSettingChange('address', e.target.value)} fullWidth multiline minRows={2} sx={{ gridColumn: { xs: '1 / -1', md: '1 / -1' } }} />
+                  <TextField label="Description footer" size="small" value={siteSettings.footer_description} onChange={(e) => handleSiteSettingChange('footer_description', e.target.value)} fullWidth multiline minRows={2} sx={{ gridColumn: { xs: '1 / -1', md: '1 / -1' } }} />
+                </Box>
+              </AccordionDetails>
+            </Accordion>
 
-            <Paper variant="outlined" sx={{ p: 2 }}>
-              <Typography variant="subtitle1" fontWeight={700} sx={{ mb: 0.5 }}>
-                WhatsApp et reseaux sociaux
-              </Typography>
-              <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1.5 }}>
-                Liens utilises pour les boutons de contact rapides.
-              </Typography>
-              <Box display="grid" gridTemplateColumns={{ xs: '1fr', md: '1fr 1fr' }} gap={1.5}>
-                <TextField label="Numero WhatsApp" size="small" value={siteSettings.whatsapp_number} onChange={(e) => handleSiteSettingChange('whatsapp_number', e.target.value)} fullWidth />
-                <TextField label="Lien WhatsApp direct (optionnel)" size="small" value={siteSettings.whatsapp_url} onChange={(e) => handleSiteSettingChange('whatsapp_url', e.target.value)} fullWidth />
-                <TextField label="Message WhatsApp par defaut" size="small" value={siteSettings.whatsapp_prefill_message} onChange={(e) => handleSiteSettingChange('whatsapp_prefill_message', e.target.value)} fullWidth sx={{ gridColumn: { xs: '1 / -1', md: '1 / -1' } }} />
-                <TextField label="Instagram URL" size="small" value={siteSettings.instagram_url} onChange={(e) => handleSiteSettingChange('instagram_url', e.target.value)} fullWidth />
-                <TextField label="Facebook URL" size="small" value={siteSettings.facebook_url} onChange={(e) => handleSiteSettingChange('facebook_url', e.target.value)} fullWidth />
-              </Box>
-            </Paper>
+            <Accordion disableGutters>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography variant="subtitle1" fontWeight={700}>WhatsApp et reseaux sociaux</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1.5 }}>
+                  Liens utilises pour les boutons de contact rapides.
+                </Typography>
+                <Box display="grid" gridTemplateColumns={{ xs: '1fr', md: '1fr 1fr' }} gap={1.5}>
+                  <TextField label="Numero WhatsApp" size="small" value={siteSettings.whatsapp_number} onChange={(e) => handleSiteSettingChange('whatsapp_number', e.target.value)} fullWidth />
+                  <TextField label="Lien WhatsApp direct (optionnel)" size="small" value={siteSettings.whatsapp_url} onChange={(e) => handleSiteSettingChange('whatsapp_url', e.target.value)} fullWidth />
+                  <TextField label="Message WhatsApp par defaut" size="small" value={siteSettings.whatsapp_prefill_message} onChange={(e) => handleSiteSettingChange('whatsapp_prefill_message', e.target.value)} fullWidth sx={{ gridColumn: { xs: '1 / -1', md: '1 / -1' } }} />
+                  <TextField label="Instagram URL" size="small" value={siteSettings.instagram_url} onChange={(e) => handleSiteSettingChange('instagram_url', e.target.value)} fullWidth />
+                  <TextField label="Facebook URL" size="small" value={siteSettings.facebook_url} onChange={(e) => handleSiteSettingChange('facebook_url', e.target.value)} fullWidth />
+                </Box>
+              </AccordionDetails>
+            </Accordion>
 
-            <Paper variant="outlined" sx={{ p: 2 }}>
-              <Box display="flex" justifyContent="space-between" alignItems="center" mb={1.5}>
-                <Typography variant="subtitle1" fontWeight={700}>Short links dynamiques</Typography>
-                <Button size="small" variant="outlined" onClick={addShortLink}>Ajouter</Button>
-              </Box>
-              <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1.5 }}>
-                Chaque short link cree automatiquement une page markdown dynamique via /pages/slug.
-              </Typography>
-              <Box display="flex" flexDirection="column" gap={1.5}>
-                {siteSettings.short_links.length === 0 && (
-                  <Alert severity="info" sx={{ py: 0.5 }}>
-                    Aucun short link configure pour le moment.
-                  </Alert>
-                )}
-                {siteSettings.short_links.map((link, index) => (
-                  <Box key={`${index}-${link.label}`} display="grid" gridTemplateColumns={{ xs: '1fr', md: '1fr 1fr auto' }} gap={1}>
-                    <TextField size="small" label="Label" value={link.label} onChange={(e) => handleShortLinkLabelChange(index, e.target.value)} />
-                    <TextField size="small" label="URL (auto)" value={link.url} slotProps={{ input: { readOnly: true } }} />
-                    <Button color="error" onClick={() => removeShortLink(index)}>Supprimer</Button>
+            <Accordion disableGutters>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography variant="subtitle1" fontWeight={700}>Frais de livraison et regles de prix</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1.5 }}>
+                  Configurez les frais de base, le seuil de livraison gratuite et les regles selon le montant du panier (MAD).
+                </Typography>
+
+                <Box display="grid" gridTemplateColumns={{ xs: '1fr', md: '1fr 1fr' }} gap={1.5}>
+                  <TextField
+                    size="small"
+                    label="Frais de livraison par defaut (MAD)"
+                    value={centimesToMad(siteSettings.delivery_fee_default)}
+                    onChange={(e) => handleShippingFieldChange('delivery_fee_default', e.target.value)}
+                    type="number"
+                    slotProps={{ htmlInput: { min: 0, step: '0.01' } }}
+                  />
+                  <TextField
+                    size="small"
+                    label="Livraison gratuite a partir de (MAD)"
+                    value={centimesToMad(siteSettings.free_shipping_threshold)}
+                    onChange={(e) => handleShippingFieldChange('free_shipping_threshold', e.target.value)}
+                    type="number"
+                    slotProps={{ htmlInput: { min: 0, step: '0.01' } }}
+                  />
+                </Box>
+
+                <Box mt={2}>
+                  <Box display="flex" justifyContent="space-between" alignItems="center" mb={1.25}>
+                    <Typography variant="subtitle2" fontWeight={700}>Regles de tarification conditionnelle</Typography>
+                    <Button size="small" variant="outlined" onClick={addShippingRule}>Ajouter une regle</Button>
                   </Box>
-                ))}
-            </Box>
-            </Paper>
-          </Box>
+
+                  {siteSettings.shipping_pricing_rules.length === 0 ? (
+                    <Alert severity="info" sx={{ py: 0.5 }}>Aucune regle conditionnelle. Le frais par defaut sera applique.</Alert>
+                  ) : (
+                    <Box display="flex" flexDirection="column" gap={1.25}>
+                      {siteSettings.shipping_pricing_rules.map((rule: ShippingPricingRule, index: number) => (
+                        <Box key={`${index}-${rule.min_subtotal}-${rule.fee}`} display="grid" gridTemplateColumns={{ xs: '1fr', md: '1fr 1fr auto' }} gap={1}>
+                          <TextField
+                            size="small"
+                            label="Panier a partir de (MAD)"
+                            value={centimesToMad(rule.min_subtotal)}
+                            onChange={(e) => handleShippingRuleChange(index, 'min_subtotal', e.target.value)}
+                            type="number"
+                            slotProps={{ htmlInput: { min: 0, step: '0.01' } }}
+                          />
+                          <TextField
+                            size="small"
+                            label="Frais appliques (MAD)"
+                            value={centimesToMad(rule.fee)}
+                            onChange={(e) => handleShippingRuleChange(index, 'fee', e.target.value)}
+                            type="number"
+                            slotProps={{ htmlInput: { min: 0, step: '0.01' } }}
+                          />
+                          <Button color="error" onClick={() => removeShippingRule(index)}>Supprimer</Button>
+                        </Box>
+                      ))}
+                    </Box>
+                  )}
+                </Box>
+              </AccordionDetails>
+            </Accordion>
+
+            <Accordion disableGutters>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography variant="subtitle1" fontWeight={700}>Short links dynamiques</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Box display="flex" justifyContent="space-between" alignItems="center" mb={1.5}>
+                  <Typography variant="subtitle2" fontWeight={700}>Liens rapides du footer</Typography>
+                  <Button size="small" variant="outlined" onClick={addShortLink}>Ajouter</Button>
+                </Box>
+                <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1.5 }}>
+                  Chaque short link cree automatiquement une page markdown dynamique via /pages/slug.
+                </Typography>
+                <Box display="flex" flexDirection="column" gap={1.5}>
+                  {siteSettings.short_links.length === 0 && (
+                    <Alert severity="info" sx={{ py: 0.5 }}>Aucun short link configure pour le moment.</Alert>
+                  )}
+                  {siteSettings.short_links.map((link, index) => (
+                    <Box key={`${index}-${link.label}`} display="grid" gridTemplateColumns={{ xs: '1fr', md: '1fr 1fr auto' }} gap={1}>
+                      <TextField size="small" label="Label" value={link.label} onChange={(e) => handleShortLinkLabelChange(index, e.target.value)} />
+                      <TextField size="small" label="URL (auto)" value={link.url} slotProps={{ input: { readOnly: true } }} />
+                      <Button color="error" onClick={() => removeShortLink(index)}>Supprimer</Button>
+                    </Box>
+                  ))}
+                </Box>
+              </AccordionDetails>
+            </Accordion>
+        </Box>
         </CardContent>
     </Card>
 

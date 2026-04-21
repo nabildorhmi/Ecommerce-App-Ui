@@ -16,28 +16,33 @@ import { useNavigate } from 'react-router';
 import { useCartStore } from '../store';
 import { CartItem } from './CartItem';
 import { formatCurrency } from '@/shared/utils/formatCurrency';
+import { useSiteSettings } from '@/shared/hooks/useSiteSettings';
+import { defaultSiteSettings, getDeliveryFeeForSubtotal, getFreeShippingRemaining } from '@/shared/types/siteSettings';
 
 interface CartDrawerProps {
   open: boolean;
   onClose: () => void;
 }
 
-/* Free shipping threshold in centimes (e.g. 50000 = 500 MAD) */
-const FREE_SHIPPING_THRESHOLD = 50000;
-
 export function CartDrawer({ open, onClose }: CartDrawerProps) {
   const navigate = useNavigate();
   const items = useCartStore((s) => s.items);
   const totalItems = useCartStore((s) => s.totalItems());
   const subtotalCentimes = useCartStore((s) => s.subtotalCentimes());
+  const { data: siteSettings } = useSiteSettings();
+
+  const pricingSettings = siteSettings ?? defaultSiteSettings;
+  const deliveryFeeCentimes = getDeliveryFeeForSubtotal(pricingSettings, subtotalCentimes);
+  const freeShippingThreshold = pricingSettings.free_shipping_threshold;
+  const remaining = getFreeShippingRemaining(pricingSettings, subtotalCentimes);
+  const progressPct = freeShippingThreshold > 0
+    ? Math.min(100, (subtotalCentimes / freeShippingThreshold) * 100)
+    : 0;
 
   const handleCheckout = () => {
     onClose();
     void navigate('/checkout');
   };
-
-  const remaining = Math.max(0, FREE_SHIPPING_THRESHOLD - subtotalCentimes);
-  const progressPct = Math.min(100, (subtotalCentimes / FREE_SHIPPING_THRESHOLD) * 100);
 
   return (
     <Drawer
@@ -86,16 +91,25 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
       </Box>
 
       {/* Free shipping progress */}
-      {items.length > 0 && (
+      {items.length > 0 && freeShippingThreshold > 0 && (
         <Box sx={{ px: 2.5, pt: 2, pb: 1.5, borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
           {remaining > 0 ? (
             <Box>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                <LocalShippingOutlinedIcon sx={{ fontSize: '0.9rem', color: '#00C2FF' }} />
-                <Typography sx={{ fontSize: '0.72rem', color: 'text.secondary', fontWeight: 500 }}>
-                  Plus que <Box component="span" sx={{ color: '#00C2FF', fontWeight: 700 }}>{formatCurrency(remaining)}</Box> pour la livraison gratuite !
-                </Typography>
-              </Box>
+              {deliveryFeeCentimes > 0 ? (
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                  <LocalShippingOutlinedIcon sx={{ fontSize: '0.9rem', color: '#00C2FF' }} />
+                  <Typography sx={{ fontSize: '0.72rem', color: 'text.secondary', fontWeight: 500 }}>
+                    Plus que <Box component="span" sx={{ color: '#00C2FF', fontWeight: 700 }}>{formatCurrency(remaining)}</Box> pour la livraison gratuite !
+                  </Typography>
+                </Box>
+              ) : (
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                  <LocalShippingOutlinedIcon sx={{ fontSize: '0.9rem', color: '#2EAD5F' }} />
+                  <Typography sx={{ fontSize: '0.72rem', color: '#2EAD5F', fontWeight: 700 }}>
+                    Livraison actuellement offerte selon vos regles de tarification.
+                  </Typography>
+                </Box>
+              )}
               <LinearProgress
                 variant="determinate"
                 value={progressPct}
@@ -170,8 +184,8 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
             </Stack>
             <Stack direction="row" justifyContent="space-between" alignItems="center">
               <Typography variant="body2" color="text.secondary" fontWeight={500}>Livraison</Typography>
-              <Typography variant="body2" fontWeight={700} color={remaining === 0 ? '#2EAD5F' : 'text.primary'}>
-                {remaining === 0 ? 'Gratuit' : 'Calculée à la commande'}
+              <Typography variant="body2" fontWeight={700} color={deliveryFeeCentimes === 0 ? '#2EAD5F' : 'text.primary'}>
+                {deliveryFeeCentimes === 0 ? 'Gratuit' : formatCurrency(deliveryFeeCentimes)}
               </Typography>
             </Stack>
 

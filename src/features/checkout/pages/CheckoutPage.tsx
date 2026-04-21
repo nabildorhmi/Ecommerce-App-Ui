@@ -41,6 +41,8 @@ import { formatCurrency } from '@/shared/utils/formatCurrency';
 import { RegisterForm } from '../../auth/components/RegisterForm';
 import { registerApi, updateProfileApi, type RegisterData } from '../../auth/api/auth';
 import { MOROCCAN_CITIES } from '@/shared/constants/moroccanCities';
+import { useSiteSettings } from '@/shared/hooks/useSiteSettings';
+import { defaultSiteSettings, getDeliveryFeeForSubtotal } from '@/shared/types/siteSettings';
 
 const orderSchema = z.object({
   note: z.string().max(500, { message: 'Note must be 500 characters or less' }).optional(),
@@ -77,6 +79,7 @@ export function CheckoutPage() {
   const items = useCartStore((s) => s.items);
   const subtotalCentimes = useCartStore((s) => s.subtotalCentimes());
   const user = useAuthStore((s) => s.user);
+  const { data: siteSettings } = useSiteSettings();
 
   const [registerError, setRegisterError] = useState<string | null>(null);
   const [editingDelivery, setEditingDelivery] = useState(false);
@@ -184,6 +187,10 @@ export function CheckoutPage() {
   })();
 
   if (items.length === 0) return null;
+
+  const pricingSettings = siteSettings ?? defaultSiteSettings;
+  const deliveryFeeCentimes = getDeliveryFeeForSubtotal(pricingSettings, subtotalCentimes);
+  const checkoutTotalCentimes = subtotalCentimes + deliveryFeeCentimes;
 
   const hasDeliveryInfo = Boolean(user?.phone && user?.address_city);
   const canSubmitOrder = Boolean(user) && hasDeliveryInfo && !editingDelivery;
@@ -489,13 +496,15 @@ export function CheckoutPage() {
                   </Stack>
                   <Stack direction="row" justifyContent="space-between">
                     <Typography variant="body2">Frais de livraison</Typography>
-                    <Typography variant="body2" color="success.main">Gratuit</Typography>
+                    <Typography variant="body2" color={deliveryFeeCentimes === 0 ? 'success.main' : 'text.primary'}>
+                      {deliveryFeeCentimes === 0 ? 'Gratuit' : formatCurrency(deliveryFeeCentimes)}
+                    </Typography>
                   </Stack>
                   <Divider />
                   <Stack direction="row" justifyContent="space-between">
                     <Typography variant="body1" fontWeight={700}>Total</Typography>
                     <Typography variant="body1" fontWeight={700} color="primary">
-                      {formatCurrency(subtotalCentimes)}
+                      {formatCurrency(checkoutTotalCentimes)}
                     </Typography>
                   </Stack>
                 </Stack>
@@ -553,7 +562,7 @@ export function CheckoutPage() {
                   transition: 'all 0.3s ease',
                 }}
               >
-                {isPending ? 'Envoi en cours...' : `Confirmer — ${formatCurrency(subtotalCentimes)}`}
+                {isPending ? 'Envoi en cours...' : `Confirmer — ${formatCurrency(checkoutTotalCentimes)}`}
               </Button>
 
               <Button
