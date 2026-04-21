@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { lazy, Suspense } from 'react';
 import { createBrowserRouter, useRouteError } from 'react-router';
 import { ProtectedRoute } from '@/shared/components/ProtectedRoute';
@@ -71,6 +72,7 @@ const AboutPage = lazy(() => import('@/features/info/pages/AboutPage').then(m =>
 const ContactPage = lazy(() => import('@/features/info/pages/ContactPage').then(m => ({ default: m.ContactPage })));
 const CgvPage = lazy(() => import('@/features/info/pages/CgvPage').then(m => ({ default: m.CgvPage })));
 const MentionsLegalesPage = lazy(() => import('@/features/info/pages/MentionsLegalesPage').then(m => ({ default: m.MentionsLegalesPage })));
+const DynamicPage = lazy(() => import('@/features/info/pages/DynamicPage').then(m => ({ default: m.DynamicPage })));
 
 // Admin layout + pages
 const AdminLayout = lazy(() => import('@/shared/components/AdminLayout').then(m => ({ default: m.AdminLayout })));
@@ -141,6 +143,10 @@ export const router = createBrowserRouter([
       {
         path: '/mentions-legales',
         element: <Suspense fallback={<PageLoader />}><MentionsLegalesPage /></Suspense>,
+      },
+      {
+        path: '/pages/:slug',
+        element: <Suspense fallback={<PageLoader />}><DynamicPage /></Suspense>,
       },
       // Protected routes — require authentication
       {

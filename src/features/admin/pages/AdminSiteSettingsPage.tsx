@@ -10,9 +10,56 @@ import Divider from '@mui/material/Divider';
 import CircularProgress from '@mui/material/CircularProgress';
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
+import Paper from '@mui/material/Paper';
 import { useAuthStore } from '@/features/auth/store';
-import { parseSiteSettingsContent, type SiteSettings } from '@/shared/types/siteSettings';
+import { parseSiteSettingsContent, type SiteSettings, type SiteShortLink } from '@/shared/types/siteSettings';
 import { useAdminSiteSettingsPage, useUpdateAdminSiteSettingsPage } from '../api/siteSettings';
+
+function slugifyLabel(label: string): string {
+  const normalized = label
+    .trim()
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+
+  const compact = normalized
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '');
+
+  return compact || 'nouvelle-page';
+}
+
+function extractDynamicSlug(url: string): string | null {
+  const match = url.match(/^\/pages\/([a-z0-9-]+)$/i);
+  return match ? match[1].toLowerCase() : null;
+}
+
+function buildUniqueShortLinkUrl(label: string, links: SiteShortLink[], currentIndex?: number): string {
+  const baseSlug = slugifyLabel(label);
+  const usedSlugs = new Set(
+    links
+      .map((link, index) => {
+        if (typeof currentIndex === 'number' && index === currentIndex) {
+          return null;
+        }
+
+        return extractDynamicSlug(link.url);
+      })
+      .filter((slug): slug is string => Boolean(slug))
+  );
+
+  let candidate = baseSlug;
+  let suffix = 2;
+
+  while (usedSlugs.has(candidate)) {
+    candidate = `${baseSlug}-${suffix}`;
+    suffix += 1;
+  }
+
+  return `/pages/${candidate}`;
+}
 
 function SiteSettingsForm({ initialSettings }: { initialSettings: SiteSettings }) {
   const updateMutation = useUpdateAdminSiteSettingsPage();
@@ -23,18 +70,32 @@ function SiteSettingsForm({ initialSettings }: { initialSettings: SiteSettings }
     setSiteSettings((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleShortLinkChange = (index: number, field: 'label' | 'url', value: string) => {
-    setSiteSettings((prev) => ({
-      ...prev,
-      short_links: prev.short_links.map((link, i) => (i === index ? { ...link, [field]: value } : link)),
-    }));
+  const handleShortLinkLabelChange = (index: number, value: string) => {
+    setSiteSettings((prev) => {
+      const nextLinks = [...prev.short_links];
+      const url = buildUniqueShortLinkUrl(value, nextLinks, index);
+
+      nextLinks[index] = {
+        ...nextLinks[index],
+        label: value,
+        url,
+      };
+
+      return {
+        ...prev,
+        short_links: nextLinks,
+      };
+    });
   };
 
   const addShortLink = () => {
-    setSiteSettings((prev) => ({
-      ...prev,
-      short_links: [...prev.short_links, { label: '', url: '' }],
-    }));
+    setSiteSettings((prev) => {
+      const newUrl = buildUniqueShortLinkUrl('nouvelle-page', prev.short_links);
+      return {
+        ...prev,
+        short_links: [...prev.short_links, { label: '', url: newUrl }],
+      };
+    });
   };
 
   const removeShortLink = (index: number) => {
@@ -60,11 +121,16 @@ function SiteSettingsForm({ initialSettings }: { initialSettings: SiteSettings }
   return (
     <>
     <Card variant="outlined">
-        <CardContent>
+        <CardContent sx={{ p: { xs: 2, md: 3 } }}>
           <Box display="flex" justifyContent="space-between" alignItems="center" mb={2} flexWrap="wrap" gap={1.5}>
-            <Typography variant="h6" fontWeight={700}>
-              Contenu statique modifiable
-            </Typography>
+            <Box>
+              <Typography variant="h6" fontWeight={700}>
+                Parametres de contenu du site
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Organisez les informations globales du footer, des reseaux sociaux et des pages dynamiques.
+              </Typography>
+            </Box>
             <Button
               variant="contained"
               onClick={() => void saveSiteSettings()}
@@ -75,40 +141,65 @@ function SiteSettingsForm({ initialSettings }: { initialSettings: SiteSettings }
             </Button>
           </Box>
 
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-            Ces valeurs alimentent le footer, WhatsApp flottant, liens sociaux, adresse, short links et titre promo homepage.
-          </Typography>
-
           <Divider sx={{ mb: 2 }} />
 
-          <Box display="grid" gridTemplateColumns={{ xs: '1fr', md: '1fr 1fr' }} gap={2}>
-            <TextField label="Numero WhatsApp" size="small" value={siteSettings.whatsapp_number} onChange={(e) => handleSiteSettingChange('whatsapp_number', e.target.value)} fullWidth />
-            <TextField label="Lien WhatsApp direct (optionnel)" size="small" value={siteSettings.whatsapp_url} onChange={(e) => handleSiteSettingChange('whatsapp_url', e.target.value)} fullWidth />
-            <TextField label="Message WhatsApp par defaut" size="small" value={siteSettings.whatsapp_prefill_message} onChange={(e) => handleSiteSettingChange('whatsapp_prefill_message', e.target.value)} fullWidth />
-            <TextField label="Instagram URL" size="small" value={siteSettings.instagram_url} onChange={(e) => handleSiteSettingChange('instagram_url', e.target.value)} fullWidth />
-            <TextField label="Facebook URL" size="small" value={siteSettings.facebook_url} onChange={(e) => handleSiteSettingChange('facebook_url', e.target.value)} fullWidth />
-            <TextField label="Email contact" size="small" value={siteSettings.email} onChange={(e) => handleSiteSettingChange('email', e.target.value)} fullWidth />
-            <TextField label="Telephone" size="small" value={siteSettings.phone} onChange={(e) => handleSiteSettingChange('phone', e.target.value)} fullWidth />
-            <TextField label="Horaires" size="small" value={siteSettings.business_hours} onChange={(e) => handleSiteSettingChange('business_hours', e.target.value)} fullWidth />
-            <TextField label="Titre promo homepage (optionnel)" size="small" value={siteSettings.home_promo_headline} onChange={(e) => handleSiteSettingChange('home_promo_headline', e.target.value)} fullWidth />
-            <TextField label="Adresse" size="small" value={siteSettings.address} onChange={(e) => handleSiteSettingChange('address', e.target.value)} fullWidth multiline minRows={2} sx={{ gridColumn: { xs: '1 / -1', md: '1 / -1' } }} />
-            <TextField label="Description footer" size="small" value={siteSettings.footer_description} onChange={(e) => handleSiteSettingChange('footer_description', e.target.value)} fullWidth multiline minRows={2} sx={{ gridColumn: { xs: '1 / -1', md: '1 / -1' } }} />
-          </Box>
+          <Box display="flex" flexDirection="column" gap={2}>
+            <Paper variant="outlined" sx={{ p: 2 }}>
+              <Typography variant="subtitle1" fontWeight={700} sx={{ mb: 0.5 }}>
+                Contact et disponibilite
+              </Typography>
+              <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1.5 }}>
+                Infos affichees dans le footer et les zones de contact.
+              </Typography>
+              <Box display="grid" gridTemplateColumns={{ xs: '1fr', md: '1fr 1fr' }} gap={1.5}>
+                <TextField label="Email contact" size="small" value={siteSettings.email} onChange={(e) => handleSiteSettingChange('email', e.target.value)} fullWidth />
+                <TextField label="Telephone" size="small" value={siteSettings.phone} onChange={(e) => handleSiteSettingChange('phone', e.target.value)} fullWidth />
+                <TextField label="Horaires" size="small" value={siteSettings.business_hours} onChange={(e) => handleSiteSettingChange('business_hours', e.target.value)} fullWidth />
+                <TextField label="Titre promo homepage (optionnel)" size="small" value={siteSettings.home_promo_headline} onChange={(e) => handleSiteSettingChange('home_promo_headline', e.target.value)} fullWidth />
+                <TextField label="Adresse" size="small" value={siteSettings.address} onChange={(e) => handleSiteSettingChange('address', e.target.value)} fullWidth multiline minRows={2} sx={{ gridColumn: { xs: '1 / -1', md: '1 / -1' } }} />
+                <TextField label="Description footer" size="small" value={siteSettings.footer_description} onChange={(e) => handleSiteSettingChange('footer_description', e.target.value)} fullWidth multiline minRows={2} sx={{ gridColumn: { xs: '1 / -1', md: '1 / -1' } }} />
+              </Box>
+            </Paper>
 
-          <Box mt={3}>
-            <Box display="flex" justifyContent="space-between" alignItems="center" mb={1.5}>
-              <Typography variant="subtitle1" fontWeight={700}>Short links</Typography>
-              <Button size="small" variant="outlined" onClick={addShortLink}>Ajouter</Button>
+            <Paper variant="outlined" sx={{ p: 2 }}>
+              <Typography variant="subtitle1" fontWeight={700} sx={{ mb: 0.5 }}>
+                WhatsApp et reseaux sociaux
+              </Typography>
+              <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1.5 }}>
+                Liens utilises pour les boutons de contact rapides.
+              </Typography>
+              <Box display="grid" gridTemplateColumns={{ xs: '1fr', md: '1fr 1fr' }} gap={1.5}>
+                <TextField label="Numero WhatsApp" size="small" value={siteSettings.whatsapp_number} onChange={(e) => handleSiteSettingChange('whatsapp_number', e.target.value)} fullWidth />
+                <TextField label="Lien WhatsApp direct (optionnel)" size="small" value={siteSettings.whatsapp_url} onChange={(e) => handleSiteSettingChange('whatsapp_url', e.target.value)} fullWidth />
+                <TextField label="Message WhatsApp par defaut" size="small" value={siteSettings.whatsapp_prefill_message} onChange={(e) => handleSiteSettingChange('whatsapp_prefill_message', e.target.value)} fullWidth sx={{ gridColumn: { xs: '1 / -1', md: '1 / -1' } }} />
+                <TextField label="Instagram URL" size="small" value={siteSettings.instagram_url} onChange={(e) => handleSiteSettingChange('instagram_url', e.target.value)} fullWidth />
+                <TextField label="Facebook URL" size="small" value={siteSettings.facebook_url} onChange={(e) => handleSiteSettingChange('facebook_url', e.target.value)} fullWidth />
+              </Box>
+            </Paper>
+
+            <Paper variant="outlined" sx={{ p: 2 }}>
+              <Box display="flex" justifyContent="space-between" alignItems="center" mb={1.5}>
+                <Typography variant="subtitle1" fontWeight={700}>Short links dynamiques</Typography>
+                <Button size="small" variant="outlined" onClick={addShortLink}>Ajouter</Button>
+              </Box>
+              <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1.5 }}>
+                Chaque short link cree automatiquement une page markdown dynamique via /pages/slug.
+              </Typography>
+              <Box display="flex" flexDirection="column" gap={1.5}>
+                {siteSettings.short_links.length === 0 && (
+                  <Alert severity="info" sx={{ py: 0.5 }}>
+                    Aucun short link configure pour le moment.
+                  </Alert>
+                )}
+                {siteSettings.short_links.map((link, index) => (
+                  <Box key={`${index}-${link.label}`} display="grid" gridTemplateColumns={{ xs: '1fr', md: '1fr 1fr auto' }} gap={1}>
+                    <TextField size="small" label="Label" value={link.label} onChange={(e) => handleShortLinkLabelChange(index, e.target.value)} />
+                    <TextField size="small" label="URL (auto)" value={link.url} slotProps={{ input: { readOnly: true } }} />
+                    <Button color="error" onClick={() => removeShortLink(index)}>Supprimer</Button>
+                  </Box>
+                ))}
             </Box>
-            <Box display="flex" flexDirection="column" gap={1.5}>
-              {siteSettings.short_links.map((link, index) => (
-                <Box key={`${index}-${link.label}`} display="grid" gridTemplateColumns={{ xs: '1fr', md: '1fr 1fr auto' }} gap={1}>
-                  <TextField size="small" label="Label" value={link.label} onChange={(e) => handleShortLinkChange(index, 'label', e.target.value)} />
-                  <TextField size="small" label="URL" value={link.url} onChange={(e) => handleShortLinkChange(index, 'url', e.target.value)} />
-                  <Button color="error" onClick={() => removeShortLink(index)}>Supprimer</Button>
-                </Box>
-              ))}
-            </Box>
+            </Paper>
           </Box>
         </CardContent>
     </Card>
