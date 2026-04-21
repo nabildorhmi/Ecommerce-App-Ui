@@ -194,6 +194,20 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
               Commander — {formatCurrency(subtotalCentimes)}
             </Button>
 
+            <Button
+              variant="outlined"
+              fullWidth
+              onClick={() => { onClose(); void navigate('/products'); }}
+              sx={{
+                borderRadius: '10px',
+                color: '#00C2FF',
+                borderColor: 'rgba(0,194,255,0.35)',
+                '&:hover': { borderColor: '#00C2FF', backgroundColor: 'rgba(0,194,255,0.06)' },
+              }}
+            >
+              Continuer mes achats
+            </Button>
+
             {/* Trust signal */}
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.75 }}>
               <LockOutlinedIcon sx={{ fontSize: '0.8rem', color: 'text.disabled' }} />

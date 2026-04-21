@@ -272,6 +272,17 @@ export const ProductCard = memo(function ProductCard({ product }: ProductCardPro
               </Typography>
             )}
           </Box>
+
+          <Typography sx={{
+            mt: 0.6,
+            fontSize: '0.68rem',
+            color: 'rgba(0,194,255,0.8)',
+            fontWeight: 700,
+            letterSpacing: '0.05em',
+            textTransform: 'uppercase',
+          }}>
+            Voir details • Acheter
+          </Typography>
         </Box>
       </Box>
     </motion.div>
