@@ -1,10 +1,15 @@
 import { useState } from 'react';
+import { useLocation } from 'react-router';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -15,7 +20,7 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useAuthStore } from '@/features/auth/store';
-import { parseSiteSettingsContent, type ShippingPricingRule, type SiteSettings, type SiteShortLink } from '@/shared/types/siteSettings';
+import { parseSiteSettingsContent, type ShippingPricingMode, type ShippingPricingRule, type SiteSettings, type SiteShortLink } from '@/shared/types/siteSettings';
 import { useAdminSiteSettingsPage, useUpdateAdminSiteSettingsPage } from '../api/siteSettings';
 
 function slugifyLabel(label: string): string {
@@ -75,10 +80,23 @@ function madToCentimes(value: string): number {
   return Math.round(amount * 100);
 }
 
+type SiteSettingsSectionId = 'contact' | 'social' | 'shipping' | 'short-links';
+
+function sectionFromHash(hash: string): SiteSettingsSectionId {
+  const normalized = hash.replace('#', '').trim().toLowerCase();
+
+  if (normalized === 'social') return 'social';
+  if (normalized === 'shipping') return 'shipping';
+  if (normalized === 'short-links') return 'short-links';
+  return 'contact';
+}
+
 function SiteSettingsForm({ initialSettings }: { initialSettings: SiteSettings }) {
+  const location = useLocation();
   const updateMutation = useUpdateAdminSiteSettingsPage();
   const [siteSettings, setSiteSettings] = useState<SiteSettings>(initialSettings);
   const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const activeSection = sectionFromHash(location.hash);
 
   const handleSiteSettingChange = (key: keyof SiteSettings, value: string) => {
     setSiteSettings((prev) => ({ ...prev, [key]: value }));
@@ -88,6 +106,13 @@ function SiteSettingsForm({ initialSettings }: { initialSettings: SiteSettings }
     setSiteSettings((prev) => ({
       ...prev,
       [key]: madToCentimes(value),
+    }));
+  };
+
+  const handleShippingModeChange = (value: ShippingPricingMode) => {
+    setSiteSettings((prev) => ({
+      ...prev,
+      shipping_pricing_mode: value,
     }));
   };
 
@@ -193,8 +218,8 @@ function SiteSettingsForm({ initialSettings }: { initialSettings: SiteSettings }
 
         <Divider sx={{ mb: 2 }} />
 
-        <Box display="flex" flexDirection="column" gap={2}>
-            <Accordion defaultExpanded disableGutters>
+        <Box key={activeSection} display="flex" flexDirection="column" gap={2}>
+          <Accordion id="contact" defaultExpanded={activeSection === 'contact'} disableGutters>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <Typography variant="subtitle1" fontWeight={700}>Contact et disponibilite</Typography>
               </AccordionSummary>
@@ -213,7 +238,7 @@ function SiteSettingsForm({ initialSettings }: { initialSettings: SiteSettings }
               </AccordionDetails>
             </Accordion>
 
-            <Accordion disableGutters>
+            <Accordion id="social" defaultExpanded={activeSection === 'social'} disableGutters>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <Typography variant="subtitle1" fontWeight={700}>WhatsApp et reseaux sociaux</Typography>
               </AccordionSummary>
@@ -231,7 +256,7 @@ function SiteSettingsForm({ initialSettings }: { initialSettings: SiteSettings }
               </AccordionDetails>
             </Accordion>
 
-            <Accordion disableGutters>
+            <Accordion id="shipping" defaultExpanded={activeSection === 'shipping'} disableGutters>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <Typography variant="subtitle1" fontWeight={700}>Frais de livraison et regles de prix</Typography>
               </AccordionSummary>
@@ -241,6 +266,18 @@ function SiteSettingsForm({ initialSettings }: { initialSettings: SiteSettings }
                 </Typography>
 
                 <Box display="grid" gridTemplateColumns={{ xs: '1fr', md: '1fr 1fr' }} gap={1.5}>
+                  <FormControl size="small" fullWidth>
+                    <InputLabel id="shipping-pricing-mode-label">Mode de tarification</InputLabel>
+                    <Select
+                      labelId="shipping-pricing-mode-label"
+                      label="Mode de tarification"
+                      value={siteSettings.shipping_pricing_mode}
+                      onChange={(e) => handleShippingModeChange(e.target.value as ShippingPricingMode)}
+                    >
+                      <MenuItem value="simple">Simple (frais fixes)</MenuItem>
+                      <MenuItem value="tiered">Avance (regles par montant)</MenuItem>
+                    </Select>
+                  </FormControl>
                   <TextField
                     size="small"
                     label="Frais de livraison par defaut (MAD)"
@@ -249,6 +286,7 @@ function SiteSettingsForm({ initialSettings }: { initialSettings: SiteSettings }
                     type="number"
                     slotProps={{ htmlInput: { min: 0, step: '0.01' } }}
                   />
+                  <Box sx={{ display: { xs: 'none', md: 'block' } }} />
                   <TextField
                     size="small"
                     label="Livraison gratuite a partir de (MAD)"
@@ -265,7 +303,11 @@ function SiteSettingsForm({ initialSettings }: { initialSettings: SiteSettings }
                     <Button size="small" variant="outlined" onClick={addShippingRule}>Ajouter une regle</Button>
                   </Box>
 
-                  {siteSettings.shipping_pricing_rules.length === 0 ? (
+                  {siteSettings.shipping_pricing_mode !== 'tiered' ? (
+                    <Alert severity="info" sx={{ py: 0.5 }}>
+                      Mode simple actif: seul le frais de livraison par defaut est applique (jusqu au seuil de livraison gratuite).
+                    </Alert>
+                  ) : siteSettings.shipping_pricing_rules.length === 0 ? (
                     <Alert severity="info" sx={{ py: 0.5 }}>Aucune regle conditionnelle. Le frais par defaut sera applique.</Alert>
                   ) : (
                     <Box display="flex" flexDirection="column" gap={1.25}>
@@ -296,7 +338,7 @@ function SiteSettingsForm({ initialSettings }: { initialSettings: SiteSettings }
               </AccordionDetails>
             </Accordion>
 
-            <Accordion disableGutters>
+            <Accordion id="short-links" defaultExpanded={activeSection === 'short-links'} disableGutters>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <Typography variant="subtitle1" fontWeight={700}>Short links dynamiques</Typography>
               </AccordionSummary>

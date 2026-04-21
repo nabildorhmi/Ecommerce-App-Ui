@@ -104,6 +104,7 @@ export function AdminLayout() {
     pilotage: true,
     catalogue: true,
     contenu: true,
+    parametres: true,
     administration: true,
   });
 
@@ -144,11 +145,20 @@ export function AdminLayout() {
       label: 'Contenu',
       items: [
         { to: '/admin/pages', icon: <DescriptionIcon />, label: 'Pages markdown' },
-        ...(user?.role === 'global_admin'
-          ? [{ to: '/admin/site-settings', icon: <SettingsIcon />, label: 'Parametres du site' }]
-          : []),
       ],
     },
+    ...(user?.role === 'global_admin'
+      ? [{
+        id: 'parametres',
+        label: 'Parametres',
+        items: [
+          { to: '/admin/site-settings#contact', icon: <SettingsIcon />, label: 'Contact et disponibilite' },
+          { to: '/admin/site-settings#social', icon: <SettingsIcon />, label: 'Reseaux sociaux' },
+          { to: '/admin/site-settings#shipping', icon: <TuneIcon />, label: 'Livraison et tarification' },
+          { to: '/admin/site-settings#short-links', icon: <DescriptionIcon />, label: 'Short links dynamiques' },
+        ],
+      }]
+      : []),
     ...(user?.role === 'global_admin'
       ? [{
         id: 'administration',
@@ -161,8 +171,15 @@ export function AdminLayout() {
   const allNavItems = navGroups.flatMap((group) => group.items);
 
   const isItemActive = (item: NavItem) => {
-    if (item.exact) return location.pathname === item.to;
-    return location.pathname.startsWith(item.to);
+    const [itemPath, itemHashRaw] = item.to.split('#');
+    const itemHash = itemHashRaw ? `#${itemHashRaw}` : '';
+
+    if (itemHash) {
+      return location.pathname === itemPath && location.hash === itemHash;
+    }
+
+    if (item.exact) return location.pathname === itemPath;
+    return location.pathname.startsWith(itemPath);
   };
 
   const toggleGroup = (groupId: string) => {

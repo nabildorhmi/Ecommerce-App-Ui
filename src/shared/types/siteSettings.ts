@@ -8,6 +8,8 @@ export interface ShippingPricingRule {
   fee: number;
 }
 
+export type ShippingPricingMode = 'simple' | 'tiered';
+
 export interface SiteSettings {
   whatsapp_number: string;
   whatsapp_prefill_message: string;
@@ -23,6 +25,7 @@ export interface SiteSettings {
   short_links: SiteShortLink[];
   delivery_fee_default: number;
   free_shipping_threshold: number;
+  shipping_pricing_mode: ShippingPricingMode;
   shipping_pricing_rules: ShippingPricingRule[];
 }
 
@@ -40,6 +43,7 @@ export const defaultSiteSettings: SiteSettings = {
   home_promo_headline: '',
   delivery_fee_default: 0,
   free_shipping_threshold: 0,
+  shipping_pricing_mode: 'simple',
   shipping_pricing_rules: [],
   short_links: [
     { label: 'A propos', url: '/a-propos' },
@@ -78,6 +82,11 @@ export function getDeliveryFeeForSubtotal(settings: SiteSettings, subtotalCentim
 
   let fee = sanitizeCentimes(settings.delivery_fee_default);
   const rules = sanitizeShippingRules(settings.shipping_pricing_rules);
+  const mode: ShippingPricingMode = settings.shipping_pricing_mode === 'tiered' ? 'tiered' : 'simple';
+
+  if (mode === 'simple') {
+    return fee;
+  }
 
   for (const rule of rules) {
     if (subtotal >= rule.min_subtotal) {
@@ -101,12 +110,18 @@ export function parseSiteSettingsContent(content?: string): SiteSettings {
 
   try {
     const parsed = JSON.parse(content) as Partial<SiteSettings>;
+    const shippingRules = sanitizeShippingRules(parsed.shipping_pricing_rules);
+    const shippingMode: ShippingPricingMode = parsed.shipping_pricing_mode === 'tiered' || parsed.shipping_pricing_mode === 'simple'
+      ? parsed.shipping_pricing_mode
+      : (shippingRules.length > 0 ? 'tiered' : defaultSiteSettings.shipping_pricing_mode);
+
     return {
       ...defaultSiteSettings,
       ...parsed,
       delivery_fee_default: sanitizeCentimes(parsed.delivery_fee_default, defaultSiteSettings.delivery_fee_default),
       free_shipping_threshold: sanitizeCentimes(parsed.free_shipping_threshold, defaultSiteSettings.free_shipping_threshold),
-      shipping_pricing_rules: sanitizeShippingRules(parsed.shipping_pricing_rules),
+      shipping_pricing_mode: shippingMode,
+      shipping_pricing_rules: shippingRules,
       short_links: Array.isArray(parsed.short_links)
         ? parsed.short_links.filter((item): item is SiteShortLink =>
             Boolean(item && typeof item.label === 'string' && typeof item.url === 'string')
