@@ -5,10 +5,10 @@ import Button from '@mui/material/Button';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
 import CountUp from 'react-countup';
-import heroScooter from '@/assets/hero-scooter.png';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ElectricScooterIcon from '@mui/icons-material/ElectricScooter';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import { HeroCarousel } from './HeroCarousel';
 
 const CYAN = '#00C2FF';
 const EASE: [number, number, number, number] = [0.25, 0.46, 0.45, 0.94];
@@ -34,14 +34,15 @@ export function HeroSection() {
             sx={{
                 position: 'relative',
                 width: '100%',
-                minHeight: { xs: '92vh', md: '81vh' },
+                height: { xs: 'calc(100vw * (16 / 9))', md: 'min(100vh, calc(100vw * (9 / 16)))' },
+                minHeight: { xs: 'calc(100vw * (16 / 9))', md: 'min(100vh, calc(100vw * (9 / 16)))' },
                 bgcolor: '#0c0c14',
                 overflow: 'hidden',
                 display: 'flex',
                 alignItems: 'center',
             }}
         >
-            {/* ── Full-width background image with parallax (lovable style) ── */}
+            {/* ── Parallax base layers ── */}
             <motion.div
                 style={{
                     y: bgY,
@@ -49,39 +50,25 @@ export function HeroSection() {
                     top: 0,
                     left: 0,
                     right: 0,
-                    bottom: '-20%',
+                    bottom: 0,
                     zIndex: 0,
                 }}
             >
-                {/* Full-bleed image covering entire section */}
-                <Box
-                    component="img"
-                    src={heroScooter}
-                    alt="Scooter électrique MiraiTech"
-                    sx={{
-                        width: '100%', height: '100%',
-                        objectFit: 'cover',
-                        objectPosition: 'center',
-                        display: 'block',
-                    }}
-                />
-                {/* Gradient overlay 1: left-to-right — solid dark on left, 80% dark via middle */}
+                <HeroCarousel fullBleed />
                 <Box sx={{
                     position: 'absolute', inset: 0,
                     background: {
-                        xs: 'linear-gradient(to right, #0c0c14 0%, rgba(12,12,20,0.9) 40%, rgba(12,12,20,0.6) 100%)',
-                        md: 'linear-gradient(to right, #0c0c14 0%, rgba(12,12,20,0.8) 40%, rgba(12,12,20,0.35) 100%)',
+                        xs: 'linear-gradient(to right, #0c0c14 0%, rgba(12,12,20,0.9) 40%, rgba(12,12,20,0.65) 100%)',
+                        md: 'linear-gradient(to right, #0c0c14 0%, rgba(12,12,20,0.82) 40%, rgba(12,12,20,0.35) 100%)',
                     },
                 }} />
-                {/* Gradient overlay 2: bottom-to-top — solid dark bottom fading up */}
                 <Box sx={{
                     position: 'absolute', inset: 0,
                     background: 'linear-gradient(to top, #0c0c14 0%, rgba(12,12,20,0.4) 40%, transparent 70%)',
                 }} />
-                {/* Overlay 3: overall darkening wash */}
                 <Box sx={{
                     position: 'absolute', inset: 0,
-                    bgcolor: 'rgba(12,12,20,0.3)',
+                    bgcolor: 'rgba(12,12,20,0.15)',
                 }} />
             </motion.div>
 

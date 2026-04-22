@@ -29,7 +29,6 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
-import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 import CenterFocusStrongIcon from '@mui/icons-material/CenterFocusStrong';
 import SearchIcon from '@mui/icons-material/Search';
 import {
@@ -39,6 +38,69 @@ import {
   useDeleteHeroBanner,
   type HeroBanner,
 } from '../api/heroBanners';
+import { HERO_BANNER_ASPECT } from '../../home/components/HeroCarousel';
+
+const HERO_UPLOAD_SOFT_LIMIT_BYTES = 1_900_000;
+const HERO_DESKTOP_TARGET_WIDTH = 1920;
+const HERO_MOBILE_TARGET_WIDTH = 1080;
+
+function fileBaseName(filename: string): string {
+  const dot = filename.lastIndexOf('.');
+  return dot > 0 ? filename.slice(0, dot) : filename;
+}
+
+async function loadImageElement(file: File): Promise<HTMLImageElement> {
+  const url = URL.createObjectURL(file);
+  try {
+    const img = new Image();
+    await new Promise<void>((resolve, reject) => {
+      img.onload = () => resolve();
+      img.onerror = () => reject(new Error('Cannot load selected image'));
+      img.src = url;
+    });
+    return img;
+  } finally {
+    URL.revokeObjectURL(url);
+  }
+}
+
+async function canvasToBlob(canvas: HTMLCanvasElement, type: string, quality: number): Promise<Blob | null> {
+  return new Promise((resolve) => {
+    canvas.toBlob((blob) => resolve(blob), type, quality);
+  });
+}
+
+async function optimizeHeroUpload(file: File, targetWidth: number): Promise<File> {
+  if (!file.type.startsWith('image/')) return file;
+  if (file.size <= HERO_UPLOAD_SOFT_LIMIT_BYTES) return file;
+
+  const image = await loadImageElement(file);
+  const scale = Math.min(1, targetWidth / image.naturalWidth);
+  const width = Math.max(1, Math.round(image.naturalWidth * scale));
+  const height = Math.max(1, Math.round(image.naturalHeight * scale));
+
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return file;
+  ctx.drawImage(image, 0, 0, width, height);
+
+  const qualities = [0.9, 0.82, 0.74, 0.66];
+  for (const q of qualities) {
+    const blob = await canvasToBlob(canvas, 'image/webp', q);
+    if (!blob) continue;
+    if (blob.size <= HERO_UPLOAD_SOFT_LIMIT_BYTES || blob.size < file.size) {
+      return new File([blob], `${fileBaseName(file.name)}.webp`, {
+        type: 'image/webp',
+        lastModified: Date.now(),
+      });
+    }
+  }
+
+  return file;
+}
 
 /* ════════════════════════════════════════════════════════
    Admin Hero Banners Page
@@ -182,16 +244,25 @@ function BannerCard({ banner, onEdit }: { banner: HeroBanner; onEdit: () => void
 
   return (
     <Card sx={{ position: 'relative', opacity: banner.is_active ? 1 : 0.5 }}>
-      {banner.image ? (
-        <CardMedia
-          component="img"
-          height={180}
-          image={banner.image.hero}
-          alt={banner.title ?? 'Hero banner'}
-          sx={{ objectFit: 'cover' }}
-        />
+      {(banner.image?.desktop || banner.image?.mobile) ? (
+        <Box sx={{ position: 'relative', width: '100%', aspectRatio: HERO_BANNER_ASPECT.desktop, overflow: 'hidden' }}>
+          <CardMedia
+            component="img"
+            image={banner.image?.desktop?.hero ?? banner.image?.mobile?.hero ?? ''}
+            alt={banner.title ?? 'Hero banner'}
+            sx={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: banner.object_position ?? '50% 50%' }}
+          />
+          <Box
+            sx={{
+              position: 'absolute',
+              inset: 0,
+              background: 'linear-gradient(to top, rgba(12,12,20,0.65) 0%, rgba(12,12,20,0.15) 45%, transparent 100%)',
+              pointerEvents: 'none',
+            }}
+          />
+        </Box>
       ) : (
-        <Box sx={{ height: 180, bgcolor: 'action.hover', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Box sx={{ width: '100%', aspectRatio: HERO_BANNER_ASPECT.desktop, bgcolor: 'action.hover', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <Typography color="text.secondary">Pas d'image</Typography>
         </Box>
       )}
@@ -230,7 +301,6 @@ function BannerDialog({
 }) {
   const createMutation = useCreateHeroBanner();
   const updateMutation = useUpdateHeroBanner();
-  const fileRef = useRef<HTMLInputElement>(null);
   const dragRef = useRef<{ x: number; y: number; px: number; py: number } | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
@@ -239,9 +309,18 @@ function BannerDialog({
   const [link, setLink] = useState('');
   const [sortOrder, setSortOrder] = useState(0);
   const [isActive, setIsActive] = useState(true);
-  const [file, setFile] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string | null>(null);
+  const [desktopFile, setDesktopFile] = useState<File | null>(null);
+  const [mobileFile, setMobileFile] = useState<File | null>(null);
+  const [desktopPreview, setDesktopPreview] = useState<string | null>(null);
+  const [mobilePreview, setMobilePreview] = useState<string | null>(null);
   const [objectPosition, setObjectPosition] = useState('50% 50%');
+  const mutationError = createMutation.error ?? updateMutation.error;
+  const mutationErrorMessage =
+    (mutationError as { response?: { data?: { detail?: string; errors?: Record<string, string[]> } } })?.response?.data?.detail
+    ?? (mutationError as { response?: { data?: { errors?: Record<string, string[]> } } })?.response?.data?.errors?.image_desktop?.[0]
+    ?? (mutationError as { response?: { data?: { errors?: Record<string, string[]> } } })?.response?.data?.errors?.image_mobile?.[0]
+    ?? (mutationError as { response?: { data?: { errors?: Record<string, string[]> } } })?.response?.data?.errors?.image?.[0]
+    ?? 'Une erreur est survenue pendant l envoi de l image.';
 
   // Populate fields when dialog opens for editing
   const handleEnter = () => {
@@ -251,7 +330,8 @@ function BannerDialog({
       setLink(banner.link ?? '');
       setSortOrder(banner.sort_order);
       setIsActive(banner.is_active);
-      setPreview(banner.image?.hero ?? null);
+      setDesktopPreview(banner.image?.desktop?.hero ?? banner.image?.mobile?.hero ?? null);
+      setMobilePreview(banner.image?.mobile?.hero ?? banner.image?.desktop?.hero ?? null);
       setObjectPosition(banner.object_position ?? '50% 50%');
     } else {
       setTitle('');
@@ -259,18 +339,29 @@ function BannerDialog({
       setLink('');
       setSortOrder(0);
       setIsActive(true);
-      setPreview(null);
+      setDesktopPreview(null);
+      setMobilePreview(null);
       setObjectPosition('50% 50%');
     }
-    setFile(null);
+    setDesktopFile(null);
+    setMobileFile(null);
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (kind: 'desktop' | 'mobile', e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0];
     if (selected) {
-      setFile(selected);
-      setPreview(URL.createObjectURL(selected));
-      setObjectPosition('50% 50%');
+      const optimized = await optimizeHeroUpload(
+        selected,
+        kind === 'mobile' ? HERO_MOBILE_TARGET_WIDTH : HERO_DESKTOP_TARGET_WIDTH,
+      );
+      const url = URL.createObjectURL(optimized);
+      if (kind === 'desktop') {
+        setDesktopFile(optimized);
+        setDesktopPreview(url);
+      } else {
+        setMobileFile(optimized);
+        setMobilePreview(url);
+      }
     }
   };
 
@@ -311,7 +402,8 @@ function BannerDialog({
     fd.append('sort_order', String(sortOrder));
     fd.append('is_active', isActive ? '1' : '0');
     fd.append('object_position', objectPosition);
-    if (file) fd.append('image', file);
+    if (desktopFile) fd.append('image_desktop', desktopFile);
+    if (mobileFile) fd.append('image_mobile', mobileFile);
 
     if (banner) {
       await updateMutation.mutateAsync({ id: banner.id, formData: fd });
@@ -324,6 +416,81 @@ function BannerDialog({
   const isPending = createMutation.isPending || updateMutation.isPending;
   const isCreate = !banner;
 
+  const renderPreviewFrame = (
+    label: string,
+    aspectRatio: string,
+    src: string | null,
+    inputId: string,
+    helperText: string,
+    frameWidth?: { xs?: number | string; sm?: number | string },
+  ) => (
+    <Box sx={{ width: frameWidth ?? '100%', maxWidth: '100%' }}>
+      <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.6 }}>
+        {label}
+      </Typography>
+      {src ? (
+        <Box
+          sx={{
+            width: '100%',
+            aspectRatio,
+            borderRadius: 2,
+            overflow: 'hidden',
+            position: 'relative',
+            cursor: isDragging ? 'grabbing' : 'grab',
+            border: '2px solid',
+            borderColor: 'primary.main',
+            userSelect: 'none',
+            bgcolor: 'black',
+          }}
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={onPointerUp}
+          onPointerLeave={onPointerUp}
+        >
+          <Box
+            component="img"
+            src={src}
+            alt={`Preview ${label}`}
+            draggable={false}
+            sx={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition, display: 'block', pointerEvents: 'none', userSelect: 'none' }}
+          />
+        </Box>
+      ) : (
+        <Box
+          component="label"
+          htmlFor={inputId}
+          sx={{
+            width: '100%',
+            aspectRatio,
+            border: '2px dashed',
+            borderColor: 'divider',
+            borderRadius: 2,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            overflow: 'hidden',
+            position: 'relative',
+            bgcolor: 'action.hover',
+          }}
+        >
+          <Box textAlign="center">
+            <CloudUploadIcon sx={{ fontSize: 34, color: 'text.secondary' }} />
+            <Typography variant="body2" color="text.secondary">
+              Selectionner image {label.toLowerCase()}
+            </Typography>
+          </Box>
+        </Box>
+      )}
+      <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.6 }}>
+        {helperText}
+      </Typography>
+      <Button size="small" sx={{ mt: 0.4 }} component="label" htmlFor={inputId}>
+        Choisir image
+      </Button>
+    </Box>
+  );
+
   return (
     <Dialog
       open={open}
@@ -334,80 +501,42 @@ function BannerDialog({
     >
       <DialogTitle>{isCreate ? 'Ajouter un banner' : 'Modifier le banner'}</DialogTitle>
       <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: '8px !important' }}>
-        {/* Image preview — drag to pan, same 21:9 aspect ratio as desktop hero */}
-        {preview ? (
-          <Box sx={{ position: 'relative', width: '100%' }}>
-            <Box
-              sx={{
-                width: '100%',
-                aspectRatio: '21/9',
-                borderRadius: 2,
-                overflow: 'hidden',
-                position: 'relative',
-                cursor: isDragging ? 'grabbing' : 'grab',
-                border: '2px solid',
-                borderColor: 'primary.main',
-                userSelect: 'none',
-              }}
-              onPointerDown={onPointerDown}
-              onPointerMove={onPointerMove}
-              onPointerUp={onPointerUp}
-              onPointerLeave={onPointerUp}
-            >
-              <Box
-                component="img"
-                src={preview}
-                alt="Preview"
-                draggable={false}
-                sx={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition, display: 'block', pointerEvents: 'none', userSelect: 'none' }}
-              />
-            </Box>
-            {/* Hint + controls */}
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 0.5 }}>
-              <Typography variant="caption" color="text.secondary">
-                Glissez l’image pour ajuster le cadrage
-              </Typography>
-              <Box display="flex" gap={0.5}>
-                <Tooltip title="Centrer">
-                  <IconButton size="small" onClick={handleResetPosition}>
-                    <CenterFocusStrongIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Changer l'image">
-                  <IconButton size="small" onClick={() => fileRef.current?.click()}>
-                    <PhotoCameraIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-              </Box>
-            </Box>
+        {mutationError && <Alert severity="error">{mutationErrorMessage}</Alert>}
+
+        <Box sx={{ position: 'relative', width: '100%' }}>
+          <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 1 }}>
+            Apercu rendu homepage
+          </Typography>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.25 }}>
+            {renderPreviewFrame(
+              'Desktop hero',
+              HERO_BANNER_ASPECT.desktop,
+              desktopPreview,
+              'hero-banner-desktop-input',
+              'Format recommande: paysage (21:9).',
+            )}
+            {renderPreviewFrame(
+              'Mobile hero',
+              HERO_BANNER_ASPECT.mobile,
+              mobilePreview,
+              'hero-banner-mobile-input',
+              'Format recommande: portrait (9:16).',
+              { xs: '68%', sm: '42%' },
+            )}
           </Box>
-        ) : (
-          <Box
-            sx={{
-              width: '100%',
-              aspectRatio: '21/9',
-              border: '2px dashed',
-              borderColor: 'divider',
-              borderRadius: 2,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              overflow: 'hidden',
-              position: 'relative',
-              bgcolor: 'action.hover',
-            }}
-            onClick={() => fileRef.current?.click()}
-          >
-            <Box textAlign="center">
-              <CloudUploadIcon sx={{ fontSize: 40, color: 'text.secondary' }} />
-              <Typography variant="body2" color="text.secondary">
-                Cliquez pour sélectionner une image
-              </Typography>
-            </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 0.5 }}>
+            <Typography variant="caption" color="text.secondary">
+              Vous pouvez uploader seulement desktop ou seulement mobile. Glissez dans un apercu pour ajuster le cadrage partage.
+            </Typography>
+            <Tooltip title="Centrer">
+              <IconButton size="small" onClick={handleResetPosition}>
+                <CenterFocusStrongIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
           </Box>
-        )}
-        <input ref={fileRef} type="file" accept="image/*" hidden onChange={handleFileChange} />
+        </Box>
+        <input id="hero-banner-desktop-input" type="file" accept="image/*" hidden onChange={(e) => handleFileChange('desktop', e)} />
+        <input id="hero-banner-mobile-input" type="file" accept="image/*" hidden onChange={(e) => handleFileChange('mobile', e)} />
 
         <TextField label="Titre" size="small" value={title} onChange={(e) => setTitle(e.target.value)} />
         <TextField label="Sous-titre" size="small" value={subtitle} onChange={(e) => setSubtitle(e.target.value)} />
@@ -417,7 +546,7 @@ function BannerDialog({
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Annuler</Button>
-        <Button variant="contained" onClick={handleSubmit} disabled={isPending || (isCreate && !file)}>
+        <Button variant="contained" onClick={handleSubmit} disabled={isPending || (isCreate && !desktopFile && !mobileFile)}>
           {isPending ? 'Enregistrement…' : isCreate ? 'Créer' : 'Mettre à jour'}
         </Button>
       </DialogActions>

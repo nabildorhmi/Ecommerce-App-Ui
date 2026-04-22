@@ -379,39 +379,6 @@ function FooterCTA() {
   );
 }
 
-function HowToBuySection() {
-  return (
-    <AnimatedSection>
-      <Box component="section" sx={{ bgcolor: '#0c0c14', py: { xs: 5, md: 7 }, borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-        <Container maxWidth="xl">
-          <Box sx={{ p: { xs: 2, md: 3 }, borderRadius: '16px', border: '1px solid rgba(0,194,255,0.2)', background: 'linear-gradient(135deg, rgba(0,194,255,0.06) 0%, rgba(12,12,20,0.2) 100%)' }}>
-            <Typography sx={{ fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.16em', color: '#00C2FF', textTransform: 'uppercase', mb: 0.5 }}>
-              Achat simple
-            </Typography>
-            <Typography sx={{ fontWeight: 800, fontSize: { xs: '1.2rem', md: '1.5rem' }, color: '#E8ECF2', mb: 2.25, fontFamily: '"Orbitron", sans-serif', textTransform: 'uppercase' }}>
-              Acheter en 3 etapes
-            </Typography>
-            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr 1fr' }, gap: 1.5 }}>
-              <Box>
-                <Typography sx={{ color: '#00C2FF', fontSize: '0.8rem', fontWeight: 700, mb: 0.5 }}>1. Choisissez votre modele</Typography>
-                <Typography sx={{ color: '#8A919D', fontSize: '0.84rem', lineHeight: 1.6 }}>Filtrez le catalogue et ouvrez la fiche qui vous convient.</Typography>
-              </Box>
-              <Box>
-                <Typography sx={{ color: '#00C2FF', fontSize: '0.8rem', fontWeight: 700, mb: 0.5 }}>2. Ajoutez au panier</Typography>
-                <Typography sx={{ color: '#8A919D', fontSize: '0.84rem', lineHeight: 1.6 }}>Selectionnez vos options puis cliquez sur ajouter ou acheter maintenant.</Typography>
-              </Box>
-              <Box>
-                <Typography sx={{ color: '#00C2FF', fontSize: '0.8rem', fontWeight: 700, mb: 0.5 }}>3. Confirmez en checkout</Typography>
-                <Typography sx={{ color: '#8A919D', fontSize: '0.84rem', lineHeight: 1.6 }}>Renseignez la livraison et confirmez avec paiement a la livraison.</Typography>
-              </Box>
-            </Box>
-          </Box>
-        </Container>
-      </Box>
-    </AnimatedSection>
-  );
-}
-
 /* ════════════════════════════════════════════════════════════════════
    MAIN HOME PAGE
    ════════════════════════════════════════════════════════════════════ */
@@ -420,7 +387,6 @@ export function HomePage() {
     <Box sx={{ bgcolor: '#0c0c14', minHeight: '100vh' }}>
       <HeroSection />
       <TrustBadgesSection />
-      <HowToBuySection />
       <FeaturedSection />
       <NouveauteSection />
       <WhyChooseUsSection />
