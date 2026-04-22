@@ -54,8 +54,8 @@ function ProgressBar({ duration, resetKey, current, total }: {
 }
 
 /* ─── Ken-Burns zoom on active image ─────────────────────────────────── */
-function SlideImage({ src, alt, duration, objectPosition }: {
-  src: string; alt: string; duration: number; objectPosition?: string;
+function SlideImage({ src, alt, duration, objectPosition, isMobile }: {
+  src: string; alt: string; duration: number; objectPosition?: string; isMobile?: boolean;
 }) {
   return (
     <motion.div
@@ -68,7 +68,13 @@ function SlideImage({ src, alt, duration, objectPosition }: {
         component="img"
         src={src}
         alt={alt}
-        sx={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: objectPosition ?? 'center center', display: 'block' }}
+        sx={{
+          width: '100%',
+          height: '100%',
+          objectFit: isMobile ? 'contain' : 'cover',
+          objectPosition: objectPosition ?? 'center center',
+          display: 'block'
+        }}
       />
     </motion.div>
   );
@@ -203,6 +209,7 @@ export function HeroCarousel({ fullBleed = false }: { fullBleed?: boolean }) {
         overflow: 'hidden',
         border: fullBleed ? 'none' : '1px solid rgba(0,194,255,0.06)',
         boxShadow: fullBleed ? 'none' : '0 0 40px rgba(0,194,255,0.06), 0 4px 30px rgba(0,0,0,0.4)',
+        bgcolor: '#0c0c14',
       }}
     >
       {/* Neon border glow */}
@@ -244,6 +251,7 @@ export function HeroCarousel({ fullBleed = false }: { fullBleed?: boolean }) {
               alt={current.title ?? 'Banner'}
               duration={DURATION}
               objectPosition={current.object_position}
+              isMobile={isMobileViewport}
             />
 
             {/* Dark cinematic gradient */}

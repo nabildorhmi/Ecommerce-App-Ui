@@ -25,12 +25,14 @@ import Skeleton from '@mui/material/Skeleton';
 import Alert from '@mui/material/Alert';
 import Tooltip from '@mui/material/Tooltip';
 import Paper from '@mui/material/Paper';
+import Chip from '@mui/material/Chip';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import CenterFocusStrongIcon from '@mui/icons-material/CenterFocusStrong';
 import SearchIcon from '@mui/icons-material/Search';
+import CloseIcon from '@mui/icons-material/Close';
 import {
   useAdminHeroBanners,
   useCreateHeroBanner,
@@ -278,6 +280,18 @@ function BannerCard({ banner, onEdit }: { banner: HeroBanner; onEdit: () => void
         <Typography variant="caption" color="text.secondary">
           Ordre : {banner.sort_order} &middot; {banner.is_active ? 'Actif' : 'Inactif'}
         </Typography>
+        <Box sx={{ display: 'flex', gap: 0.5, mt: 1 }}>
+          {banner.has_desktop && banner.has_mobile ? (
+            <>
+              <Chip label="Desktop" size="small" sx={{ bgcolor: 'rgba(0,194,255,0.15)', color: '#00C2FF', fontSize: '0.65rem', height: 20 }} />
+              <Chip label="Mobile" size="small" sx={{ bgcolor: 'rgba(255,45,120,0.15)', color: '#FF2D78', fontSize: '0.65rem', height: 20 }} />
+            </>
+          ) : banner.has_desktop ? (
+            <Chip label="Desktop uniquement" size="small" sx={{ bgcolor: 'rgba(0,194,255,0.15)', color: '#00C2FF', fontSize: '0.65rem', height: 20 }} />
+          ) : banner.has_mobile ? (
+            <Chip label="Mobile uniquement" size="small" sx={{ bgcolor: 'rgba(255,45,120,0.15)', color: '#FF2D78', fontSize: '0.65rem', height: 20 }} />
+          ) : null}
+        </Box>
       </CardContent>
       <CardActions>
         <IconButton size="small" onClick={onEdit}><EditIcon fontSize="small" /></IconButton>
@@ -301,8 +315,10 @@ function BannerDialog({
 }) {
   const createMutation = useCreateHeroBanner();
   const updateMutation = useUpdateHeroBanner();
-  const dragRef = useRef<{ x: number; y: number; px: number; py: number } | null>(null);
-  const [isDragging, setIsDragging] = useState(false);
+  const desktopDragRef = useRef<{ x: number; y: number; px: number; py: number } | null>(null);
+  const mobileDragRef = useRef<{ x: number; y: number; px: number; py: number } | null>(null);
+  const [isDraggingDesktop, setIsDraggingDesktop] = useState(false);
+  const [isDraggingMobile, setIsDraggingMobile] = useState(false);
 
   const [title, setTitle] = useState('');
   const [subtitle, setSubtitle] = useState('');
@@ -313,7 +329,12 @@ function BannerDialog({
   const [mobileFile, setMobileFile] = useState<File | null>(null);
   const [desktopPreview, setDesktopPreview] = useState<string | null>(null);
   const [mobilePreview, setMobilePreview] = useState<string | null>(null);
-  const [objectPosition, setObjectPosition] = useState('50% 50%');
+  const [desktopObjectPosition, setDesktopObjectPosition] = useState('50% 50%');
+  const [mobileObjectPosition, setMobileObjectPosition] = useState('50% 50%');
+  const [removeDesktop, setRemoveDesktop] = useState(false);
+  const [removeMobile, setRemoveMobile] = useState(false);
+  const [desktopWarning, setDesktopWarning] = useState<string | null>(null);
+  const [mobileWarning, setMobileWarning] = useState<string | null>(null);
   const mutationError = createMutation.error ?? updateMutation.error;
   const mutationErrorMessage =
     (mutationError as { response?: { data?: { detail?: string; errors?: Record<string, string[]> } } })?.response?.data?.detail
@@ -330,9 +351,11 @@ function BannerDialog({
       setLink(banner.link ?? '');
       setSortOrder(banner.sort_order);
       setIsActive(banner.is_active);
-      setDesktopPreview(banner.image?.desktop?.hero ?? banner.image?.mobile?.hero ?? null);
-      setMobilePreview(banner.image?.mobile?.hero ?? banner.image?.desktop?.hero ?? null);
-      setObjectPosition(banner.object_position ?? '50% 50%');
+      // No fallback between desktop and mobile
+      setDesktopPreview(banner.image?.desktop?.hero ?? null);
+      setMobilePreview(banner.image?.mobile?.hero ?? null);
+      setDesktopObjectPosition(banner.object_position ?? '50% 50%');
+      setMobileObjectPosition('50% 50%');
     } else {
       setTitle('');
       setSubtitle('');
@@ -341,10 +364,15 @@ function BannerDialog({
       setIsActive(true);
       setDesktopPreview(null);
       setMobilePreview(null);
-      setObjectPosition('50% 50%');
+      setDesktopObjectPosition('50% 50%');
+      setMobileObjectPosition('50% 50%');
     }
     setDesktopFile(null);
     setMobileFile(null);
+    setRemoveDesktop(false);
+    setRemoveMobile(false);
+    setDesktopWarning(null);
+    setMobileWarning(null);
   };
 
   const handleFileChange = async (kind: 'desktop' | 'mobile', e: React.ChangeEvent<HTMLInputElement>) => {
@@ -354,44 +382,84 @@ function BannerDialog({
         selected,
         kind === 'mobile' ? HERO_MOBILE_TARGET_WIDTH : HERO_DESKTOP_TARGET_WIDTH,
       );
+
+      // Check aspect ratio and show warning if wrong orientation
+      const img = await loadImageElement(optimized);
+      const isPortrait = img.naturalHeight > img.naturalWidth;
+      const isLandscape = img.naturalWidth > img.naturalHeight;
+
       const url = URL.createObjectURL(optimized);
       if (kind === 'desktop') {
         setDesktopFile(optimized);
         setDesktopPreview(url);
+        // Desktop should be landscape
+        if (isPortrait) {
+          setDesktopWarning("L'image selectionnee est en format portrait. Le format paysage (ex: 1920x600) est recommande pour desktop.");
+        } else {
+          setDesktopWarning(null);
+        }
       } else {
         setMobileFile(optimized);
         setMobilePreview(url);
+        // Mobile should be portrait
+        if (isLandscape) {
+          setMobileWarning("L'image selectionnee est en format paysage. Le format portrait (ex: 375x600) est recommande pour mobile.");
+        } else {
+          setMobileWarning(null);
+        }
       }
     }
   };
 
-  const handleResetPosition = () => setObjectPosition('50% 50%');
+  const handleResetDesktopPosition = () => setDesktopObjectPosition('50% 50%');
+  const handleResetMobilePosition = () => setMobileObjectPosition('50% 50%');
 
-  /** Drag-to-pan: pointerdown starts tracking */
-  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+  /** Desktop drag-to-pan handlers */
+  const onDesktopPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     e.currentTarget.setPointerCapture(e.pointerId);
-    const [px, py] = objectPosition.split(' ').map(parseFloat);
-    dragRef.current = { x: e.clientX, y: e.clientY, px, py };
-    setIsDragging(true);
+    const [px, py] = desktopObjectPosition.split(' ').map(parseFloat);
+    desktopDragRef.current = { x: e.clientX, y: e.clientY, px, py };
+    setIsDraggingDesktop(true);
   };
 
-  /** Drag-to-pan: each pointer move shifts the visible portion of the image */
-  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (!dragRef.current) return;
+  const onDesktopPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!desktopDragRef.current) return;
     const rect = e.currentTarget.getBoundingClientRect();
-    // Dragging right → image moves right → decreasing X reveals left side
-    const dx = ((dragRef.current.x - e.clientX) / rect.width) * 100 * 1.8;
-    const dy = ((dragRef.current.y - e.clientY) / rect.height) * 100 * 1.8;
-    const nx = Math.min(100, Math.max(0, dragRef.current.px + dx));
-    const ny = Math.min(100, Math.max(0, dragRef.current.py + dy));
-    setObjectPosition(`${Math.round(nx)}% ${Math.round(ny)}%`);
-    // Incremental: next delta is relative to current pos
-    dragRef.current = { x: e.clientX, y: e.clientY, px: nx, py: ny };
+    const dx = ((desktopDragRef.current.x - e.clientX) / rect.width) * 100 * 1.8;
+    const dy = ((desktopDragRef.current.y - e.clientY) / rect.height) * 100 * 1.8;
+    const nx = Math.min(100, Math.max(0, desktopDragRef.current.px + dx));
+    const ny = Math.min(100, Math.max(0, desktopDragRef.current.py + dy));
+    setDesktopObjectPosition(`${Math.round(nx)}% ${Math.round(ny)}%`);
+    desktopDragRef.current = { x: e.clientX, y: e.clientY, px: nx, py: ny };
   };
 
-  const onPointerUp = () => {
-    dragRef.current = null;
-    setIsDragging(false);
+  const onDesktopPointerUp = () => {
+    desktopDragRef.current = null;
+    setIsDraggingDesktop(false);
+  };
+
+  /** Mobile drag-to-pan handlers */
+  const onMobilePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    e.currentTarget.setPointerCapture(e.pointerId);
+    const [px, py] = mobileObjectPosition.split(' ').map(parseFloat);
+    mobileDragRef.current = { x: e.clientX, y: e.clientY, px, py };
+    setIsDraggingMobile(true);
+  };
+
+  const onMobilePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!mobileDragRef.current) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const dx = ((mobileDragRef.current.x - e.clientX) / rect.width) * 100 * 1.8;
+    const dy = ((mobileDragRef.current.y - e.clientY) / rect.height) * 100 * 1.8;
+    const nx = Math.min(100, Math.max(0, mobileDragRef.current.px + dx));
+    const ny = Math.min(100, Math.max(0, mobileDragRef.current.py + dy));
+    setMobileObjectPosition(`${Math.round(nx)}% ${Math.round(ny)}%`);
+    mobileDragRef.current = { x: e.clientX, y: e.clientY, px: nx, py: ny };
+  };
+
+  const onMobilePointerUp = () => {
+    mobileDragRef.current = null;
+    setIsDraggingMobile(false);
   };
 
   const handleSubmit = async () => {
@@ -401,9 +469,19 @@ function BannerDialog({
     fd.append('link', link);
     fd.append('sort_order', String(sortOrder));
     fd.append('is_active', isActive ? '1' : '0');
-    fd.append('object_position', objectPosition);
+    fd.append('object_position', desktopObjectPosition);
     if (desktopFile) fd.append('image_desktop', desktopFile);
     if (mobileFile) fd.append('image_mobile', mobileFile);
+
+    // If editing and user removed an image without replacing
+    if (banner) {
+      if (removeDesktop && !desktopFile) {
+        fd.append('remove_desktop', '1');
+      }
+      if (removeMobile && !mobileFile) {
+        fd.append('remove_mobile', '1');
+      }
+    }
 
     if (banner) {
       await updateMutation.mutateAsync({ id: banner.id, formData: fd });
@@ -416,45 +494,92 @@ function BannerDialog({
   const isPending = createMutation.isPending || updateMutation.isPending;
   const isCreate = !banner;
 
+  const handleRemoveDesktop = () => {
+    setDesktopPreview(null);
+    setDesktopFile(null);
+    setRemoveDesktop(true);
+    setDesktopWarning(null);
+  };
+
+  const handleRemoveMobile = () => {
+    setMobilePreview(null);
+    setMobileFile(null);
+    setRemoveMobile(true);
+    setMobileWarning(null);
+  };
+
   const renderPreviewFrame = (
     label: string,
+    sizeHint: string,
     aspectRatio: string,
     src: string | null,
     inputId: string,
-    helperText: string,
-    frameWidth?: { xs?: number | string; sm?: number | string },
+    frameWidth: { xs?: number | string; sm?: number | string } | undefined,
+    objectPosition: string,
+    isDragging: boolean,
+    onPointerDown: (e: React.PointerEvent<HTMLDivElement>) => void,
+    onPointerMove: (e: React.PointerEvent<HTMLDivElement>) => void,
+    onPointerUp: () => void,
+    onRemove: (() => void) | null,
+    warning: string | null,
   ) => (
     <Box sx={{ width: frameWidth ?? '100%', maxWidth: '100%' }}>
-      <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.6 }}>
+      <Typography variant="subtitle2" sx={{ display: 'block', mb: 0.3 }}>
         {label}
       </Typography>
+      <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.8 }}>
+        {sizeHint}
+      </Typography>
       {src ? (
-        <Box
-          sx={{
-            width: '100%',
-            aspectRatio,
-            borderRadius: 2,
-            overflow: 'hidden',
-            position: 'relative',
-            cursor: isDragging ? 'grabbing' : 'grab',
-            border: '2px solid',
-            borderColor: 'primary.main',
-            userSelect: 'none',
-            bgcolor: 'black',
-          }}
-          onPointerDown={onPointerDown}
-          onPointerMove={onPointerMove}
-          onPointerUp={onPointerUp}
-          onPointerLeave={onPointerUp}
-        >
+        <>
           <Box
-            component="img"
-            src={src}
-            alt={`Preview ${label}`}
-            draggable={false}
-            sx={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition, display: 'block', pointerEvents: 'none', userSelect: 'none' }}
-          />
-        </Box>
+            sx={{
+              width: '100%',
+              aspectRatio,
+              borderRadius: 2,
+              overflow: 'hidden',
+              position: 'relative',
+              cursor: isDragging ? 'grabbing' : 'grab',
+              border: '2px solid',
+              borderColor: 'primary.main',
+              userSelect: 'none',
+              bgcolor: 'black',
+            }}
+            onPointerDown={onPointerDown}
+            onPointerMove={onPointerMove}
+            onPointerUp={onPointerUp}
+            onPointerLeave={onPointerUp}
+          >
+            <Box
+              component="img"
+              src={src}
+              alt={`Preview ${label}`}
+              draggable={false}
+              sx={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition, display: 'block', pointerEvents: 'none', userSelect: 'none' }}
+            />
+            {banner && onRemove && (
+              <IconButton
+                size="small"
+                onClick={onRemove}
+                sx={{
+                  position: 'absolute',
+                  top: 6,
+                  right: 6,
+                  bgcolor: 'rgba(0,0,0,0.6)',
+                  color: 'white',
+                  '&:hover': { bgcolor: 'rgba(244,67,54,0.8)' },
+                }}
+              >
+                <CloseIcon fontSize="small" />
+              </IconButton>
+            )}
+          </Box>
+          {warning && (
+            <Alert severity="warning" sx={{ mt: 1, py: 0.5 }}>
+              {warning}
+            </Alert>
+          )}
+        </>
       ) : (
         <Box
           component="label"
@@ -482,9 +607,6 @@ function BannerDialog({
           </Box>
         </Box>
       )}
-      <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.6 }}>
-        {helperText}
-      </Typography>
       <Button size="small" sx={{ mt: 0.4 }} component="label" htmlFor={inputId}>
         Choisir image
       </Button>
@@ -507,33 +629,63 @@ function BannerDialog({
           <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 1 }}>
             Apercu rendu homepage
           </Typography>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.25 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             {renderPreviewFrame(
-              'Desktop hero',
+              'Desktop Banner',
+              'Recommande: 1920x600, format paysage',
               HERO_BANNER_ASPECT.desktop,
               desktopPreview,
               'hero-banner-desktop-input',
-              'Format recommande: paysage (21:9).',
+              undefined,
+              desktopObjectPosition,
+              isDraggingDesktop,
+              onDesktopPointerDown,
+              onDesktopPointerMove,
+              onDesktopPointerUp,
+              banner ? handleRemoveDesktop : null,
+              desktopWarning,
             )}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Box sx={{ flex: 1, height: 1, bgcolor: 'divider' }} />
+              <Typography variant="caption" color="text.secondary">
+                Cadrage desktop
+              </Typography>
+              <Tooltip title="Centrer desktop">
+                <IconButton size="small" onClick={handleResetDesktopPosition} disabled={!desktopPreview}>
+                  <CenterFocusStrongIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            </Box>
             {renderPreviewFrame(
-              'Mobile hero',
+              'Mobile Banner',
+              'Recommande: 375x600, format portrait',
               HERO_BANNER_ASPECT.mobile,
               mobilePreview,
               'hero-banner-mobile-input',
-              'Format recommande: portrait (9:16).',
               { xs: '68%', sm: '42%' },
+              mobileObjectPosition,
+              isDraggingMobile,
+              onMobilePointerDown,
+              onMobilePointerMove,
+              onMobilePointerUp,
+              banner ? handleRemoveMobile : null,
+              mobileWarning,
             )}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Box sx={{ flex: 1, height: 1, bgcolor: 'divider' }} />
+              <Typography variant="caption" color="text.secondary">
+                Cadrage mobile
+              </Typography>
+              <Tooltip title="Centrer mobile">
+                <IconButton size="small" onClick={handleResetMobilePosition} disabled={!mobilePreview}>
+                  <CenterFocusStrongIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            </Box>
           </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 0.5 }}>
-            <Typography variant="caption" color="text.secondary">
-              Vous pouvez uploader seulement desktop ou seulement mobile. Glissez dans un apercu pour ajuster le cadrage partage.
-            </Typography>
-            <Tooltip title="Centrer">
-              <IconButton size="small" onClick={handleResetPosition}>
-                <CenterFocusStrongIcon fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          </Box>
+          <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1.5 }}>
+            Vous pouvez uploader seulement desktop ou seulement mobile. Glissez dans un apercu pour ajuster le cadrage independamment pour chaque appareil.
+          </Typography>
         </Box>
         <input id="hero-banner-desktop-input" type="file" accept="image/*" hidden onChange={(e) => handleFileChange('desktop', e)} />
         <input id="hero-banner-mobile-input" type="file" accept="image/*" hidden onChange={(e) => handleFileChange('mobile', e)} />

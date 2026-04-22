@@ -23,6 +23,8 @@ export interface HeroBanner {
   is_active: boolean;
   object_position: string;
   image: HeroBannerImage | null;
+  has_desktop: boolean;
+  has_mobile: boolean;
   created_at: string;
   updated_at: string;
 }

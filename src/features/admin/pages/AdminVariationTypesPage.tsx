@@ -108,7 +108,6 @@ function FormDialog({
               <TextField
                 value={value}
                 onChange={(e) => handleValueChange(index, e.target.value)}
-                placeholder="Valeur / Value"
                 placeholder="Valeur"
                 fullWidth
                 size="small"
