@@ -54,8 +54,8 @@ function ProgressBar({ duration, resetKey, current, total }: {
 }
 
 /* ─── Ken-Burns zoom on active image ─────────────────────────────────── */
-function SlideImage({ src, alt, duration, objectPosition, isMobile }: {
-  src: string; alt: string; duration: number; objectPosition?: string; isMobile?: boolean;
+function SlideImage({ src, alt, duration, objectPosition }: {
+  src: string; alt: string; duration: number; objectPosition?: string;
 }) {
   return (
     <motion.div
@@ -252,7 +252,6 @@ export function HeroCarousel({ fullBleed = false }: { fullBleed?: boolean }) {
               alt={current.title ?? 'Banner'}
               duration={DURATION}
               objectPosition={current.object_position}
-              isMobile={isMobileViewport}
             />
 
             {/* Dark cinematic gradient */}
