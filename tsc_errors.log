@@ -1,0 +1,7 @@
+src/app/theme.ts(7,7): error TS6133: 'MIRAI_CARD_D' is declared but its value is never read.
+src/app/theme.ts(186,5): error TS2353: Object literal may only specify known properties, and 'MuiTableContainer' does not exist in type 'ThemeOptions'.
+src/features/cart/store.ts(97,33): error TS6133: 'version' is declared but its value is never read.
+src/features/home/components/Hero3DScene.tsx(3,24): error TS6133: 'Html' is declared but its value is never read.
+src/features/home/components/Hero3DScene.tsx(3,30): error TS6133: 'useGLTF' is declared but its value is never read.
+src/features/home/components/Hero3DScene.tsx(5,24): error TS2307: Cannot find module 'framer-motion-3d' or its corresponding type declarations.
+src/features/home/components/Hero3DScene.tsx(53,18): error TS2741: Property 'args' is missing in type '{ attach: string; count: number; array: Float32Array<ArrayBuffer>; itemSize: number; }' but required in type 'Mutable<Overwrite<Partial<Overwrite<BufferAttribute, MathProps<BufferAttribute> & ReactProps<BufferAttribute>>>, Omit<...>>>'.
